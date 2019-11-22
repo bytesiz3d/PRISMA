@@ -5,9 +5,9 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 14)
 add_compile_options(-w)
 
-# Project Variables, change to your own liking:
-set(PROJECT_NAME "gfx-playground")
-set(THIRDPARTY_DIR "deps") # This is where the third party libraries are kept
+# Project Variables:
+set(PROJECT_NAME "PRISMA")
+set(THIRDPARTY_DIR "deps") 
 
 # Project and Source Groups:
 project(${PROJECT_NAME}) # Specifies the target project
@@ -21,14 +21,6 @@ source_group("Source"
   src/main.cpp
   )
 
-# Suppose you have a camera class
-## source_group("Camera"
-##   FILES
-##   src/Camera/Camera.h
-##   src/Camera/Camera.cpp
-##   )
-
-
 # Linking to third party libraries:
 ## OpenGL:
 find_package(OpenGL REQUIRED)
@@ -41,8 +33,8 @@ target_link_libraries(${PROJECT_NAME} glad)
 ## GLFW:
 option(GLFW_BUILD_EXAMPLES OFF) # Disabling additional build targets
 option(GLFW_BUILD_TESTS    OFF)
-option(GLFW_BUILD_DOCS 	   OFF)
-option(GLFW_INSTALL	   OFF)
+option(GLFW_BUILD_DOCS 	 OFF)
+option(GLFW_INSTALL	 OFF)
 option(GLFW_VULKAN_STATIC  OFF)
 
 add_subdirectory(${THIRDPARTY_DIR}/glfw)
