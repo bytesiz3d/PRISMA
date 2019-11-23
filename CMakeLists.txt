@@ -7,18 +7,26 @@ add_compile_options(-w)
 
 # Project Variables:
 set(PROJECT_NAME "PRISMA")
-set(THIRDPARTY_DIR "deps") 
+set(THIRDPARTY_DIR "deps")
 
 # Project and Source Groups:
-project(${PROJECT_NAME}) # Specifies the target project
-add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME 
+project(${PROJECT_NAME} CXX) # Specifies the target project
+add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
   src/main.cpp # Build the executable from these files
+  src/Camera/Camera.hpp
+  src/Camera/Camera.cpp
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
 source_group("Source"
   FILES
   src/main.cpp
+  )
+
+source_group("Source\\Camera"
+  FILES
+  src/Camera/Camera.hpp
+  src/Camera/Camera.cpp
   )
 
 # Linking to third party libraries:
