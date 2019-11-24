@@ -13,12 +13,35 @@ set(THIRDPARTY_DIR "deps")
 project(${PROJECT_NAME}) # Specifies the target project
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME 
   src/main.cpp # Build the executable from these files
+
+  src/mesh/mesh.hpp
+  src/mesh/mesh.cpp
+
+  src/mesh/mesh_utils.hpp
+  src/mesh/mesh_utils.cpp
+
+  src/shader/shader.hpp
+  src/shader/shader.cpp
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
-source_group("Source"
+
+source_group("Mesh"
   FILES
-  src/main.cpp
+  src/mesh/mesh.cpp
+  src/mesh/mesh.hpp
+  )
+
+source_group("Mesh\\Mesh Utilities"
+  FILES
+  src/mesh/mesh_utils.hpp
+  src/mesh/mesh_utils.cpp
+  )
+
+source_group("Shader"
+  FILES
+  src/shader/shader.hpp
+  src/shader/shader.cpp
   )
 
 # Linking to third party libraries:
