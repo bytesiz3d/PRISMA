@@ -65,7 +65,8 @@ int main()
     int tint_location = glGetUniformLocation(shaderProgram, "tint");
     
     // Create the mesh
-    Mesh sphere = Mesh_Utils::ColoredSphere();
+    //Mesh sphere = Mesh_Utils::ColoredSphere();
+    Mesh cube = Mesh_Utils::ColoredCube();
     
     // Scale the sphere down x0.25
     glm::mat4 MVP(1.f); //Identity matrix
@@ -91,8 +92,8 @@ int main()
         // Render
         // Clear the color buffer
         glClear(GL_COLOR_BUFFER_BIT);
-        sphere.draw();
-
+        //sphere.draw();
+        cube.draw();
         // Swap the screen buffers
         glfwSwapBuffers(window);
     }
