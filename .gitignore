@@ -5,6 +5,9 @@
 # Ignoring the build directory
 [Bb]uild/
 
+# Ignoring personal utility files
+oc3_*
+
 ### C++ ###
 # Prerequisites
 *.d

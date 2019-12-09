@@ -14,8 +14,8 @@ project(${PROJECT_NAME} CXX) # Specifies the target project
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
   src/main.cpp # Build the executable from these files
 
-  src/Camera/Camera.hpp
-  src/Camera/Camera.cpp
+  src/camera/camera.hpp
+  src/camera/camera.cpp
 
   src/mesh/mesh.hpp
   src/mesh/mesh.cpp
@@ -49,8 +49,8 @@ source_group("Shader"
 
 source_group("Camera"
   FILES
-  src/Camera/Camera.hpp
-  src/Camera/Camera.cpp
+  src/camera/camera.hpp
+  src/camera/camera.cpp
   )
 
 # Linking to third party libraries:

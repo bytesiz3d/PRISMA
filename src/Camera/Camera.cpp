@@ -1,7 +1,7 @@
 #include "Camera.hpp"
 
 Camera::Camera()
-    : yaw(0), pitch(0), yawSens(0.001), pitchSens(0.001), movementSens(0.001), PI(glm::pi<float>())
+    : yaw(0), pitch(0), yawSens(0.001), pitchSens(0.001), movementSens(1), PI(glm::pi<float>())
 {
     position = glm::vec3(0, 0, 0);
     direction = glm::vec3(0, 0, 1);
@@ -12,6 +12,9 @@ Camera::Camera()
 
     near = 0.01;
     far = 1000;
+
+    // near = 0.0001;
+    // far = 100000;
 
     auto dir = direction;
     auto len = dir[0] * dir[0];
@@ -30,7 +33,7 @@ void Camera::UpdateCamera(glm::vec2 mouseDelta, glm::vec3 movement)
     pitch = glm::min(PI / 2, glm::max(-PI / 2, pitch));
     direction = glm::vec3(std::cos(yaw) * std::cos(pitch), std::sin(pitch), std::sin(yaw) * std::cos(pitch));
 
-    //movement *= movementSens;
+    movement *= movementSens;
 
     position += direction * movement[2];
     position += right() * movement[0];

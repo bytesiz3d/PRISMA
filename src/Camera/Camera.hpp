@@ -22,7 +22,6 @@ class Camera
     glm::vec3 up;
 
     float perspectiveFoVy;
-    float aspectRatio;
 
     float near;
     float far;
@@ -33,6 +32,7 @@ class Camera
     glm::mat4 ProjectionMatrix();
 
 public:
+    float aspectRatio;
     glm::vec3 position;
 
     Camera();
