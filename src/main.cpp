@@ -16,11 +16,13 @@
 #include "shader/shader.hpp"
 #include "mesh/mesh_utils.hpp"
 #include "camera/camera.hpp"
+#include "scene_node/scene_node.hpp"
 
 // Function prototypes
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void MouseCallback(GLFWwindow* window, int button, int action, int mods);
-void DrawScene(Mesh* cc);
+void InitScene(Mesh* cc);
+void DrawScene(Scene_Node* scene, GLuint shaderId);
 
 // Window dimensions
 const GLuint WIDTH = 1280, HEIGHT = 720;
@@ -38,9 +40,10 @@ namespace Scene
     GLint M_location;
     GLint VP_location;
     GLint tint_location;
+
+    Scene_Node* room;
 };
 
-// The MAIN function, from here we start the application and run the game loop
 int main()
 {
     std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
@@ -52,6 +55,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
     glfwWindowHint(GLFW_DEPTH_BITS, 32);
+    glfwWindowHint(GLFW_SAMPLES, 16);
 
     // Create a GLFWwindow object that we can use for GLFW's functions
     GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "GFX Playground", NULL, NULL);
@@ -75,10 +79,15 @@ int main()
     
     // Compile and link the shader program
     GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/color.frag");
+    GLuint shaderProgram = Shader::LoadShader("../shaders/color.vert", "../shaders/color.frag");
     glUseProgram(cubeShaderProgram);
 
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);
+
+    // Anti-aliasing:
+    // glEnable(GL_LINE_SMOOTH);
+    glLineWidth(5.f);
 
     // Create the camera object:
     Camera camera;
@@ -93,13 +102,19 @@ int main()
     
     // Create the mesh
     Mesh cube = Mesh_Utils::WhiteCube();
-
+    InitScene(&cube);
+    
     // Black background
     glClearColor(0.f, 0.f, 0.f, 1.f);
 
     // Set the depth test function:
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LEQUAL);
+
+    // // Enable blending:
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    // glBlendEquation(GL_FUNC_ADD);
 
     // Game loop
     while (!glfwWindowShouldClose(window))
@@ -111,7 +126,6 @@ int main()
         Scene::mouseDelta = glm::vec2(Scene::mX - Scene::p_mX, Scene::mY - Scene::p_mY);
         Scene::p_mX = Scene::mX, Scene::p_mY = Scene::mY;
 
-        // TODO: Patch up the camera controller (qe, ad, ws)
         if (Scene::holdMouse)
             camera.UpdateCamera(Scene::mouseDelta, Scene::movementP - Scene::movementN);
 
@@ -124,7 +138,7 @@ int main()
         glm::mat4 VP = camera.ViewProjectionMatrix();
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
 
-        DrawScene(&cube);
+        DrawScene(Scene::room, cubeShaderProgram); 
         
         // Swap the screen buffers
         glfwSwapBuffers(window);
@@ -132,6 +146,90 @@ int main()
 
     glfwTerminate();
     return 0;
+}
+
+void InitScene(Mesh* cc)
+{
+    glm::mat4 Model;
+    Scene::room = new Scene_Node;
+    
+    // Right face:
+    Scene_Node* right = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(128, 0, 0));
+    right->relativeModel = Model;
+    right->absoluteScale = glm::vec3(000, 256, 256); 
+    Scene::room->AddChild(right);
+    
+    // Left face:
+    Scene_Node* left = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(-128, 0, 0));
+    left->relativeModel = Model;
+    left->absoluteScale = glm::vec3(000, 256, 256); 
+    Scene::room->AddChild(left);
+
+    // Roof face:
+    Scene_Node* roof = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(0, 256, 0));
+    roof->relativeModel = Model;
+    roof->absoluteScale = glm::vec3(256, 000, 256);
+    roof->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
+    Scene::room->AddChild(roof);
+    
+    // Floor face:
+    Scene_Node* floor = new Scene_Node(cc);
+    floor->absoluteScale = glm::vec3(256, 000, 256);
+    floor->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
+    Scene::room->AddChild(floor);
+
+    // Front face:
+    Scene_Node* front = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, -128));
+    front->relativeModel = Model;
+    front->absoluteScale = glm::vec3(256, 256, 000);
+    front->color = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
+    Scene::room->AddChild(front);
+
+    // Back face:
+    Scene_Node* back = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 128));
+    back->relativeModel = Model;
+    back->absoluteScale = glm::vec3(256, 256, 000);
+    back->color = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
+    Scene::room->AddChild(back);
+
+    // Door:
+    Scene_Node* door = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(128, 0, 0));
+    door->relativeModel = Model;
+    door->absoluteScale = glm::vec3(8, 128, 64);
+    door->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
+    Scene::room->AddChild(door);
+    
+    // Orb:
+    Scene_Node* orb = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(64, 0, 0));
+    orb->relativeModel = Model;
+    orb->absoluteScale = glm::vec3(16, 16, 5);
+    orb->color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+    Scene::room->AddChild(orb);
+
+    // Player:
+    Scene_Node* player = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(-64, 0, 0));
+    player->relativeModel = Model;
+    player->absoluteScale = glm::vec3(16, 16, 5);
+    player->color = glm::vec4(0.f, 0.f, 1.f, 1.f);
+    Scene::room->AddChild(player);
+}
+
+void DrawScene(Scene_Node* scene, GLuint shaderId)
+{
+    if (scene)
+    {
+        scene->Draw(shaderId);
+        for (auto& child : scene->children)
+            DrawScene(child, shaderId);
+    }
 }
 
 // Is called whenever a key is pressed/released via GLFW
@@ -211,113 +309,4 @@ void MouseCallback(GLFWwindow* window, int button, int action, int mods)
         else if (action == GLFW_RELEASE)
             Scene::holdMouse = false;
     }
-}
-void DrawScene(Mesh* cc)
-{
-    glm::mat4 Model;
-    glm::mat4 tint;
-    // Room:
-    // Cube of size 256, located at the origin:
-    // Three pairs of faces:
-    
-    {
-        // Right face:
-        Model = glm::translate(glm::mat4(1.f), glm::vec3(128, 0, 0));
-        Model = glm::scale(Model, glm::vec3(000, 256, 256));
-        glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-        // White:
-        tint = glm::mat4(1.f);
-        glUniformMatrix4fv(Scene::tint_location, 1, false, glm::value_ptr(tint));
-        cc->draw();
-
-        // Left face:
-        Model = glm::translate(glm::mat4(1.f), glm::vec3(-128, 0, 0));
-        Model = glm::scale(Model, glm::vec3(000, 256, 256));
-        glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-    
-        cc->draw();
-    }
-    {
-
-        // Roof face:
-        Model = glm::translate(glm::mat4(1.f), glm::vec3(0, 256, 0));
-        Model = glm::scale(Model, glm::vec3(256, 000, 256));
-        glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-        // color:
-        tint = glm::mat4(0.f);
-        tint[3] = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
-        glUniformMatrix4fv(Scene::tint_location, 1, false, glm::value_ptr(tint));
-        cc->draw();
-
-        // Floor face:
-        Model = glm::mat4(1.f);
-        Model = glm::scale(Model, glm::vec3(256, 000, 256));
-        glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-    
-        cc->draw();
-
-    }
-    {
-        // Front face:
-        Model = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, -128));
-        Model = glm::scale(Model, glm::vec3(256, 256, 000));
-        glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-        // color:
-        tint = glm::mat4(0.f);
-        tint[3] = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
-        glUniformMatrix4fv(Scene::tint_location, 1, false, glm::value_ptr(tint));
-        cc->draw();
-
-        // Back face:
-        Model = glm::translate(glm::mat4(1.f), glm::vec3(0, 0, 128));
-        Model = glm::scale(Model, glm::vec3(256, 256, 000));
-        glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-    
-        cc->draw();
-    }
-
-    // Door:
-    // Square of size 64 x 128 (z * y)
-    // Shifted 128 units to the right:
-    Model = glm::translate(glm::mat4(1.f), glm::vec3(128, 0, 0));
-    Model = glm::scale(Model, glm::vec3(8, 128, 64));
-    glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-
-    // Red 
-    tint = glm::mat4(0.f);
-    tint[0][0] = 1.f;
-    tint[3][3] = 1.f;
-    glUniformMatrix4fv(Scene::tint_location, 1, false, glm::value_ptr(tint));
-
-    cc->draw();
-
-    // Player:
-    // Square of size 32 (x * y)
-    // Shifted 64 units to the left:
-    Model = glm::translate(glm::mat4(1.f), glm::vec3(-64, 0, 0));
-    Model = glm::scale(Model, glm::vec3(16, 16, 5));
-    glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-
-    // Blue 
-    tint = glm::mat4(0.f);
-    tint[2][2] = 1.f;
-    tint[3][3] = 1.f;
-    glUniformMatrix4fv(Scene::tint_location, 1, false, glm::value_ptr(tint));
-
-    cc->draw();
-
-    // Orb:
-    // Cube of size 32
-    // Shifted 64 units to the right:
-    Model = glm::translate(glm::mat4(1.f), glm::vec3(64, 0, 0));
-    Model = glm::scale(Model, glm::vec3(16, 16, 16));
-    glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
-
-    // Green 
-    tint = glm::mat4(0.f);
-    tint[1][1] = 1.f;
-    tint[3][3] = 1.f;
-    glUniformMatrix4fv(Scene::tint_location, 1, false, glm::value_ptr(tint));
-
-    cc->draw();
 }

@@ -46,7 +46,8 @@ GLuint Mesh_Utils::eP(GLuint row, GLuint column, GLuint hRes)
 
 Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
 {
-    static Mesh mesh = CreateMesh();
+    // static Mesh mesh = CreateMesh();
+    static Mesh mesh;
     const double __PI = std::acos(-1);
     const GLuint vertexCount =
         1
@@ -100,8 +101,8 @@ Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
     colors[++cIdx] = (positions[pIdx] + 1) / 2 * 0xFF;
     colors[++cIdx] = 0xFF;
 
-    mesh.setBufferData("positions", sizeof(GLfloat) * 3 * vertexCount, positions, GL_STATIC_DRAW);
-    mesh.setBufferData("colors", sizeof(GLubyte) * 4 * vertexCount, colors, GL_STATIC_DRAW);
+    mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * vertexCount, positions, GL_STATIC_DRAW);
+    mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * vertexCount, colors, GL_STATIC_DRAW);
 
     int elementCount = 3 * (
         hRes
@@ -144,7 +145,7 @@ Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
         elements[++eIdx] = eP(vRes - 2, j + 1, hRes);
     }
 
-    mesh.setElementsData(sizeof(GLuint) * elementCount, elements, GL_STATIC_DRAW, elementCount, GL_UNSIGNED_INT);
+    mesh.SetElementsData(sizeof(GLuint) * elementCount, elements, GL_STATIC_DRAW, elementCount, GL_UNSIGNED_INT);
 
     delete[] positions;
     delete[] colors;
@@ -156,7 +157,8 @@ Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
 Mesh Mesh_Utils::Orbit()
 {
     const double __PI = std::acos(-1);
-    static Mesh mesh = CreateMesh();
+    // static Mesh mesh = CreateMesh();
+    static Mesh mesh;
 
     float positions[360 * 3];
     GLuint elements[360];
@@ -172,31 +174,32 @@ Mesh Mesh_Utils::Orbit()
     for (GLuint idx = 0; idx < 360; idx++)
         elements[idx] = idx;
 
-    mesh.setBufferData("positions", sizeof(float) * 360 * 3, positions, GL_STATIC_DRAW);
-    mesh.setBufferData("colors", sizeof(GLubyte) * 360 * 4, colors, GL_STATIC_DRAW);
-    mesh.setElementsData(sizeof(GLuint) * 360, elements, GL_STATIC_DRAW, 360, GL_UNSIGNED_INT);
+    mesh.SetBufferData("positions", sizeof(float) * 360 * 3, positions, GL_STATIC_DRAW);
+    mesh.SetBufferData("colors", sizeof(GLubyte) * 360 * 4, colors, GL_STATIC_DRAW);
+    mesh.SetElementsData(sizeof(GLuint) * 360, elements, GL_STATIC_DRAW, 360, GL_UNSIGNED_INT);
 
     return mesh;
 }
 
 Mesh Mesh_Utils::ColoredCube()
 {
-        static Mesh mesh = CreateMesh();
-        float positions[3*24] = {
+    // static Mesh mesh = CreateMesh();
+    static Mesh mesh;
+    float positions[3*24] = {
         -1,  1, -1,
         -1,  1,  1,
-         1,  1,  1,
-         1,  1, -1,
+        1,  1,  1,
+        1,  1, -1,
         //Lower Face
         -1, -1, -1,
-         1, -1, -1,
-         1, -1,  1,
+        1, -1, -1,
+        1, -1,  1,
         -1, -1,  1,
         //Right Face
-         1, -1, -1,
-         1,  1, -1,
-         1,  1,  1,
-         1, -1,  1,
+        1, -1, -1,
+        1,  1, -1,
+        1,  1,  1,
+        1, -1,  1,
         //Left Face
         -1, -1, -1,
         -1, -1,  1,
@@ -204,18 +207,18 @@ Mesh Mesh_Utils::ColoredCube()
         -1,  1, -1,
         //Front Face
         -1, -1,  1,
-         1, -1,  1,
-         1,  1,  1,
+        1, -1,  1,
+        1,  1,  1,
         -1,  1,  1,
         //Back Face
         -1, -1, -1,
         -1,  1, -1,
-         1,  1, -1,
-         1, -1, -1
-        };
+        1,  1, -1,
+        1, -1, -1
+    };
 
-        GLubyte colors[4*24] = {
-         //Upper Face
+    GLubyte colors[4*24] = {
+        //Upper Face
         RED, RED, RED, RED,
         //Lower Face
         GREEN, GREEN, GREEN, GREEN,
@@ -228,8 +231,8 @@ Mesh Mesh_Utils::ColoredCube()
         //Back Face
         CYAN, CYAN, CYAN, CYAN};
 
-    mesh.setBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
-    mesh.setBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
+    mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
+    mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
 
     GLuint elements[36] = {
         0, 1, 2, 2, 3, 0,
@@ -245,63 +248,64 @@ Mesh Mesh_Utils::ColoredCube()
         20, 21, 22, 22, 23, 20
     };
 
-    mesh.setElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
+    mesh.SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
 
     return mesh;
 }
 
 Mesh Mesh_Utils::WhiteCube()
 {
-        static Mesh mesh = CreateMesh();
-        float positions[3*24] = {
-            -0.5,  0.5, -0.5,
-            -0.5,  0.5,  0.5,
-            0.5,  0.5,  0.5,
-            0.5,  0.5, -0.5,
-            //Lower Face
-            -0.5, -0.5, -0.5,
-            0.5, -0.5, -0.5,
-            0.5, -0.5,  0.5,
-            -0.5, -0.5,  0.5,
-            //Right Face
-            0.5, -0.5, -0.5,
-            0.5,  0.5, -0.5,
-            0.5,  0.5,  0.5,
-            0.5, -0.5,  0.5,
-            //Left Face
-            -0.5, -0.5, -0.5,
-            -0.5, -0.5,  0.5,
-            -0.5,  0.5,  0.5,
-            -0.5,  0.5, -0.5,
-            //Front Face
-            -0.5, -0.5,  0.5,
-            0.5, -0.5,  0.5,
-            0.5,  0.5,  0.5,
-            -0.5,  0.5,  0.5,
-            //Back Face
-            -0.5, -0.5, -0.5,
-            -0.5,  0.5, -0.5,
-            0.5,  0.5, -0.5,
-            0.5, -0.5, -0.5
-        };
+    // static Mesh mesh = CreateMesh();
+    static Mesh mesh;
+    float positions[3*24] = {
+        -0.5,  0.5, -0.5,
+        -0.5,  0.5,  0.5,
+        0.5,  0.5,  0.5,
+        0.5,  0.5, -0.5,
+        //Lower Face
+        -0.5, -0.5, -0.5,
+        0.5, -0.5, -0.5,
+        0.5, -0.5,  0.5,
+        -0.5, -0.5,  0.5,
+        //Right Face
+        0.5, -0.5, -0.5,
+        0.5,  0.5, -0.5,
+        0.5,  0.5,  0.5,
+        0.5, -0.5,  0.5,
+        //Left Face
+        -0.5, -0.5, -0.5,
+        -0.5, -0.5,  0.5,
+        -0.5,  0.5,  0.5,
+        -0.5,  0.5, -0.5,
+        //Front Face
+        -0.5, -0.5,  0.5,
+        0.5, -0.5,  0.5,
+        0.5,  0.5,  0.5,
+        -0.5,  0.5,  0.5,
+        //Back Face
+        -0.5, -0.5, -0.5,
+        -0.5,  0.5, -0.5,
+        0.5,  0.5, -0.5,
+        0.5, -0.5, -0.5
+    };
 
-        GLubyte colors[4*24] = {
-            //Upper Face
-            WHITE, WHITE, WHITE, WHITE,
-            //Lower Face
-            WHITE, WHITE, WHITE, WHITE,
-            //Right Face
-            WHITE, WHITE, WHITE, WHITE,
-            //Left Face
-            WHITE, WHITE, WHITE, WHITE,
-            //Front Face
-            WHITE, WHITE, WHITE, WHITE,
-            //Back Face
-            WHITE, WHITE, WHITE, WHITE
-        };
+    GLubyte colors[4*24] = {
+        //Upper Face
+        WHITE, WHITE, WHITE, WHITE,
+        //Lower Face
+        WHITE, WHITE, WHITE, WHITE,
+        //Right Face
+        WHITE, WHITE, WHITE, WHITE,
+        //Left Face
+        WHITE, WHITE, WHITE, WHITE,
+        //Front Face
+        WHITE, WHITE, WHITE, WHITE,
+        //Back Face
+        WHITE, WHITE, WHITE, WHITE
+    };
 
-    mesh.setBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
-    mesh.setBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
+    mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
+    mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
 
     GLuint elements[36] = {
         0, 1, 2, 2, 3, 0,
@@ -317,7 +321,7 @@ Mesh Mesh_Utils::WhiteCube()
         20, 21, 22, 22, 23, 20
     };
 
-    mesh.setElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
+    mesh.SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
 
     return mesh;
 }

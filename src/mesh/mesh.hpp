@@ -30,10 +30,11 @@ private:
     GLenum elementType;
 
 public:
+    Mesh();
     Mesh(VertexDescriptor* inDescriptors, int n);
     ~Mesh();
 	
-    void setBufferData(std::string bufferName, GLsizeiptr size, const void* bufferData, GLenum usage);
-    void setElementsData(GLsizeiptr size, const void* bufferData, GLenum usage, GLsizei count, GLenum type);
-    void draw(GLenum mode = GL_TRIANGLES);
+    void SetBufferData(std::string bufferName, GLsizeiptr size, const void* bufferData, GLenum usage);
+    void SetElementsData(GLsizeiptr size, const void* bufferData, GLenum usage, GLsizei count, GLenum type);
+    void Draw(GLenum mode = GL_TRIANGLES);
 };

@@ -25,6 +25,9 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
 
   src/shader/shader.hpp
   src/shader/shader.cpp
+
+  src/scene_node/scene_node.hpp
+  src/scene_node/scene_node.cpp
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
@@ -51,6 +54,12 @@ source_group("Camera"
   FILES
   src/camera/camera.hpp
   src/camera/camera.cpp
+  )
+
+source_group("Scene Graph"
+  FILES
+  src/scene_node/scene_node.hpp
+  src/scene_node/scene_node.cpp
   )
 
 # Linking to third party libraries:
