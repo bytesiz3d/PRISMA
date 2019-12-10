@@ -23,7 +23,7 @@ void MouseCallback(GLFWwindow* window, int button, int action, int mods);
 void DrawScene(Mesh* cc);
 
 // Window dimensions
-const GLuint WIDTH = 1600, HEIGHT = 900;
+const GLuint WIDTH = 1280, HEIGHT = 720;
 
 namespace Scene
 {
@@ -74,22 +74,22 @@ int main()
     }
     
     // Compile and link the shader program
-    GLuint shaderProgram = Shader::LoadShader("../shaders/color.vert", "../shaders/color.frag");
-    glUseProgram(shaderProgram);
+    GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/color.frag");
+    glUseProgram(cubeShaderProgram);
 
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);
 
     // Create the camera object:
     Camera camera;
-    camera.position = glm::vec3(200, 200, 000);
+    camera.position = glm::vec3(-96, 32, 96);
     camera.aspectRatio = (float)WIDTH / HEIGHT;
-    camera.SetTarget(glm::vec3(0, 0, 0));
+    camera.SetTarget(glm::vec3(128, 0, -128));
 
     // Get uniform variable locations
-    Scene::M_location = glGetUniformLocation(shaderProgram, "M");
-    Scene::VP_location = glGetUniformLocation(shaderProgram, "VP");
-    Scene::tint_location = glGetUniformLocation(shaderProgram, "tint");
+    Scene::M_location = glGetUniformLocation(cubeShaderProgram, "M");
+    Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
+    Scene::tint_location = glGetUniformLocation(cubeShaderProgram, "tint");
     
     // Create the mesh
     Mesh cube = Mesh_Utils::WhiteCube();
@@ -118,7 +118,7 @@ int main()
         // Render
         // Clear the color buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        glUseProgram(shaderProgram);
+        glUseProgram(cubeShaderProgram);
 
         // Pass the VP matrix to the shader
         glm::mat4 VP = camera.ViewProjectionMatrix();
@@ -240,7 +240,7 @@ void DrawScene(Mesh* cc)
     {
 
         // Roof face:
-        Model = glm::translate(glm::mat4(1.f), glm::vec3(0, 128, 0));
+        Model = glm::translate(glm::mat4(1.f), glm::vec3(0, 256, 0));
         Model = glm::scale(Model, glm::vec3(256, 000, 256));
         glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
         // color:
@@ -250,7 +250,7 @@ void DrawScene(Mesh* cc)
         cc->draw();
 
         // Floor face:
-        Model = glm::translate(glm::mat4(1.f), glm::vec3(0, -128, 0));
+        Model = glm::mat4(1.f);
         Model = glm::scale(Model, glm::vec3(256, 000, 256));
         glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
     
@@ -278,10 +278,8 @@ void DrawScene(Mesh* cc)
 
     // Door:
     // Square of size 64 x 128 (z * y)
-    // Shifted 128 units to the right, 64 units downwards:
-    Model = glm::mat4(1.f);
-    // Model = glm::translate(Model, glm::vec3(-16, 10, 0)); // Z-fighting!!!!!
-    Model = glm::translate(Model, glm::vec3(128, -64, 0));
+    // Shifted 128 units to the right:
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(128, 0, 0));
     Model = glm::scale(Model, glm::vec3(8, 128, 64));
     glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
 
@@ -295,11 +293,9 @@ void DrawScene(Mesh* cc)
 
     // Player:
     // Square of size 32 (x * y)
-    // Shifted 64 units to the left, 112 units downwards:
-    Model = glm::mat4(1.f);
-    // Model = glm::translate(Model, glm::vec3(0, 10, 0)); // Z-fighting!!!!!
-    Model = glm::translate(Model, glm::vec3(-64, -112, 0));
-    Model = glm::scale(Model, glm::vec3(32, 32, 5));
+    // Shifted 64 units to the left:
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(-64, 0, 0));
+    Model = glm::scale(Model, glm::vec3(16, 16, 5));
     glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
 
     // Blue 
@@ -312,11 +308,9 @@ void DrawScene(Mesh* cc)
 
     // Orb:
     // Cube of size 32
-    // Shifted 64 units to the right, 112 units downwards:
-    Model = glm::mat4(1.f);
-    // Model = glm::translate(Model, glm::vec3(0, 10, 0)); // Z-fighting!!!!!
-    Model = glm::translate(Model, glm::vec3(64, -112, 0));
-    Model = glm::scale(Model, glm::vec3(32, 32, 32));
+    // Shifted 64 units to the right:
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(64, 0, 0));
+    Model = glm::scale(Model, glm::vec3(16, 16, 16));
     glUniformMatrix4fv(Scene::M_location, 1, false, glm::value_ptr(Model));
 
     // Green 

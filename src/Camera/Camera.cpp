@@ -1,7 +1,7 @@
 #include "Camera.hpp"
 
 Camera::Camera()
-    : yaw(0), pitch(0), yawSens(0.001), pitchSens(0.001), movementSens(1), PI(glm::pi<float>())
+    : yaw(0), pitch(0), yawSens(0.001), pitchSens(0.001), movementSens(0.5), PI(glm::pi<float>())
 {
     position = glm::vec3(0, 0, 0);
     direction = glm::vec3(0, 0, 1);
