@@ -18,7 +18,6 @@ class Camera
     float pitchSens;
     float movementSens;
 
-    glm::vec3 direction;
     glm::vec3 up;
 
     float perspectiveFoVy;
@@ -34,10 +33,12 @@ class Camera
 public:
     float aspectRatio;
     glm::vec3 position;
+    glm::vec3 direction;
 
     Camera();
 
     void UpdateCamera(glm::vec2 mouseDelta, glm::vec3 movement);
+    void UpdateCamera2D(glm::vec2 mouseDelta, glm::vec3 movement);
 
     glm::mat4 ViewProjectionMatrix();
 

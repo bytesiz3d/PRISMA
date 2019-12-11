@@ -1,7 +1,7 @@
 #include "Camera.hpp"
 
 Camera::Camera()
-    : yaw(0), pitch(0), yawSens(0.001), pitchSens(0.001), movementSens(0.05), PI(glm::pi<float>())
+    : yaw(0), pitch(0), yawSens(0.001), pitchSens(0.001), movementSens(0.1), PI(glm::pi<float>())
 {
     position = glm::vec3(0, 0, 0);
     direction = glm::vec3(0, 0, 1);
@@ -38,6 +38,29 @@ void Camera::UpdateCamera(glm::vec2 mouseDelta, glm::vec3 movement)
     position += direction * movement[2];
     position += right() * movement[0];
     position += up * movement[1];
+}
+
+void Camera::UpdateCamera2D(glm::vec2 mouseDelta, glm::vec3 movement)
+{
+    yaw += mouseDelta[0] * yawSens;
+    pitch += -mouseDelta[1] * pitchSens;
+
+    pitch = glm::min(PI / 2, glm::max(-PI / 2, pitch));
+    direction = glm::vec3(std::cos(yaw) * std::cos(pitch), std::sin(pitch), std::sin(yaw) * std::cos(pitch));
+
+    movement *= movementSens;
+
+    glm::vec3 forward = direction;
+    forward[1] = 0;
+    forward = glm::normalize(forward);
+
+    glm::vec3 normal = glm::cross(forward, glm::vec3(0, 1, 0));
+    normal[1] = 0;
+    normal = glm::normalize(normal);
+    
+    position += forward * movement[2];
+    position += normal * movement[0];
+    position += glm::vec3(0, 1, 0) * movement[1];
 }
 
 glm::mat4 Camera::ViewMatrix()

@@ -44,23 +44,26 @@ void Scene_Node::AddChild(Scene_Node* child)
     child->parent = this;
 }
 
+glm::mat4 Scene_Node::ScaleWorldModel()
+{
+    worldModel = parent ? parent->worldModel : glm::mat4(1.f); 
+    worldModel *= relativeModel;
+    return glm::scale(worldModel, absoluteScale);
+}
+
 void Scene_Node::Draw(GLuint shaderId)
 {
-    if (!mesh)
-        return;
-    
     glUseProgram(shaderId);
     int M_location = glGetUniformLocation(shaderId, "M");
     int tint_location = glGetUniformLocation(shaderId, "tint");
 
-    worldModel = parent ? parent->worldModel : glm::mat4(1.f); 
-    worldModel *= relativeModel;
-    glm::mat4 scaledWorldModel = glm::scale(worldModel, absoluteScale);
+    glm::mat4 scaledWorldModel = ScaleWorldModel();
     glUniformMatrix4fv(M_location, 1, false, glm::value_ptr(scaledWorldModel));
 
     glm::mat4 tint(0.f);
     tint[3] = color;
     glUniformMatrix4fv(tint_location, 1, false, glm::value_ptr(tint));
 
-    mesh->Draw(drawMode);
+    if (mesh)
+        mesh->Draw(drawMode);
 }

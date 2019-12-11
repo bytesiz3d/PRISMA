@@ -12,6 +12,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 #include "shader/shader.hpp"
 #include "mesh/mesh_utils.hpp"
@@ -42,6 +43,9 @@ namespace Scene
     GLint tint_location;
 
     Scene_Node* room;
+
+    // Player:
+    Scene_Node* player;
 };
 
 int main()
@@ -87,13 +91,7 @@ int main()
 
     // Anti-aliasing:
     // glEnable(GL_LINE_SMOOTH);
-    glLineWidth(5.f);
-
-    // Create the camera object:
-    Camera camera;
-    camera.position = glm::vec3(-96, 32, 96);
-    camera.aspectRatio = (float)WIDTH / HEIGHT;
-    camera.SetTarget(glm::vec3(128, 0, -128));
+    // glLineWidth(5.f);
 
     // Get uniform variable locations
     Scene::M_location = glGetUniformLocation(cubeShaderProgram, "M");
@@ -104,6 +102,17 @@ int main()
     Mesh cube = Mesh_Utils::WhiteCube();
     InitScene(&cube);
     
+    // Create the camera object:
+    Camera camera;
+    {
+        // Look at the player:
+        glm::vec4 p = Scene::player->relativeModel * glm::vec4(0.f, 0.f, 0.f, 1.f);
+
+        camera.position = glm::vec3(p) + glm::vec3(0, 24, 32);
+        camera.aspectRatio = (float)WIDTH / HEIGHT;
+        camera.SetTarget(glm::vec3(p));
+    }
+
     // Black background
     glClearColor(0.f, 0.f, 0.f, 1.f);
 
@@ -127,8 +136,32 @@ int main()
         Scene::p_mX = Scene::mX, Scene::p_mY = Scene::mY;
 
         if (Scene::holdMouse)
-            camera.UpdateCamera(Scene::mouseDelta, Scene::movementP - Scene::movementN);
+        {
+            glm::vec3 dm = Scene::movementP - Scene::movementN;
+            // camera.UpdateCamera(Scene::mouseDelta, dm);
 
+            camera.UpdateCamera2D(Scene::mouseDelta, dm);
+            if (dm != glm::vec3(0.f))
+            {
+                glm::vec3 dp(0.f);
+                dm *= 0.1f;
+
+                glm::vec3 forward = camera.direction;
+                forward[1] = 0;
+                forward = glm::normalize(forward);
+
+                glm::vec3 normal = glm::cross(forward, glm::vec3(0, 1, 0));
+                normal[1] = 0;
+                normal = glm::normalize(normal);
+    
+                dp += forward * dm[2];
+                dp += normal * dm[0];
+
+                std::cout << glm::to_string(dp) << std::endl;
+                Scene::player->relativeModel = glm::translate(Scene::player->relativeModel, dp);
+            }
+        }
+        
         // Render
         // Clear the color buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -139,6 +172,7 @@ int main()
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
 
         DrawScene(Scene::room, cubeShaderProgram); 
+        DrawScene(Scene::player, cubeShaderProgram); 
         
         // Swap the screen buffers
         glfwSwapBuffers(window);
@@ -152,7 +186,15 @@ void InitScene(Mesh* cc)
 {
     glm::mat4 Model;
     Scene::room = new Scene_Node;
-    
+
+    // Player
+    Scene::player = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(-64, 0, 0));
+    Scene::player->relativeModel = Model;
+    Scene::player->absoluteScale = glm::vec3(16, 16, 5);
+    Scene::player->color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+    Scene::player->drawMode = GL_LINE_LOOP;
+        
     // Right face:
     Scene_Node* right = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1.f), glm::vec3(128, 0, 0));
@@ -209,17 +251,10 @@ void InitScene(Mesh* cc)
     Scene_Node* orb = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1.f), glm::vec3(64, 0, 0));
     orb->relativeModel = Model;
-    orb->absoluteScale = glm::vec3(16, 16, 5);
-    orb->color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+    orb->absoluteScale = glm::vec3(16);
+    orb->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
     Scene::room->AddChild(orb);
 
-    // Player:
-    Scene_Node* player = new Scene_Node(cc);
-    Model = glm::translate(glm::mat4(1.f), glm::vec3(-64, 0, 0));
-    player->relativeModel = Model;
-    player->absoluteScale = glm::vec3(16, 16, 5);
-    player->color = glm::vec4(0.f, 0.f, 1.f, 1.f);
-    Scene::room->AddChild(player);
 }
 
 void DrawScene(Scene_Node* scene, GLuint shaderId)
@@ -302,7 +337,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode
 
 void MouseCallback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT)
+    if (button == GLFW_MOUSE_BUTTON_LEFT || button == GLFW_MOUSE_BUTTON_RIGHT)
     {
         if (action == GLFW_PRESS)
             Scene::holdMouse = true;

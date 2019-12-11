@@ -34,6 +34,7 @@ public:
     ~Scene_Node();
 
     void SetMesh(Mesh* _mesh);
+    glm::mat4 ScaleWorldModel();
     void AddChild(Scene_Node* child);
     void Draw(GLuint shaderId);
 };
