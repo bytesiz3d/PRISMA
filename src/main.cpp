@@ -36,6 +36,7 @@ namespace Scene
     glm::vec3 movementP(0.f);
     glm::vec3 movementN(0.f);
     glm::vec2 mouseDelta(0.f);
+    float cameraAngle = 0.f;
     bool holdMouse = false;
 
     GLint M_location;
@@ -141,26 +142,21 @@ int main()
             // camera.UpdateCamera(Scene::mouseDelta, dm);
 
             camera.UpdateCamera2D(Scene::mouseDelta, dm);
-            if (dm != glm::vec3(0.f))
-            {
-                glm::vec3 dp(0.f);
-                dm *= 0.1f;
+            glm::vec3 pos = camera.position;
+            pos[1] = 0;
+            
+            glm::vec3 forward = camera.direction;
+            forward[1] = 0;
+            forward = glm::normalize(forward);
 
-                glm::vec3 forward = camera.direction;
-                forward[1] = 0;
-                forward = glm::normalize(forward);
+            pos += 32.f * forward; // Distance from camera
 
-                glm::vec3 normal = glm::cross(forward, glm::vec3(0, 1, 0));
-                normal[1] = 0;
-                normal = glm::normalize(normal);
-    
-                dp += forward * dm[2];
-                dp += normal * dm[0];
+            Scene::player->relativeModel = glm::translate(glm::mat4(1.f), pos);
 
-                std::cout << glm::to_string(dp) << std::endl;
-                Scene::player->relativeModel = glm::translate(Scene::player->relativeModel, dp);
-            }
-        }
+            // Align object:
+            Scene::cameraAngle -= 0.001 * Scene::mouseDelta[0];
+            Scene::player->relativeModel = glm::rotate(Scene::player->relativeModel, Scene::cameraAngle, glm::vec3(0, 1, 0));
+       }
         
         // Render
         // Clear the color buffer
