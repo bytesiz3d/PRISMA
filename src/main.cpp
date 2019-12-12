@@ -22,31 +22,41 @@
 // Function prototypes
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void MouseCallback(GLFWwindow* window, int button, int action, int mods);
-void InitScene(Mesh* cc);
-void DrawScene(Scene_Node* scene, GLuint shaderId);
 
 // Window dimensions
 const GLuint WIDTH = 1280, HEIGHT = 720;
 
 namespace Scene
 {
+    GLFWwindow* window;
+
+    // Controls:
     double p_mX, p_mY,
            mX,   mY;
 
     glm::vec3 movementP(0.f);
     glm::vec3 movementN(0.f);
     glm::vec2 mouseDelta(0.f);
-    float cameraAngle = 0.f;
     bool holdMouse = false;
 
-    GLint M_location;
-    GLint VP_location;
-    GLint tint_location;
+    // Utility functions:
+    void UpdateData();
+    void InitScene(Mesh* cc);
+    void DrawScene(Scene_Node* scene, GLuint shaderId);
 
+    // Camera:
+    Camera camera;
+    float cameraAngle = 0.f;
+    GLint VP_location;
+
+    // Room:
     Scene_Node* room;
 
     // Player:
     Scene_Node* player;
+
+    // HUD circles:
+    Scene_Node* hud;
 };
 
 int main()
@@ -63,9 +73,9 @@ int main()
     glfwWindowHint(GLFW_SAMPLES, 16);
 
     // Create a GLFWwindow object that we can use for GLFW's functions
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "GFX Playground", NULL, NULL);
-    glfwMakeContextCurrent(window);
-    if (window == NULL)
+    Scene::window = glfwCreateWindow(WIDTH, HEIGHT, "GFX Playground", NULL, NULL);
+    glfwMakeContextCurrent(Scene::window);
+    if (Scene::window == NULL)
     {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
@@ -73,8 +83,8 @@ int main()
     }
 
     // Set the required callback functions
-    glfwSetKeyCallback(window, KeyCallback);
-    glfwSetMouseButtonCallback(window, MouseCallback);
+    glfwSetKeyCallback(Scene::window, KeyCallback);
+    glfwSetMouseButtonCallback(Scene::window, MouseCallback);
 
     if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress))
     {
@@ -84,34 +94,32 @@ int main()
     
     // Compile and link the shader program
     GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/color.frag");
-    GLuint shaderProgram = Shader::LoadShader("../shaders/color.vert", "../shaders/color.frag");
-    glUseProgram(cubeShaderProgram);
+    GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
+    // glUseProgram(cubeShaderProgram);
 
     // Define the viewport dimensions
     glViewport(0, 0, WIDTH, HEIGHT);
 
     // Anti-aliasing:
     // glEnable(GL_LINE_SMOOTH);
+
     // glLineWidth(5.f);
 
     // Get uniform variable locations
-    Scene::M_location = glGetUniformLocation(cubeShaderProgram, "M");
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
-    Scene::tint_location = glGetUniformLocation(cubeShaderProgram, "tint");
     
     // Create the mesh
     Mesh cube = Mesh_Utils::WhiteCube();
-    InitScene(&cube);
+    Scene::InitScene(&cube);
     
     // Create the camera object:
-    Camera camera;
     {
         // Look at the player:
         glm::vec4 p = Scene::player->relativeModel * glm::vec4(0.f, 0.f, 0.f, 1.f);
 
-        camera.position = glm::vec3(p) + glm::vec3(0, 24, 32);
-        camera.aspectRatio = (float)WIDTH / HEIGHT;
-        camera.SetTarget(glm::vec3(p));
+        Scene::camera.position = glm::vec3(p) + glm::vec3(0, 24, 32);
+        Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
+        Scene::camera.SetTarget(glm::vec3(p));
     }
 
     // Black background
@@ -127,58 +135,64 @@ int main()
     // glBlendEquation(GL_FUNC_ADD);
 
     // Game loop
-    while (!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(Scene::window))
     {
         // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
         glfwPollEvents();
 
-        glfwGetCursorPos(window, &Scene::mX, &Scene::mY);
-        Scene::mouseDelta = glm::vec2(Scene::mX - Scene::p_mX, Scene::mY - Scene::p_mY);
-        Scene::p_mX = Scene::mX, Scene::p_mY = Scene::mY;
+        Scene::UpdateData();
 
-        if (Scene::holdMouse)
-        {
-            glm::vec3 dm = Scene::movementP - Scene::movementN;
-            // camera.UpdateCamera(Scene::mouseDelta, dm);
-
-            camera.UpdateCamera2D(Scene::mouseDelta, dm);
-            glm::vec3 pos = camera.position;
-            pos[1] = 0;
-            
-            glm::vec3 forward = camera.direction;
-            forward[1] = 0;
-            forward = glm::normalize(forward);
-
-            pos += 32.f * forward; // Distance from camera
-
-            Scene::player->relativeModel = glm::translate(glm::mat4(1.f), pos);
-
-            // Align object:
-            Scene::cameraAngle -= 0.001 * Scene::mouseDelta[0];
-            Scene::player->relativeModel = glm::rotate(Scene::player->relativeModel, Scene::cameraAngle, glm::vec3(0, 1, 0));
-       }
-        
         // Render
         // Clear the color buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(cubeShaderProgram);
 
         // Pass the VP matrix to the shader
-        glm::mat4 VP = camera.ViewProjectionMatrix();
+        glm::mat4 VP = Scene::camera.ViewProjectionMatrix();
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
 
-        DrawScene(Scene::room, cubeShaderProgram); 
-        DrawScene(Scene::player, cubeShaderProgram); 
+        Scene::DrawScene(Scene::room, cubeShaderProgram); 
+        Scene::DrawScene(Scene::player, cubeShaderProgram); 
+        Scene::DrawScene(Scene::hud, hudShaderProgram);
         
         // Swap the screen buffers
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(Scene::window);
     }
 
     glfwTerminate();
     return 0;
 }
 
-void InitScene(Mesh* cc)
+void Scene::UpdateData()
+{
+    glfwGetCursorPos(window, &mX, &mY);
+    mouseDelta = glm::vec2(mX - p_mX, mY - p_mY);
+    p_mX = mX, p_mY = mY;
+
+    if (holdMouse)
+    {
+        glm::vec3 dm = movementP - movementN;
+        // camera.UpdateCamera(mouseDelta, dm);
+
+        camera.UpdateCamera2D(mouseDelta, dm);
+        glm::vec3 pos = camera.position;
+        pos[1] = 0;
+            
+        glm::vec3 forward = camera.direction;
+        forward[1] = 0;
+        forward = glm::normalize(forward);
+
+        pos += 32.f * forward; // Distance from camera
+
+        player->relativeModel = glm::translate(glm::mat4(1.f), pos);
+
+        // Align object:
+        cameraAngle -= 0.001 * mouseDelta[0];
+        player->relativeModel = glm::rotate(player->relativeModel, cameraAngle, glm::vec3(0, 1, 0));
+    }
+}
+
+void Scene::InitScene(Mesh* cc)
 {
     glm::mat4 Model;
     Scene::room = new Scene_Node;
@@ -251,9 +265,23 @@ void InitScene(Mesh* cc)
     orb->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
     Scene::room->AddChild(orb);
 
+    //HUD:
+    Scene::hud = new Scene_Node;
+    Scene::hud->relativeModel = glm::translate(glm::mat4(1.f), glm::vec3(0, -0.9f, 0));
+
+    Scene_Node* primaryColor = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(0.85f, 0, 0));
+    primaryColor->relativeModel = Model;
+    primaryColor->color = Scene::player->color;
+    Scene::hud->AddChild(primaryColor);
+
+    Scene_Node* secondaryColor = new Scene_Node(cc);
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(0.75f, 0, 0));
+    secondaryColor->relativeModel = Model;
+    Scene::hud->AddChild(secondaryColor);
 }
 
-void DrawScene(Scene_Node* scene, GLuint shaderId)
+void Scene::DrawScene(Scene_Node* scene, GLuint shaderId)
 {
     if (scene)
     {

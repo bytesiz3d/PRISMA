@@ -33,11 +33,6 @@ Scene_Node::~Scene_Node()
         delete child;
 }
 
-void Scene_Node::SetMesh(Mesh* _mesh)
-{
-    mesh = _mesh;
-}
-
 void Scene_Node::AddChild(Scene_Node* child)
 {
     children.push_back(child);

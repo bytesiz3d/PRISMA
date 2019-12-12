@@ -12,8 +12,8 @@
 class Scene_Node
 {
 private:
-    Mesh* mesh;
 public:
+    Mesh* mesh;
     Scene_Node* parent;
     std::vector<Scene_Node*> children;
 
@@ -33,7 +33,6 @@ public:
                glm::vec4 _color = glm::vec4(1.f));
     ~Scene_Node();
 
-    void SetMesh(Mesh* _mesh);
     glm::mat4 ScaleWorldModel();
     void AddChild(Scene_Node* child);
     void Draw(GLuint shaderId);
