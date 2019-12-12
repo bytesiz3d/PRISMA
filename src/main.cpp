@@ -26,6 +26,9 @@ void MouseCallback(GLFWwindow* window, int button, int action, int mods);
 // Window dimensions
 const GLuint WIDTH = 1280, HEIGHT = 720;
 
+// Collision
+bool TestCollision_Cubes(glm::mat4 objectA, glm::mat4 objectB);
+
 namespace Scene
 {
     GLFWwindow* window;
@@ -54,9 +57,12 @@ namespace Scene
 
     // Player:
     Scene_Node* player;
+    Scene_Node* orb;
+    Scene_Node* door;
 
     // HUD circles:
     Scene_Node* hud;
+    bool lastState = false;
 };
 
 int main()
@@ -94,6 +100,7 @@ int main()
     
     // Compile and link the shader program
     GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/color.frag");
+    // GLuint cubeShaderProgram = Shader::LoadShader("../shaders/color.vert", "../shaders/color.frag");
     GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
     // glUseProgram(cubeShaderProgram);
 
@@ -169,12 +176,13 @@ void Scene::UpdateData()
     mouseDelta = glm::vec2(mX - p_mX, mY - p_mY);
     p_mX = mX, p_mY = mY;
 
+    // Move player:
     if (holdMouse)
     {
         glm::vec3 dm = movementP - movementN;
+        camera.UpdateCamera2D(mouseDelta, dm);
         // camera.UpdateCamera(mouseDelta, dm);
 
-        camera.UpdateCamera2D(mouseDelta, dm);
         glm::vec3 pos = camera.position;
         pos[1] = 0;
             
@@ -184,40 +192,66 @@ void Scene::UpdateData()
 
         pos += 32.f * forward; // Distance from camera
 
+        if (TestCollision_Cubes(player->ScaleWorldModel(), door->ScaleWorldModel()))
+        {
+            if (player->color != door->color)
+            {
+                std::cout << "debug: hit\n";
+                // Reverse the move:
+                camera.UpdateCamera2D(mouseDelta, -dm);
+                pos -= 32.f * forward;
+            }
+        }
         player->relativeModel = glm::translate(glm::mat4(1.f), pos);
 
         // Align object:
         cameraAngle -= 0.001 * mouseDelta[0];
         player->relativeModel = glm::rotate(player->relativeModel, cameraAngle, glm::vec3(0, 1, 0));
     }
+
+    // Check for collision with the orb:
+    bool currentState = TestCollision_Cubes(player->ScaleWorldModel(), orb->ScaleWorldModel());
+    if (currentState != lastState && currentState)
+    {
+        // Swap colors
+        glm::vec4 newPlayerColor = orb->color;
+        orb->color = player->color;
+        player->color = newPlayerColor;
+
+        // Update HUD
+        hud->children[0]->color = newPlayerColor;
+    }
+    lastState = currentState;
+
 }
 
+// ====================================================================================================
 void Scene::InitScene(Mesh* cc)
 {
     glm::mat4 Model;
-    Scene::room = new Scene_Node;
+    room = new Scene_Node;
 
     // Player
-    Scene::player = new Scene_Node(cc);
+    player = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1.f), glm::vec3(-64, 0, 0));
-    Scene::player->relativeModel = Model;
-    Scene::player->absoluteScale = glm::vec3(16, 16, 5);
-    Scene::player->color = glm::vec4(0.f, 1.f, 0.f, 1.f);
-    Scene::player->drawMode = GL_LINE_LOOP;
+    player->relativeModel = Model;
+    player->absoluteScale = glm::vec3(16, 16, 5);
+    player->color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+    player->drawMode = GL_LINE_LOOP;
         
     // Right face:
     Scene_Node* right = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1.f), glm::vec3(128, 0, 0));
     right->relativeModel = Model;
     right->absoluteScale = glm::vec3(000, 256, 256); 
-    Scene::room->AddChild(right);
+    room->AddChild(right);
     
     // Left face:
     Scene_Node* left = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1.f), glm::vec3(-128, 0, 0));
     left->relativeModel = Model;
     left->absoluteScale = glm::vec3(000, 256, 256); 
-    Scene::room->AddChild(left);
+    room->AddChild(left);
 
     // Roof face:
     Scene_Node* roof = new Scene_Node(cc);
@@ -225,13 +259,13 @@ void Scene::InitScene(Mesh* cc)
     roof->relativeModel = Model;
     roof->absoluteScale = glm::vec3(256, 000, 256);
     roof->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
-    Scene::room->AddChild(roof);
+    room->AddChild(roof);
     
     // Floor face:
     Scene_Node* floor = new Scene_Node(cc);
     floor->absoluteScale = glm::vec3(256, 000, 256);
     floor->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
-    Scene::room->AddChild(floor);
+    room->AddChild(floor);
 
     // Front face:
     Scene_Node* front = new Scene_Node(cc);
@@ -239,7 +273,7 @@ void Scene::InitScene(Mesh* cc)
     front->relativeModel = Model;
     front->absoluteScale = glm::vec3(256, 256, 000);
     front->color = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
-    Scene::room->AddChild(front);
+    room->AddChild(front);
 
     // Back face:
     Scene_Node* back = new Scene_Node(cc);
@@ -247,38 +281,39 @@ void Scene::InitScene(Mesh* cc)
     back->relativeModel = Model;
     back->absoluteScale = glm::vec3(256, 256, 000);
     back->color = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
-    Scene::room->AddChild(back);
+    room->AddChild(back);
 
     // Door:
-    Scene_Node* door = new Scene_Node(cc);
+    door = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1.f), glm::vec3(128, 0, 0));
     door->relativeModel = Model;
-    door->absoluteScale = glm::vec3(8, 128, 64);
+    door->absoluteScale = glm::vec3(1, 128, 64);
     door->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
-    Scene::room->AddChild(door);
+    room->AddChild(door);
     
     // Orb:
-    Scene_Node* orb = new Scene_Node(cc);
+    orb = new Scene_Node(cc);
+    // Scene_Node* orb = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1.f), glm::vec3(64, 0, 0));
     orb->relativeModel = Model;
     orb->absoluteScale = glm::vec3(16);
     orb->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
-    Scene::room->AddChild(orb);
+    room->AddChild(orb);
 
-    //HUD:
-    Scene::hud = new Scene_Node;
-    Scene::hud->relativeModel = glm::translate(glm::mat4(1.f), glm::vec3(0, -0.9f, 0));
+    // HUD:
+    hud = new Scene_Node;
+    hud->relativeModel = glm::translate(glm::mat4(1.f), glm::vec3(0, -0.9f, 0));
 
     Scene_Node* primaryColor = new Scene_Node(cc);
-    Model = glm::translate(glm::mat4(1.f), glm::vec3(0.85f, 0, 0));
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(0.75f, 0, 0));
     primaryColor->relativeModel = Model;
-    primaryColor->color = Scene::player->color;
-    Scene::hud->AddChild(primaryColor);
+    primaryColor->color = player->color;
+    hud->AddChild(primaryColor);
 
     Scene_Node* secondaryColor = new Scene_Node(cc);
-    Model = glm::translate(glm::mat4(1.f), glm::vec3(0.75f, 0, 0));
+    Model = glm::translate(glm::mat4(1.f), glm::vec3(0.85f, 0, 0));
     secondaryColor->relativeModel = Model;
-    Scene::hud->AddChild(secondaryColor);
+    hud->AddChild(secondaryColor);
 }
 
 void Scene::DrawScene(Scene_Node* scene, GLuint shaderId)
@@ -291,10 +326,47 @@ void Scene::DrawScene(Scene_Node* scene, GLuint shaderId)
     }
 }
 
+// ====================================================================================================
+bool TestCollision_Cubes(glm::mat4 objectA, glm::mat4 objectB)
+{
+    // AABB:
+    glm::vec4 objectA_center = objectA * glm::vec4(0.f, 0.f, 0.f, 1.f);
+    glm::vec4 objectB_center = objectB * glm::vec4(0.f, 0.f, 0.f, 1.f);
+    glm::vec3 objectA_size;
+    glm::vec3 objectB_size;
+
+    float objectA_t;
+    float objectB_t;
+    
+    // X-size:
+    objectA_t = (objectA_center - (objectA * glm::vec4(0.5f, 0.f, 0.f, 1.f)))[0];
+    objectA_size[0] = objectA_t;
+    objectB_t = (objectB_center - (objectB * glm::vec4(0.5f, 0.f, 0.f, 1.f)))[0]; 
+    objectB_size[0] = objectB_t;
+    
+    // Y-size:
+    objectA_t = (objectA_center - (objectA * glm::vec4(0.f, 0.5f, 0.f, 1.f)))[1];
+    objectA_size[1] = objectA_t;
+    objectB_t = (objectB_center - (objectB * glm::vec4(0.f, 0.5f, 0.f, 1.f)))[1]; 
+    objectB_size[1] = objectB_t;
+    
+    // Z-size:
+    objectA_t = (objectA_center - (objectA * glm::vec4(0.f, 0.f, 0.5f, 1.f)))[2];
+    objectA_size[2] = objectA_t;
+    objectB_t = (objectB_center - (objectB * glm::vec4(0.f, 0.f, 0.5f, 1.f)))[2]; 
+    objectB_size[2] = objectB_t;
+    
+    return (
+        glm::abs(objectA_center[0] - objectB_center[0]) <= glm::abs(objectA_size[0] + objectB_size[0]) &&
+        glm::abs(objectA_center[1] - objectB_center[1]) <= glm::abs(objectA_size[1] + objectB_size[1]) &&
+        glm::abs(objectA_center[2] - objectB_center[2]) <= glm::abs(objectA_size[2] + objectB_size[2])
+    );
+}
+
+// ====================================================================================================
 // Is called whenever a key is pressed/released via GLFW
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
-    // std::cout << key << std::endl;
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 
