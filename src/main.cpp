@@ -16,6 +16,7 @@
 
 #include "shader/shader.hpp"
 #include "mesh/mesh_utils.hpp"
+#include "texture/texture.hpp"
 #include "camera/camera.hpp"
 #include "scene_node/scene_node.hpp"
 #include "player/player.hpp"
@@ -37,7 +38,8 @@ int main()
     
     // Compile and link the shader program
     GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/color.frag");
-    GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
+    // GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
+    GLuint hudShaderProgram = Shader::LoadShader("../shaders/texture.vert", "../shaders/texture.frag");
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
 
     // Create the mesh
@@ -46,6 +48,13 @@ int main()
     
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
+
+    // Load and activate the texture
+    Texture color_grid("../textures/color-grid.png");
+    glUseProgram(hudShaderProgram);
+    Scene::texture_sampler_location = glGetUniformLocation(hudShaderProgram, "texture_sampler");
+    color_grid.Bind(0);
+    glUniform1i(Scene::texture_sampler_location, 0); // Texture is bound to 0
 
     // Game loop
     while (!glfwWindowShouldClose(Scene::window))
@@ -66,6 +75,7 @@ int main()
 
         Scene::DrawScene(Scene::room, cubeShaderProgram); 
         Scene::DrawScene(Scene::player, cubeShaderProgram); 
+
         Scene::DrawScene(Scene::hud, hudShaderProgram);
         
         // Swap the screen buffers

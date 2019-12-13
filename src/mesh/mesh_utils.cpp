@@ -10,32 +10,7 @@
 #define CYAN     000,255,255,255
 #define WHITE    255,255,255,255
 
-
-Mesh Mesh_Utils::CreateMesh()
-{
-    VertexDescriptor vd[2];
-    vd[0] = {
-        0,
-        "positions",
-        3,
-        GL_FLOAT,
-        false,
-        0,
-        0
-    };
-
-    vd[1] = {
-        1,
-        "colors",
-        4,
-        GL_UNSIGNED_BYTE,
-        true,
-        0,
-        0
-    };
-
-    return Mesh(vd, 2);
-}
+//TODO: Modify each function to contain texture coordinates
 
 GLuint Mesh_Utils::eP(GLuint row, GLuint column, GLuint hRes)
 {
@@ -46,7 +21,6 @@ GLuint Mesh_Utils::eP(GLuint row, GLuint column, GLuint hRes)
 
 Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
 {
-    // static Mesh mesh = CreateMesh();
     static Mesh mesh;
     const double __PI = std::acos(-1);
     const GLuint vertexCount =
@@ -157,7 +131,6 @@ Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
 Mesh Mesh_Utils::Orbit()
 {
     const double __PI = std::acos(-1);
-    // static Mesh mesh = CreateMesh();
     static Mesh mesh;
 
     float positions[360 * 3];
@@ -183,7 +156,6 @@ Mesh Mesh_Utils::Orbit()
 
 Mesh Mesh_Utils::ColoredCube()
 {
-    // static Mesh mesh = CreateMesh();
     static Mesh mesh;
     float positions[3*24] = {
         -1,  1, -1,
@@ -255,7 +227,6 @@ Mesh Mesh_Utils::ColoredCube()
 
 Mesh Mesh_Utils::WhiteCube()
 {
-    // static Mesh mesh = CreateMesh();
     static Mesh mesh;
     float positions[3*24] = {
         //Upper Face
@@ -305,8 +276,47 @@ Mesh Mesh_Utils::WhiteCube()
         WHITE, WHITE, WHITE, WHITE
     };
 
+    float texCoords[2*24] = {
+        // ????? Face
+        0.f, 1.f,
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+
+        // ????? Face
+        0.f, 1.f,
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+        
+        // ????? Face
+        0.f, 1.f,
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+
+        // ????? Face
+        0.f, 1.f,
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+
+        // Front Face
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+        0.f, 1.f,
+
+        // ????? Face
+        0.f, 1.f,
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f
+    };
+
     mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
     mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
+    mesh.SetBufferData("texCoords", sizeof(GLfloat) * 2 * 24, texCoords, GL_STREAM_DRAW);
 
     GLuint elements[36] = {
         0, 1, 2, 2, 3, 0,
