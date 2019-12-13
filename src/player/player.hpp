@@ -8,12 +8,13 @@ class Player
 private:
     float yaw;
     float yawSens;
-
+    float pitchSens;
     float movementSens;
-    glm::vec3 normal;
 public:
+    float pitch;
     glm::vec3 direction;
     glm::vec3 position;
+    glm::vec3 normal;
     
     Player();
     Player(Mesh* _mesh,
@@ -23,5 +24,5 @@ public:
            glm::vec4 _color = glm::vec4(1.f)
     );
 
-    void UpdatePlayer(float _yaw, glm::vec3 movement);
+    void UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement);
 };

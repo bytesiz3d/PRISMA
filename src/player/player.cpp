@@ -4,12 +4,14 @@ Player::Player()
     : Scene_Node()
 {
     yaw = 0;
-    yawSens = 0.001;
+    yawSens = 0.001f;
+    pitch = -0.523598776f; // PI/6
+    pitchSens = 0.001f;
 
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-    movementSens = 0.3;
+    movementSens = 0.3f;
 }
 
 Player::Player(Mesh* _mesh,
@@ -20,18 +22,23 @@ Player::Player(Mesh* _mesh,
     : Scene_Node(_mesh, _parent, _relativeModel, _absoluteScale, _color)
 {
     yaw = 0;
-    yawSens = 0.001;
+    yawSens = 0.001f;
+    pitch = -0.523598776f;
+    pitchSens = 0.001f;
 
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-    movementSens = 0.3;
+    movementSens = 0.3f;
 }
 
 
-void Player::UpdatePlayer(float _yaw, glm::vec3 movement)
+void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement)
 {
-    yaw += _yaw * yawSens;
+    yaw += mouseDelta[0] * yawSens;
+    pitch += -mouseDelta[1] * pitchSens;
+    pitch = glm::min(0.f, glm::max(pitch, -1.57079633f)); 
+
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(-std::sin(yaw), 0, std::cos(yaw));
         
