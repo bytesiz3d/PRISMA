@@ -10,9 +10,9 @@ Texture::Texture(const std::string& path)
     // OpenGL coordinates start at bottom left
     stbi_set_flip_vertically_on_load(1);
     // Load the buffer
-    localBuffer = stbi_load(path.c_str(), &width, &height, &bpp, 4);
+    localBuffer = stbi_load(path.c_str(), &width, &height, &bpp, 0);
 
-    glGenBuffers(1, &textureID);
+    glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);
 
     // Sampling options:
@@ -25,6 +25,8 @@ Texture::Texture(const std::string& path)
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8,
                  width, height, 0, GL_RGBA,
                  GL_UNSIGNED_BYTE, localBuffer);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
     glBindTexture(GL_TEXTURE_2D, 0);
 
     // Free the buffer

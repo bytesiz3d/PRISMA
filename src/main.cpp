@@ -76,7 +76,9 @@ int main()
         Scene::DrawScene(Scene::room, cubeShaderProgram); 
         Scene::DrawScene(Scene::player, cubeShaderProgram); 
 
+        color_grid.Bind(0);
         Scene::DrawScene(Scene::hud, hudShaderProgram);
+        color_grid.Unbind();
         
         // Swap the screen buffers
         glfwSwapBuffers(Scene::window);

@@ -10,7 +10,5 @@ uniform mat4 tint;
 uniform sampler2D texture_sampler; // the sampler using which we will sample colors from the texture 
 
 void main(){
-    // the texture function takes a sampler and texture coordinates and returns a vec4 containing the color
-    // Note that the color is alwas vec4 no matter the texture type. 
-    color = texture(texture_sampler, v_texcoord) * tint * v_color;
+    color = texture(texture_sampler, v_texcoord) * (tint * v_color);
 }

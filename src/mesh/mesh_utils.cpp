@@ -316,7 +316,7 @@ Mesh Mesh_Utils::WhiteCube()
 
     mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
     mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
-    mesh.SetBufferData("texCoords", sizeof(GLfloat) * 2 * 24, texCoords, GL_STREAM_DRAW);
+    mesh.SetBufferData("texCoords", sizeof(GLfloat) * 2 * 24, texCoords, GL_STATIC_DRAW);
 
     GLuint elements[36] = {
         0, 1, 2, 2, 3, 0,
