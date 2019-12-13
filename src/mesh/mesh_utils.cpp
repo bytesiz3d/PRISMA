@@ -258,6 +258,7 @@ Mesh Mesh_Utils::WhiteCube()
     // static Mesh mesh = CreateMesh();
     static Mesh mesh;
     float positions[3*24] = {
+        //Upper Face
         -0.5,  0.5, -0.5,
         -0.5,  0.5,  0.5,
         0.5,  0.5,  0.5,

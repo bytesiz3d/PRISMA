@@ -28,6 +28,9 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
 
   src/scene_node/scene_node.hpp
   src/scene_node/scene_node.cpp
+
+  src/player/player.hpp
+  src/player/player.cpp
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
@@ -60,6 +63,12 @@ source_group("Scene Graph"
   FILES
   src/scene_node/scene_node.hpp
   src/scene_node/scene_node.cpp
+  )
+
+source_group("Player Controller"
+  FILES
+  src/player/player.hpp
+  src/player/player.cpp
   )
 
 # Linking to third party libraries:
