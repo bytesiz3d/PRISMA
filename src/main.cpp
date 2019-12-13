@@ -19,6 +19,7 @@
 #include "camera/camera.hpp"
 #include "scene_node/scene_node.hpp"
 #include "player/player.hpp"
+#include "texture/texture.hpp"
 
 // *NOT SEPARATELY BUILT*
 #include "scene/scene.hpp"

@@ -12,7 +12,8 @@ set(THIRDPARTY_DIR "deps")
 # Project and Source Groups:
 project(${PROJECT_NAME} CXX) # Specifies the target project
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
-  src/main.cpp # Build the executable from these files
+  # Build the executable from these files
+  src/main.cpp 
 
   src/camera/camera.hpp
   src/camera/camera.cpp
@@ -26,6 +27,9 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   src/shader/shader.hpp
   src/shader/shader.cpp
 
+  src/texture/texture.hpp
+  src/texture/texture.cpp
+
   src/scene_node/scene_node.hpp
   src/scene_node/scene_node.cpp
 
@@ -34,7 +38,6 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
-
 source_group("Mesh"
   FILES
   src/mesh/mesh.cpp
@@ -51,6 +54,12 @@ source_group("Shader"
   FILES
   src/shader/shader.hpp
   src/shader/shader.cpp
+  )
+
+source_group("Texture"
+  FILES
+  src/texture/texture.hpp
+  src/texture/texture.cpp
   )
 
 source_group("Camera"
@@ -97,6 +106,9 @@ option(GLM_TEST_ENABLE OFF) # Disabling additional build targets
 add_subdirectory(${THIRDPARTY_DIR}/glm)
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/glm)
 target_link_libraries(${PROJECT_NAME} glm_static)
+
+## STB_IMAGE:
+target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/stb)
 
 # Options:
 set(BUILD_SHARED_LIBS FALSE CACHE BOOL "Enforce static linking." FORCE) # Build static libraries

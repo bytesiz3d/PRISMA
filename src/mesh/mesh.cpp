@@ -2,7 +2,7 @@
 
 Mesh::Mesh()
 {
-    int n = 2;
+    int n = 3;
     VertexDescriptor inDescriptors[] = {
         {
             0,
@@ -21,7 +21,17 @@ Mesh::Mesh()
             true,
             0,
             0
-        }
+        },
+        {
+            2,
+            "texCoords",
+            2,
+            GL_FLOAT,
+            false,
+            0,
+            0
+        },
+
     };
 
     for (GLuint i = 0; i < n; i++)
