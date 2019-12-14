@@ -11,4 +11,5 @@ namespace Mesh_Utils
     Mesh ColoredCube();
     Mesh WhiteCube();
     Mesh Orbit();
+    Mesh OBJMesh(const std::string& filePath);
 }

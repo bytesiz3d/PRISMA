@@ -42,7 +42,8 @@ int main()
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
 
     // Create the mesh
-    Mesh cube = Mesh_Utils::WhiteCube();
+    // Mesh cube = Mesh_Utils::WhiteCube();
+    Mesh cube = Mesh_Utils::OBJMesh("../models/Suzanne.obj");
     Scene::InitScene(&cube);
     
     // Create the camera object

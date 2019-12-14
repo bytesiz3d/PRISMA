@@ -110,6 +110,9 @@ target_link_libraries(${PROJECT_NAME} glm_static)
 ## STB_IMAGE:
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/stb)
 
+## TINY_OBJ_LOADER:
+target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/syoyo)
+
 # Options:
 set(BUILD_SHARED_LIBS FALSE CACHE BOOL "Enforce static linking." FORCE) # Build static libraries
 set(BUILD_STATIC_LIBS TRUE  CACHE BOOL "Enforce static linking." FORCE)

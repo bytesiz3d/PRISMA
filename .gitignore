@@ -1,13 +1,6 @@
 # Created by https://www.gitignore.io/api/c++,emacs,vim,visualstudio,visualstudiocode
 # Edit at https://www.gitignore.io/?templates=c++,emacs,vim,visualstudio,visualstudiocode
 
-### oc3 ###
-# Ignoring the build directory
-[Bb]uild/
-
-# Ignoring personal utility files
-oc3_*
-
 ### C++ ###
 # Prerequisites
 *.d
@@ -472,3 +465,13 @@ healthchecksdb
 MigrationBackup/
 
 # End of https://www.gitignore.io/api/c++,emacs,vim,visualstudio,visualstudiocode
+
+### oc3 ###
+# Ignoring the build directory
+[Bb]uild/
+
+# Ignoring personal utility files
+oc3_*
+
+# Including models
+!models/*.obj
