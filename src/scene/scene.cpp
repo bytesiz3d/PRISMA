@@ -313,3 +313,15 @@ void Scene::MouseCallback(GLFWwindow* window, int button, int action, int mods)
     }
 }
 
+// ====================================================================================================
+void Scene::DeleteAllPointers()
+{
+    if (room)
+        delete room;
+    
+    if (player)
+        delete player;
+    
+    if (hud)
+        delete hud;
+}

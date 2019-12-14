@@ -30,7 +30,10 @@ Scene_Node::Scene_Node(Mesh* _mesh,
 Scene_Node::~Scene_Node()
 {
     for (auto& child : children)
+    {
         delete child;
+        child = nullptr;
+    }
 }
 
 void Scene_Node::AddChild(Scene_Node* child)

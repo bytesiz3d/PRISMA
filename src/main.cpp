@@ -76,6 +76,7 @@ int main()
     glfwTerminate();
 
     delete cube;
+    Scene::DeleteAllPointers();
     return 0;
 }
 

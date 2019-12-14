@@ -28,6 +28,8 @@ namespace Scene
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
     void MouseCallback(GLFWwindow* window, int button, int action, int mods);
 
+    void DeleteAllPointers();
+
     // Camera:
     Camera camera;
     float cameraAngle = 0.f;
