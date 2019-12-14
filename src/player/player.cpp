@@ -11,7 +11,7 @@ Player::Player()
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-    movementSens = 0.3f;
+    movementSens = 0.5f;
 }
 
 Player::Player(Mesh* _mesh,
@@ -29,7 +29,7 @@ Player::Player(Mesh* _mesh,
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-    movementSens = 0.3f;
+    movementSens = 0.5f;
 }
 
 
