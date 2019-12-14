@@ -9,6 +9,14 @@ add_compile_options(-w)
 set(PROJECT_NAME "PRISMA")
 set(THIRDPARTY_DIR "deps")
 
+file(GLOB_RECURSE SHADERS
+  shaders/*
+  )
+
+file(GLOB_RECURSE MODELS
+  models/*
+  )
+
 # Project and Source Groups:
 project(${PROJECT_NAME} CXX) # Specifies the target project
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
@@ -35,49 +43,63 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
 
   src/player/player.hpp
   src/player/player.cpp
+
+  ${SHADERS}
+
+  ${MODELS}
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
-source_group("Mesh"
+source_group("Code\\Mesh"
   FILES
   src/mesh/mesh.cpp
   src/mesh/mesh.hpp
   )
 
-source_group("Mesh\\Mesh Utilities"
+source_group("Code\\Mesh\\Mesh Utilities"
   FILES
   src/mesh/mesh_utils.hpp
   src/mesh/mesh_utils.cpp
   )
 
-source_group("Shader"
+source_group("Code\\Shader"
   FILES
   src/shader/shader.hpp
   src/shader/shader.cpp
   )
 
-source_group("Texture"
+source_group("Code\\Texture"
   FILES
   src/texture/texture.hpp
   src/texture/texture.cpp
   )
 
-source_group("Camera"
+source_group("Code\\Camera"
   FILES
   src/camera/camera.hpp
   src/camera/camera.cpp
   )
 
-source_group("Scene Graph"
+source_group("Code\\Scene Graph"
   FILES
   src/scene_node/scene_node.hpp
   src/scene_node/scene_node.cpp
   )
 
-source_group("Player Controller"
+source_group("Code\\Player"
   FILES
   src/player/player.hpp
   src/player/player.cpp
+  )
+
+source_group("Static\\Shaders"
+  FILES
+  ${SHADERS}
+  )
+
+source_group("Static\\Models"
+  FILES
+  ${MODELS}
   )
 
 # Linking to third party libraries:
@@ -109,6 +131,9 @@ target_link_libraries(${PROJECT_NAME} glm_static)
 
 ## STB_IMAGE:
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/stb)
+
+## TINY_OBJ_LOADER:
+target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/syoyo)
 
 # Options:
 set(BUILD_SHARED_LIBS FALSE CACHE BOOL "Enforce static linking." FORCE) # Build static libraries
