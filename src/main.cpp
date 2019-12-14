@@ -15,11 +15,14 @@
 #include <glm/gtx/string_cast.hpp>
 
 #include "shader/shader.hpp"
-#include "mesh/mesh_utils.hpp"
 #include "camera/camera.hpp"
+
 #include "scene_node/scene_node.hpp"
 #include "player/player.hpp"
+
+#include "mesh/mesh_utils.hpp"
 #include "texture/texture.hpp"
+#include "font/font.hpp"
 
 // *NOT SEPARATELY BUILT*
 #include "scene/scene.hpp"
@@ -126,13 +129,13 @@ bool InitWindow()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    // // Anti-aliasing
-    // glEnable(GL_LINE_SMOOTH);
+    // Anti-aliasing
+    glEnable(GL_LINE_SMOOTH);
 
-    // // Enable blending
-    // glEnable(GL_BLEND);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glBlendEquation(GL_FUNC_ADD);
+    // Enable blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
 
     return true;
 }

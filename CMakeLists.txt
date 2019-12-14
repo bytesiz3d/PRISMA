@@ -17,6 +17,10 @@ file(GLOB_RECURSE MODELS
   models/*
   )
 
+file(GLOB_RECURSE FONTS
+  fonts/*
+  )
+
 # Project and Source Groups:
 project(${PROJECT_NAME} CXX) # Specifies the target project
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
@@ -38,6 +42,9 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   src/texture/texture.hpp
   src/texture/texture.cpp
 
+  src/font/font.hpp
+  src/font/font.cpp
+
   src/scene_node/scene_node.hpp
   src/scene_node/scene_node.cpp
 
@@ -47,6 +54,8 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   ${SHADERS}
 
   ${MODELS}
+
+  ${FONTS}
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
@@ -72,6 +81,12 @@ source_group("Code\\Texture"
   FILES
   src/texture/texture.hpp
   src/texture/texture.cpp
+  )
+
+source_group("Code\\Font"
+  FILES
+  src/font/font.hpp
+  src/font/font.cpp
   )
 
 source_group("Code\\Camera"
@@ -102,6 +117,12 @@ source_group("Static\\Models"
   ${MODELS}
   )
 
+ source_group("Static\\Fonts"
+  FILES
+  ${FONTS}
+  )
+
+
 # Linking to third party libraries:
 ## OpenGL:
 find_package(OpenGL REQUIRED)
@@ -130,7 +151,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/glm)
 target_link_libraries(${PROJECT_NAME} glm_static)
 
 ## STB_IMAGE:
-target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/stb)
+## STB_TRUETYPE:
+target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/nothings)
 
 ## TINY_OBJ_LOADER:
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/syoyo)
