@@ -23,9 +23,9 @@ GLuint Mesh_Utils::eP(GLuint row, GLuint column, GLuint hRes)
         + column % hRes;
 }
 
-Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
+Mesh* Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
 {
-    Mesh mesh;
+    Mesh* mesh = new Mesh;
     const double __PI = std::acos(-1);
     const GLuint vertexCount =
         1
@@ -79,8 +79,8 @@ Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
     colors[++cIdx] = (positions[pIdx] + 1) / 2 * 0xFF;
     colors[++cIdx] = 0xFF;
 
-    mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * vertexCount, positions, GL_STATIC_DRAW);
-    mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * vertexCount, colors, GL_STATIC_DRAW);
+    mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * vertexCount, positions, GL_STATIC_DRAW);
+    mesh->SetBufferData("colors", sizeof(GLubyte) * 4 * vertexCount, colors, GL_STATIC_DRAW);
 
     int elementCount = 3 * (
         hRes
@@ -123,7 +123,7 @@ Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
         elements[++eIdx] = eP(vRes - 2, j + 1, hRes);
     }
 
-    mesh.SetElementsData(sizeof(GLuint) * elementCount, elements, GL_STATIC_DRAW, elementCount, GL_UNSIGNED_INT);
+    mesh->SetElementsData(sizeof(GLuint) * elementCount, elements, GL_STATIC_DRAW, elementCount, GL_UNSIGNED_INT);
 
     delete[] positions;
     delete[] colors;
@@ -132,10 +132,10 @@ Mesh Mesh_Utils::ColoredSphere(GLuint hRes, GLuint vRes)
     return mesh;
 }
 
-Mesh Mesh_Utils::Orbit()
+Mesh* Mesh_Utils::Orbit()
 {
     const double __PI = std::acos(-1);
-    Mesh mesh;
+    Mesh* mesh = new Mesh;
 
     float positions[360 * 3];
     GLuint elements[360];
@@ -151,16 +151,16 @@ Mesh Mesh_Utils::Orbit()
     for (GLuint idx = 0; idx < 360; idx++)
         elements[idx] = idx;
 
-    mesh.SetBufferData("positions", sizeof(float) * 360 * 3, positions, GL_STATIC_DRAW);
-    mesh.SetBufferData("colors", sizeof(GLubyte) * 360 * 4, colors, GL_STATIC_DRAW);
-    mesh.SetElementsData(sizeof(GLuint) * 360, elements, GL_STATIC_DRAW, 360, GL_UNSIGNED_INT);
+    mesh->SetBufferData("positions", sizeof(float) * 360 * 3, positions, GL_STATIC_DRAW);
+    mesh->SetBufferData("colors", sizeof(GLubyte) * 360 * 4, colors, GL_STATIC_DRAW);
+    mesh->SetElementsData(sizeof(GLuint) * 360, elements, GL_STATIC_DRAW, 360, GL_UNSIGNED_INT);
 
     return mesh;
 }
 
-Mesh Mesh_Utils::ColoredCube()
+Mesh* Mesh_Utils::ColoredCube()
 {
-    Mesh mesh;
+    Mesh* mesh = new Mesh;
     float positions[3*24] = {
         -1,  1, -1,
         -1,  1,  1,
@@ -207,8 +207,8 @@ Mesh Mesh_Utils::ColoredCube()
         //Back Face
         CYAN, CYAN, CYAN, CYAN};
 
-    mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
-    mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
+    mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
+    mesh->SetBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
 
     GLuint elements[36] = {
         0, 1, 2, 2, 3, 0,
@@ -224,14 +224,14 @@ Mesh Mesh_Utils::ColoredCube()
         20, 21, 22, 22, 23, 20
     };
 
-    mesh.SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
+    mesh->SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
 
     return mesh;
 }
 
-Mesh Mesh_Utils::WhiteCube()
+Mesh* Mesh_Utils::WhiteCube()
 {
-    Mesh mesh;
+    Mesh* mesh = new Mesh;
     float positions[3*24] = {
         //Upper Face
         -0.5,  0.5, -0.5,
@@ -318,9 +318,9 @@ Mesh Mesh_Utils::WhiteCube()
         1.f, 1.f
     };
 
-    mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
-    mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
-    mesh.SetBufferData("texCoords", sizeof(GLfloat) * 2 * 24, texCoords, GL_STATIC_DRAW);
+    mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
+    mesh->SetBufferData("colors", sizeof(GLubyte) * 4 * 24, colors, GL_STATIC_DRAW);
+    mesh->SetBufferData("texCoords", sizeof(GLfloat) * 2 * 24, texCoords, GL_STATIC_DRAW);
 
     GLuint elements[36] = {
         0, 1, 2, 2, 3, 0,
@@ -336,14 +336,14 @@ Mesh Mesh_Utils::WhiteCube()
         20, 21, 22, 22, 23, 20
     };
 
-    mesh.SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
+    mesh->SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
 
     return mesh;
 }
 
-Mesh Mesh_Utils::OBJMesh(const std::string& filePath)
+Mesh* Mesh_Utils::OBJMesh(const std::string& filePath)
 {
-    Mesh mesh;
+    Mesh *mesh = new Mesh;
 
     tinyobj::attrib_t attributes;
     std::vector<tinyobj::shape_t> shapes;
@@ -377,9 +377,9 @@ Mesh Mesh_Utils::OBJMesh(const std::string& filePath)
     float* positions = &attributes.vertices[0];
     float* texCoords = &attributes.texcoords[0];
     
-    mesh.SetBufferData("positions", sizeof(GLfloat) * 3 * vertexCount, positions, GL_STATIC_DRAW);
-    mesh.SetBufferData("colors", sizeof(GLubyte) * 4 * vertexCount, colors, GL_STATIC_DRAW);
-    mesh.SetBufferData("texCoords", sizeof(GLfloat) * attributes.texcoords.size(), texCoords, GL_STATIC_DRAW);
+    mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * vertexCount, positions, GL_STATIC_DRAW);
+    mesh->SetBufferData("colors", sizeof(GLubyte) * 4 * vertexCount, colors, GL_STATIC_DRAW);
+    mesh->SetBufferData("texCoords", sizeof(GLfloat) * attributes.texcoords.size(), texCoords, GL_STATIC_DRAW);
 
     // Collect our element indices
     // TODO: Generalize for mesh types that aren't triangluar
@@ -397,7 +397,7 @@ Mesh Mesh_Utils::OBJMesh(const std::string& filePath)
     }
 
     GLuint* elements = &indices[0];
-    mesh.SetElementsData(sizeof(GLuint) * indices.size(), elements, GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
+    mesh->SetElementsData(sizeof(GLuint) * indices.size(), elements, GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
     
     delete[] colors;
     return mesh;
