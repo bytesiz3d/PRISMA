@@ -34,6 +34,7 @@ namespace Scene
     Camera camera;
     float cameraAngle = 0.f;
     GLint VP_location;
+    GLint texture_sampler_location;
 
     // Room:
     Scene_Node* room;

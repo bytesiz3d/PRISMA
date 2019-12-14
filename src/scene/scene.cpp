@@ -151,20 +151,20 @@ void Scene::InitScene(Mesh* cc)
     orb->color = glm::vec4(1, 0, 0, 1);
     room->AddChild(orb);
 
-    // HUD:
-    hud = new Scene_Node;
-    hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
+    //// HUD:
+    //hud = new Scene_Node;
+    //hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
 
-    Scene_Node* primaryColor = new Scene_Node(cc);
-    Model = glm::translate(glm::mat4(1), glm::vec3(0.75f, 0, 0));
-    primaryColor->relativeModel = Model;
-    primaryColor->color = player->color;
-    hud->AddChild(primaryColor);
+    //Scene_Node* primaryColor = new Scene_Node(cc);
+    //Model = glm::translate(glm::mat4(1), glm::vec3(0.75f, 0, 0));
+    //primaryColor->relativeModel = Model;
+    //primaryColor->color = player->color;
+    //hud->AddChild(primaryColor);
 
-    Scene_Node* secondaryColor = new Scene_Node(cc);
-    Model = glm::translate(glm::mat4(1), glm::vec3(0.85f, 0, 0));
-    secondaryColor->relativeModel = Model;
-    hud->AddChild(secondaryColor);
+    //Scene_Node* secondaryColor = new Scene_Node(cc);
+    //Model = glm::translate(glm::mat4(1), glm::vec3(0.85f, 0, 0));
+    //secondaryColor->relativeModel = Model;
+    //hud->AddChild(secondaryColor);
 }
 
 // ====================================================================================================

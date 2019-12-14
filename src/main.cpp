@@ -38,13 +38,35 @@ int main()
     
     // Compile and link the shader program
     GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/color.frag");
-    GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
+    GLuint hudShaderProgram = Shader::LoadShader("../shaders/font.vert", "../shaders/font.frag");
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
+
+    // Create the font
+    Font nsm("../fonts/nsm.ttf");
 
     // Create the mesh
     Mesh* cube = Mesh_Utils::WhiteCube();
-    Scene::InitScene(cube);    
+    Mesh* text = Mesh_Utils::TextMesh("I love my team", &nsm);
+    Scene::InitScene(cube);  
+    {
+        // HUD:
+        Scene::hud = new Scene_Node;
+        Scene::hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
 
+        glm::mat4 Model;
+        Scene_Node* primaryColor = new Scene_Node(text);
+        Model = glm::translate(glm::mat4(1), glm::vec3(0.f, 0, 0));
+        primaryColor->absoluteScale = glm::vec3(0.03f);
+        primaryColor->relativeModel = Model;
+        Scene::hud->AddChild(primaryColor);
+    }
+    glUseProgram(hudShaderProgram);
+
+    // Load the font, just like a texture
+    Scene::texture_sampler_location = glGetUniformLocation(hudShaderProgram, "texture_sampler");
+    nsm.Bind(0);
+    glUniform1i(Scene::texture_sampler_location, 0);
+    
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
 
@@ -76,6 +98,8 @@ int main()
     glfwTerminate();
 
     delete cube;
+    delete text;
+
     Scene::DeleteAllPointers();
     return 0;
 }
@@ -126,13 +150,13 @@ bool InitWindow()
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 
-    // // Anti-aliasing
-    // glEnable(GL_LINE_SMOOTH);
+    // Anti-aliasing
+    glEnable(GL_LINE_SMOOTH);
 
-    // // Enable blending
-    // glEnable(GL_BLEND);
-    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    // glBlendEquation(GL_FUNC_ADD);
+    // Enable blending
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glBlendEquation(GL_FUNC_ADD);
 
     return true;
 }

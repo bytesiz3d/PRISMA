@@ -402,3 +402,55 @@ Mesh* Mesh_Utils::OBJMesh(const std::string& filePath)
     delete[] colors;
     return mesh;
 }
+
+Mesh* Mesh_Utils::TextMesh(const std::string& text, Font* font)
+{
+    Mesh* mesh = new Mesh;
+
+    // Initialize the containers for our data
+    std::vector<float> vertices;
+    std::vector<float> uvs;
+    std::vector<GLuint> indices;
+    std::vector<GLubyte> v_colors(4 * 4 * text.length(), 0xFF);
+
+    GLuint lastIndex = 0;
+    float offsetX = 0, offsetY = 0;
+    for (char c : text)
+    {
+        const auto glyphInfo = font->GetGlyphInfo(c, offsetX, offsetY);
+        offsetX = glyphInfo.offsetX;
+        offsetY = glyphInfo.offsetY;
+
+        for (GLubyte i = 0; i < 4; i++)
+        {
+            for (GLubyte j = 0; j < 3; j++)
+                vertices.emplace_back(glyphInfo.positions[i][j]);
+            
+            for (GLubyte j = 0; j < 2; j++)
+                uvs.emplace_back(glyphInfo.uvs[i][j]);
+        }
+
+        indices.push_back(lastIndex);
+        indices.push_back(lastIndex + 1);
+        indices.push_back(lastIndex + 2);
+        indices.push_back(lastIndex);
+        indices.push_back(lastIndex + 2);
+        indices.push_back(lastIndex + 3);
+
+        lastIndex += 4;
+    }
+
+    float* positions = &vertices[0];
+    float* texCoords = &uvs[0];
+    GLubyte* colors = &v_colors[0];
+
+
+    mesh->SetBufferData("positions", sizeof(GLfloat) * vertices.size(), positions, GL_STATIC_DRAW);
+    mesh->SetBufferData("colors", sizeof(GLubyte) * v_colors.size(), colors, GL_STATIC_DRAW);
+    mesh->SetBufferData("texCoords", sizeof(GLfloat) * uvs.size(), texCoords, GL_STATIC_DRAW);
+
+    GLuint* elements = &indices[0];
+    mesh->SetElementsData(sizeof(GLuint) * indices.size(), elements, GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
+    
+    return mesh;
+}
