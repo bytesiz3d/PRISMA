@@ -19,7 +19,7 @@ namespace Scene
 
     // Utility functions:
     void UpdateData();
-    void InitScene(Mesh* cc);
+    void InitScene(Mesh * playerMesh , Mesh * objectsMesh);
     void DrawScene(Scene_Node* scene, GLuint shaderId);
 
     bool Collide(Scene_Node* objectA, Scene_Node* objectB);

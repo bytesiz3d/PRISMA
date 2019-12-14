@@ -76,34 +76,34 @@ void Scene::ProcessCollision()
 }
 
 // ====================================================================================================
-void Scene::InitScene(Mesh* cc)
+void Scene::InitScene(Mesh * playerMesh , Mesh * objectsMesh)
 {
     glm::mat4 Model;
     room = new Scene_Node;
 
     // Player
-    player = new Player(cc);
+    player = new Player(playerMesh);
     player->position = glm::vec3(-64, 0, 0);
     player->absoluteScale = glm::vec3(16, 16, 5);
     player->color = glm::vec4(0, 1, 0, 1);
     player->drawMode = GL_LINE_LOOP;
         
     // Right face:
-    Scene_Node* right = new Scene_Node(cc);
+    Scene_Node* right = new Scene_Node(objectsMesh);
     Model = glm::translate(glm::mat4(1), glm::vec3(128, 0, 0));
     right->relativeModel = Model;
     right->absoluteScale = glm::vec3(000, 256, 256); 
     room->AddChild(right);
     
     // Left face:
-    Scene_Node* left = new Scene_Node(cc);
+    Scene_Node* left = new Scene_Node(objectsMesh);
     Model = glm::translate(glm::mat4(1), glm::vec3(-128, 0, 0));
     left->relativeModel = Model;
     left->absoluteScale = glm::vec3(000, 256, 256); 
     room->AddChild(left);
 
     // Front face:
-    Scene_Node* front = new Scene_Node(cc);
+    Scene_Node* front = new Scene_Node(objectsMesh);
     Model = glm::translate(glm::mat4(1), glm::vec3(0, 0, -128));
     front->relativeModel = Model;
     front->absoluteScale = glm::vec3(256, 256, 000);
@@ -111,7 +111,7 @@ void Scene::InitScene(Mesh* cc)
     room->AddChild(front);
 
     // Back face:
-    Scene_Node* back = new Scene_Node(cc);
+    Scene_Node* back = new Scene_Node(objectsMesh);
     Model = glm::translate(glm::mat4(1), glm::vec3(0, 0, 128));
     back->relativeModel = Model;
     back->absoluteScale = glm::vec3(256, 256, 000);
@@ -119,7 +119,7 @@ void Scene::InitScene(Mesh* cc)
     room->AddChild(back);
 
     // Roof face:
-    Scene_Node* roof = new Scene_Node(cc);
+    Scene_Node* roof = new Scene_Node(objectsMesh);
     Model = glm::translate(glm::mat4(1), glm::vec3(0, 256, 0));
     roof->relativeModel = Model;
     roof->absoluteScale = glm::vec3(256, 000, 256);
@@ -127,7 +127,7 @@ void Scene::InitScene(Mesh* cc)
     room->AddChild(roof);
     
     // Door:
-    door = new Scene_Node(cc);
+    door = new Scene_Node(objectsMesh);
     Model = glm::translate(glm::mat4(1), glm::vec3(128, 0, 0));
     door->relativeModel = Model;
     door->absoluteScale = glm::vec3(1, 128, 64);
@@ -135,13 +135,13 @@ void Scene::InitScene(Mesh* cc)
     room->AddChild(door);
     
     // Floor face:
-    Scene_Node* floor = new Scene_Node(cc);
+    Scene_Node* floor = new Scene_Node(objectsMesh);
     floor->absoluteScale = glm::vec3(256, 000, 256);
     floor->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
     room->AddChild(floor);
 
     // Orb:
-    orb = new Scene_Node(cc);
+    orb = new Scene_Node(objectsMesh);
     // Scene_Node* orb = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1), glm::vec3(0, 8, -64));
     Model = glm::rotate(Model, glm::radians(45.f), glm::vec3(0, 1, 0));
@@ -155,13 +155,13 @@ void Scene::InitScene(Mesh* cc)
     hud = new Scene_Node;
     hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
 
-    Scene_Node* primaryColor = new Scene_Node(cc);
+    Scene_Node* primaryColor = new Scene_Node(objectsMesh);
     Model = glm::translate(glm::mat4(1), glm::vec3(0.75f, 0, 0));
     primaryColor->relativeModel = Model;
     primaryColor->color = player->color;
     hud->AddChild(primaryColor);
 
-    Scene_Node* secondaryColor = new Scene_Node(cc);
+    Scene_Node* secondaryColor = new Scene_Node(objectsMesh);
     Model = glm::translate(glm::mat4(1), glm::vec3(0.85f, 0, 0));
     secondaryColor->relativeModel = Model;
     hud->AddChild(secondaryColor);

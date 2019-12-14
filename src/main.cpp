@@ -42,8 +42,9 @@ int main()
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
 
     // Create the mesh
-    Mesh* cube = Mesh_Utils::OBJMesh("../models/suzanne");
-    Scene::InitScene(cube);
+    Mesh* player = Mesh_Utils::OBJMesh("../models/suzanne");
+    Mesh* cube = Mesh_Utils::WhiteCube();
+    Scene::InitScene(player , cube);
     
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
