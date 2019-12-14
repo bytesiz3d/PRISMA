@@ -9,6 +9,14 @@ add_compile_options(-w)
 set(PROJECT_NAME "PRISMA")
 set(THIRDPARTY_DIR "deps")
 
+file(GLOB_RECURSE SHADERS
+  shaders/*
+  )
+
+file(GLOB_RECURSE MODELS
+  models/*
+  )
+
 # Project and Source Groups:
 project(${PROJECT_NAME} CXX) # Specifies the target project
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
@@ -35,6 +43,10 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
 
   src/player/player.hpp
   src/player/player.cpp
+
+  ${SHADERS}
+
+  ${MODELS}
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
@@ -50,7 +62,7 @@ source_group("Mesh\\Mesh Utilities"
   src/mesh/mesh_utils.cpp
   )
 
-source_group("Shader"
+source_group("Shader Utilities"
   FILES
   src/shader/shader.hpp
   src/shader/shader.cpp
@@ -78,6 +90,16 @@ source_group("Player Controller"
   FILES
   src/player/player.hpp
   src/player/player.cpp
+  )
+
+source_group("Vertex/Fragment Shaders"
+  FILES
+  ${SHADERS}
+  )
+
+source_group("Object Models"
+  FILES
+  ${MODELS}
   )
 
 # Linking to third party libraries:
