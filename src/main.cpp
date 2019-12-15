@@ -46,7 +46,7 @@ int main()
 
     // Create the mesh
     Mesh* cube = Mesh_Utils::WhiteCube();
-    Mesh* monkey = Mesh_Utils::OBJMesh("../models/suzanne");
+    Mesh* monkey = Mesh_Utils::OBJMesh("../res/models/suzanne");
     Scene::InitScene(cube, monkey);    
 
     // Create the camera object

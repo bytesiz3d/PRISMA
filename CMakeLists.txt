@@ -14,11 +14,15 @@ file(GLOB_RECURSE SHADERS
   )
 
 file(GLOB_RECURSE MODELS
-  models/*
+  res/models/*
   )
 
 file(GLOB_RECURSE FONTS
-  fonts/*
+  res/fonts/*
+  )
+
+file(GLOB_RECURSE TEXTURES
+  res/textures/*
   )
 
 # Project and Source Groups:
@@ -56,9 +60,16 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   ${MODELS}
 
   ${FONTS}
+
+  ${TEXTURES}
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
+source_group("Code"
+  FILES
+  src/main.cpp
+  )
+
 source_group("Code\\Mesh"
   FILES
   src/mesh/mesh.cpp
@@ -107,21 +118,25 @@ source_group("Code\\Player"
   src/player/player.cpp
   )
 
-source_group("Static\\Shaders"
+source_group("Shaders"
   FILES
   ${SHADERS}
   )
 
-source_group("Static\\Models"
+source_group("Resources\\Models"
   FILES
   ${MODELS}
   )
 
- source_group("Static\\Fonts"
+ source_group("Resources\\Fonts"
   FILES
   ${FONTS}
   )
 
+ source_group("Resources\\Textures"
+  FILES
+  ${TEXTURES}
+  )
 
 # Linking to third party libraries:
 ## OpenGL:
