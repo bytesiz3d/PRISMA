@@ -53,7 +53,99 @@ void Scene::UpdateData()
 // ====================================================================================================
 bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB)
 {
-    return TestCollision_Cubes(objectA->ScaleWorldModel(), objectB->ScaleWorldModel());
+    // AABB:
+    // Get the minimum (x, y, z) and the maximum (x, y, z) for both shapes.
+    // If the ranges intersect in all three axes,
+    // then the shapes collide.
+
+    // ==================================== A ====================================
+    glm::vec3 A_min(1000), A_max(-1000);
+    glm::mat4 A_world = objectA->ScaleWorldModel();
+
+    glm::vec4 A_AABB_min = {
+        objectA->mesh->AABB_min[0],
+        objectA->mesh->AABB_min[1],
+        objectA->mesh->AABB_min[2],
+        1.f
+    };
+    glm::vec4 A_AABB_max = {
+        objectA->mesh->AABB_max[0],
+        objectA->mesh->AABB_max[1],
+        objectA->mesh->AABB_max[2],
+        1.f
+    };
+
+    glm::vec4 A_AABB_vertices[8] = {
+        A_AABB_min,
+        { A_AABB_max[0],  A_AABB_min[1], A_AABB_min[2], 1 },
+        { A_AABB_max[0],  A_AABB_max[1], A_AABB_min[2], 1 },
+        { A_AABB_min[0],  A_AABB_max[1], A_AABB_min[2], 1 },
+        A_AABB_max,
+        { A_AABB_min[0],  A_AABB_max[1], A_AABB_max[2], 1 },
+        { A_AABB_min[0],  A_AABB_min[1], A_AABB_max[2], 1 },
+        { A_AABB_max[0],  A_AABB_min[1], A_AABB_max[2], 1 },
+    };
+
+    // ==================================== B ====================================
+    glm::vec3 B_min(1000), B_max(-1000);
+    glm::mat4 B_world = objectB->ScaleWorldModel();
+
+    glm::vec4 B_AABB_min = {
+        objectB->mesh->AABB_min[0],
+        objectB->mesh->AABB_min[1],
+        objectB->mesh->AABB_min[2],
+        1.f
+    };
+    glm::vec4 B_AABB_max = {
+        objectB->mesh->AABB_max[0],
+        objectB->mesh->AABB_max[1],
+        objectB->mesh->AABB_max[2],
+        1.f
+    };
+
+    glm::vec4 B_AABB_vertices[8] = {
+        B_AABB_min,
+        { B_AABB_max[0],  A_AABB_min[1], A_AABB_min[2], 1 },
+        { B_AABB_max[0],  A_AABB_max[1], A_AABB_min[2], 1 },
+        { B_AABB_min[0],  A_AABB_max[1], A_AABB_min[2], 1 },
+        B_AABB_max,
+        { B_AABB_min[0],  A_AABB_max[1], A_AABB_max[2], 1 },
+        { B_AABB_min[0],  A_AABB_min[1], A_AABB_max[2], 1 },
+        { B_AABB_max[0],  A_AABB_min[1], A_AABB_max[2], 1 },
+    };
+    
+
+    glm::vec4 transformed(0);
+    for (GLubyte i = 0; i < 8; i++)
+    {
+        // A:
+        transformed = A_world * A_AABB_vertices[i];
+
+        A_min[0] = transformed[0] < A_min[0] ? transformed[0] : A_min[0];
+        A_min[1] = transformed[1] < A_min[1] ? transformed[1] : A_min[1];
+        A_min[2] = transformed[2] < A_min[2] ? transformed[2] : A_min[2];
+        
+        A_max[0] = transformed[0] > A_max[0] ? transformed[0] : A_max[0];
+        A_max[1] = transformed[1] > A_max[1] ? transformed[1] : A_max[1];
+        A_max[2] = transformed[2] > A_max[2] ? transformed[2] : A_max[2];
+
+        // B:
+        transformed = B_world * B_AABB_vertices[i];
+
+        B_min[0] = transformed[0] < B_min[0] ? transformed[0] : B_min[0];
+        B_min[1] = transformed[1] < B_min[1] ? transformed[1] : B_min[1];
+        B_min[2] = transformed[2] < B_min[2] ? transformed[2] : B_min[2];
+
+        B_max[0] = transformed[0] > B_max[0] ? transformed[0] : B_max[0];
+        B_max[1] = transformed[1] > B_max[1] ? transformed[1] : B_max[1];
+        B_max[2] = transformed[2] > B_max[2] ? transformed[2] : B_max[2];
+    }
+    
+    return (
+        A_min[0] <= B_max[0] && B_min[0] <= A_max[0] &&
+        A_min[1] <= B_max[1] && B_min[1] <= A_max[1] &&
+        A_min[2] <= B_max[2] && B_min[2] <= A_max[2] 
+    );
 }
 
 // ====================================================================================================
@@ -69,24 +161,24 @@ void Scene::ProcessCollision()
         {
             std::cout << "debug: hit wall\n";
             // Revert the move and put the player one frame back
-            player->UpdatePlayer(mouseDelta, -dm);
-            player->UpdatePlayer(mouseDelta, -dm);
+            player->UpdatePlayer(-mouseDelta, -dm);
+            player->UpdatePlayer(-mouseDelta, -dm);
         }
     }
 }
 
 // ====================================================================================================
-void Scene::InitScene(Mesh* cc)
+void Scene::InitScene(Mesh* cc, Mesh* pp)
 {
     glm::mat4 Model;
     room = new Scene_Node;
 
     // Player
-    player = new Player(cc);
-    player->position = glm::vec3(-64, 0, 0);
-    player->absoluteScale = glm::vec3(16, 16, 5);
+    player = new Player(pp);
+    player->position = glm::vec3(-64, 8, 0);
+    player->absoluteScale = glm::vec3(8);
     player->color = glm::vec4(0, 1, 0, 1);
-    player->drawMode = GL_LINE_LOOP;
+    player->orientation = { std::asin(0.3), std::asin(1), 0 };
         
     // Right face:
     Scene_Node* right = new Scene_Node(cc);
@@ -181,56 +273,7 @@ void Scene::DrawScene(Scene_Node* scene, GLuint shaderId)
 // ====================================================================================================
 bool TestCollision_Cubes(glm::mat4 objectA, glm::mat4 objectB)
 {
-    // AABB:
-    // Get the minimum (x, y, z) and the maximum (x, y, z) for both shapes.
-    // If the ranges intersect in all three axes,
-    // then the shapes collide.
-    
-    glm::vec3 A_min(1000), A_max(-1000);
-    glm::vec3 B_min(1000), B_max(-1000);
-
-    glm::vec4 cubeVertices[8] = {
-        glm::vec4(-0.5f,  0.5f, -0.5f, 1),
-        glm::vec4(-0.5f,  0.5f,  0.5f, 1),
-        glm::vec4( 0.5f,  0.5f,  0.5f, 1),
-        glm::vec4( 0.5f,  0.5f, -0.5f, 1),
-        glm::vec4(-0.5f, -0.5f, -0.5f, 1),
-        glm::vec4(-0.5f, -0.5f,  0.5f, 1),
-        glm::vec4( 0.5f, -0.5f,  0.5f, 1),
-        glm::vec4( 0.5f, -0.5f, -0.5f, 1),
-    };
-    glm::vec4 transformed(0);
-    
-    for (GLubyte i = 0; i < 8; i++)
-    {
-        // A:
-        transformed = objectA * cubeVertices[i];
-
-        A_min[0] = transformed[0] < A_min[0] ? transformed[0] : A_min[0];
-        A_min[1] = transformed[1] < A_min[1] ? transformed[1] : A_min[1];
-        A_min[2] = transformed[2] < A_min[2] ? transformed[2] : A_min[2];
-        
-        A_max[0] = transformed[0] > A_max[0] ? transformed[0] : A_max[0];
-        A_max[1] = transformed[1] > A_max[1] ? transformed[1] : A_max[1];
-        A_max[2] = transformed[2] > A_max[2] ? transformed[2] : A_max[2];
-
-        // B:
-        transformed = objectB * cubeVertices[i];
-
-        B_min[0] = transformed[0] < B_min[0] ? transformed[0] : B_min[0];
-        B_min[1] = transformed[1] < B_min[1] ? transformed[1] : B_min[1];
-        B_min[2] = transformed[2] < B_min[2] ? transformed[2] : B_min[2];
-
-        B_max[0] = transformed[0] > B_max[0] ? transformed[0] : B_max[0];
-        B_max[1] = transformed[1] > B_max[1] ? transformed[1] : B_max[1];
-        B_max[2] = transformed[2] > B_max[2] ? transformed[2] : B_max[2];
-    }
-    
-    return (
-        A_min[0] <= B_max[0] && B_min[0] <= A_max[0] &&
-        A_min[1] <= B_max[1] && B_min[1] <= A_max[1] &&
-        A_min[2] <= B_max[2] && B_min[2] <= A_max[2] 
-    );
+    return false;
 }
 
 // ====================================================================================================

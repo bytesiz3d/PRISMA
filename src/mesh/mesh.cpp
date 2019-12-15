@@ -1,38 +1,44 @@
 #include "mesh.hpp"
 
-Mesh::Mesh()
-{
-    int n = 3;
-    VertexDescriptor inDescriptors[] = {
-        {
-            0,
-            "positions",
-            3,
-            GL_FLOAT,
-            false,
-            0,
-            0
-        },
-        {
-            1,
-            "colors",
-            4,
-            GL_UNSIGNED_BYTE,
-            true,
-            0,
-            0
-        },
-        {
-            2,
-            "texCoords",
-            2,
-            GL_FLOAT,
-            false,
-            0,
-            0
-        },
+// positions, colors, texture coordinates
+VertexDescriptor vd_pct[3] = {
+    {
+        0,
+        "positions",
+        3,
+        GL_FLOAT,
+        false,
+        0,
+        0
+    },
+    {
+        1,
+        "colors",
+        4,
+        GL_UNSIGNED_BYTE,
+        true,
+        0,
+        0
+    },
+    {
+        2,
+        "texCoords",
+        2,
+        GL_FLOAT,
+        false,
+        0,
+        0
+    },
+};
 
-    };
+Mesh::Mesh(VertexDescriptor* inDescriptors, int n)
+    : elementCount(0), elementType(0)
+{
+    AABB_min[0] = 1000.f, AABB_min[1] = 1000.f, AABB_min[2] = 1000.f;
+    AABB_max[0] = -1000.f, AABB_max[1] = -1000.f, AABB_max[2] = -1000.f;
+
+    if (!inDescriptors)
+        inDescriptors = vd_pct;
 
     for (GLuint i = 0; i < n; i++)
         descriptors.push_back(inDescriptors[i]);
@@ -74,38 +80,6 @@ Mesh::~Mesh()
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &EBO);
-}
-
-Mesh::Mesh(VertexDescriptor* inDescriptors, int n)
-{
-    for (GLuint i = 0; i < n; i++)
-        descriptors.push_back(inDescriptors[i]);
-
-    for (auto& desc : descriptors)
-    {
-        glGenBuffers(1, &VBOs[desc.buffer]);
-    }
-
-    glGenBuffers(1, &EBO);
-    glGenVertexArrays(1, &VAO);
-
-    glBindVertexArray(VAO);
-
-    for (auto& descriptor : descriptors)
-    {
-        glBindBuffer(GL_ARRAY_BUFFER, VBOs[descriptor.buffer]);
-
-        glVertexAttribPointer(descriptor.attributeLocation,
-                              descriptor.size,
-                              descriptor.type,
-                              descriptor.normalized,
-                              descriptor.stride,
-                              descriptor.offset);
-
-        glEnableVertexAttribArray(descriptor.attributeLocation);
-    }
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBindVertexArray(0);
 }
 
 void Mesh::SetBufferData(std::string bufferName, GLsizeiptr size, const void* bufferData, GLenum usage)

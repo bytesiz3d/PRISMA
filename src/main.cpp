@@ -46,7 +46,8 @@ int main()
 
     // Create the mesh
     Mesh* cube = Mesh_Utils::WhiteCube();
-    Scene::InitScene(cube);    
+    Mesh* monkey = Mesh_Utils::OBJMesh("../models/suzanne");
+    Scene::InitScene(cube, monkey);    
 
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
@@ -79,6 +80,8 @@ int main()
     glfwTerminate();
 
     delete cube;
+    delete monkey;
+
     Scene::DeleteAllPointers();
     return 0;
 }

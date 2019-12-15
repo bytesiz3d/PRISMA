@@ -6,15 +6,18 @@ class Player
     : public Scene_Node
 {
 private:
-    float yaw;
     float yawSens;
     float pitchSens;
     float movementSens;
 public:
+    float yaw;
     float pitch;
     glm::vec3 direction;
     glm::vec3 position;
     glm::vec3 normal;
+
+    // Rotation angles around the 3 axes:
+    glm::vec3 orientation;
     
     Player();
     Player(Mesh* _mesh,

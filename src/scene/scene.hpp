@@ -1,6 +1,3 @@
-// Collision
-bool TestCollision_Cubes(glm::mat4 objectA, glm::mat4 objectB);
-
 namespace Scene
 {
     GLFWwindow* window;
@@ -19,7 +16,7 @@ namespace Scene
 
     // Utility functions:
     void UpdateData();
-    void InitScene(Mesh* cc);
+    void InitScene(Mesh* cc, Mesh* pp);
     void DrawScene(Scene_Node* scene, GLuint shaderId);
 
     bool Collide(Scene_Node* objectA, Scene_Node* objectB);
