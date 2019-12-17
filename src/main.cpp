@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
 
 // GLAD
 #include <glad/glad.h>
@@ -19,6 +21,7 @@
 
 #include "scene_node/scene_node.hpp"
 #include "player/player.hpp"
+#include "orb/orb.hpp"
 
 #include "mesh/mesh_utils.hpp"
 #include "texture/texture.hpp"
@@ -47,7 +50,12 @@ int main()
     // Create the mesh
     Mesh* cube = Mesh_Utils::WhiteCube();
     Mesh* monkey = Mesh_Utils::OBJMesh("../res/models/suzanne");
-    Scene::InitScene(cube, monkey);    
+    Scene::cube = cube;
+    Scene::monkey = monkey;
+
+    Scene::InitScene("../res/scenes/room.json");
+
+    //Scene::InitScene(cube, monkey);    
 
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
@@ -69,7 +77,7 @@ int main()
         glm::mat4 VP = Scene::camera.ViewProjectionMatrix();
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
 
-        Scene::DrawScene(Scene::room, cubeShaderProgram); 
+        Scene::DrawScene(Scene::root, cubeShaderProgram); 
         Scene::DrawScene(Scene::player, cubeShaderProgram); 
         Scene::DrawScene(Scene::hud, hudShaderProgram);
         

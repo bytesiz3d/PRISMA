@@ -55,6 +55,9 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   src/player/player.hpp
   src/player/player.cpp
 
+  src/orb/orb.hpp
+  src/orb/orb.cpp
+  
   ${SHADERS}
 
   ${MODELS}
@@ -112,10 +115,13 @@ source_group("Code\\Scene Graph"
   src/scene_node/scene_node.cpp
   )
 
-source_group("Code\\Player"
+source_group("Code\\Different Scene Objects"
   FILES
   src/player/player.hpp
   src/player/player.cpp
+
+  src/orb/orb.hpp
+  src/orb/orb.cpp
   )
 
 source_group("Shaders"
@@ -171,6 +177,9 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/nothings)
 
 ## TINY_OBJ_LOADER:
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/syoyo)
+
+## JSON:
+target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/nlohmann)
 
 # Options:
 set(BUILD_SHARED_LIBS FALSE CACHE BOOL "Enforce static linking." FORCE) # Build static libraries

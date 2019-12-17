@@ -1,3 +1,107 @@
+using json = nlohmann::json;
+
+// ====================================================================================================
+void Scene::ParseScene(Scene_Node* parent, const json& data)
+{
+    // TODO: Add mesh type to JSON file
+    Scene_Node* element;
+
+    // Fill the object vectors
+    if (data.find("type") != data.end())
+    {
+        switch ((int)data["type"])
+        {
+        case OBJECT_DOOR:
+            element = new Scene_Node(cube);
+            doors.push_back(element);
+            break;
+
+        case OBJECT_WALL:
+            element = new Scene_Node(cube);
+            walls.push_back(element);
+            break;
+
+        case OBJECT_ORB:
+            element = new Orb(cube);
+            orbs.push_back(element);
+            break;
+        }
+    }
+    else
+        element = new Scene_Node(cube);
+
+    parent->AddChild(element);
+
+    // Read available data
+    if (data.find("relativeModel") != data.end())
+    {
+        auto relativeModel = data["relativeModel"].get<std::vector<float>>();
+        element->relativeModel = glm::make_mat4(&relativeModel[0]);
+    }
+
+    if (data.find("absoluteScale") != data.end())
+    {
+        auto absoluteScale = data["absoluteScale"].get <std::vector<float>>();
+        element->absoluteScale = glm::make_vec3(&absoluteScale[0]);
+    }
+
+    if (data.find("color") != data.end())
+    {
+        auto color = data["color"].get <std::vector<float>>();
+        element->color = glm::make_vec4(&color[0]);
+    }
+
+    // TODO: Fix this
+    //if (data.find("drawMode") != data.end())
+    //    element->drawMode = data["drawMode"];
+
+    if (data.find("children") != data.end())
+    {
+        for (auto child: data["children"])
+            ParseScene(element, child);
+    }
+}
+
+// ====================================================================================================
+void Scene::InitScene(const std::string& scenePath)
+{
+    glm::mat4 Model;
+
+    // Player
+    player = new Player(monkey);
+    player->position = glm::vec3(-64, 8, 0);
+    player->absoluteScale = glm::vec3(8);
+    player->color = glm::vec4(0, 1, 0, 1);
+    player->orientation = { std::asin(0.3), std::asin(1), 0 };
+
+    // HUD:
+    hud = new Scene_Node;
+    hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
+
+    Scene_Node* primaryColor = new Scene_Node(cube);
+    Model = glm::translate(glm::mat4(1), glm::vec3(0.75f, 0, 0));
+    primaryColor->relativeModel = Model;
+    primaryColor->color = player->color;
+    hud->AddChild(primaryColor);
+
+    Scene_Node* secondaryColor = new Scene_Node(cube);
+    Model = glm::translate(glm::mat4(1), glm::vec3(0.85f, 0, 0));
+    secondaryColor->relativeModel = Model;
+    hud->AddChild(secondaryColor);
+
+    // Load the JSON file and parse it to root
+    std::ifstream sceneFile(scenePath);
+    json sceneData;
+    sceneFile >> sceneData;
+
+    root = new Scene_Node;
+    for (auto element: sceneData)
+    {
+        //std::cout << element.type_name();
+        ParseScene(root, element);
+    }
+}
+
 // ====================================================================================================
 void Scene::UpdateData()
 {
@@ -12,17 +116,7 @@ void Scene::UpdateData()
     dm = movementP - movementN;
     player->UpdatePlayer(mouseDelta, dm);
 
-    if (Collide(player, door))
-    {
-        if (player->color != door->color)
-        {
-            // Revert the move and put the player one frame back
-            player->UpdatePlayer(mouseDelta, -dm);
-            player->UpdatePlayer(mouseDelta, -dm);
-        }
-    }
-    else
-        ProcessCollision();
+    ProcessCollision();
 
     // Manually updating the camera
     glm::vec4 newCameraPosition(0, 0, 0, 1);
@@ -34,20 +128,6 @@ void Scene::UpdateData()
                                 
     camera.position = glm::vec3(newCameraPosition);
     camera.SetTarget(player->position);
-
-    // Check for collision with the orb
-    bool currentState = Collide(player, orb);
-    if (currentState != lastState && currentState)
-    {
-        // Swap colors
-        glm::vec4 newPlayerColor = orb->color;
-        orb->color = player->color;
-        player->color = newPlayerColor;
-
-        // Update HUD
-        hud->children[0]->color = newPlayerColor;
-    }
-    lastState = currentState;
 }
 
 // ====================================================================================================
@@ -151,19 +231,57 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB)
 // ====================================================================================================
 void Scene::ProcessCollision()
 {
-    for (auto wall : walls)
+    for (auto door: doors)
     {
-        // // Put either before the bottom floor to prevent collision testing against it
-        // if (wall == door || wall == orb)
-        //     return;
+        if (Collide(player, door))
+        {
+            if (player->color != door->color)
+            {
+                // Revert the move and put the player one frame back
+                player->UpdatePlayer(mouseDelta, -dm);
+                player->UpdatePlayer(mouseDelta, -dm);
+            }
+            return;
+        }
+    }
 
+    for (auto wall: walls)
+    {
         if (Collide(player, wall))
         {
-            std::cout << "debug: hit wall\n";
+            // std::cout << "debug: hit wall\n";
+
             // Revert the move and put the player one frame back
             player->UpdatePlayer(-mouseDelta, -dm);
             player->UpdatePlayer(-mouseDelta, -dm);
+
+            return;
         }
+    }
+
+    for (auto sn_orb: orbs)
+    {
+        Orb* orb = static_cast<Orb*>(sn_orb);
+        if (!orb)
+            continue;
+         
+        orb->currentState = Collide(player, orb);
+
+        if (orb->currentState && (orb->currentState != orb->lastState))
+        {
+            // Swap colors
+            glm::vec4 newPlayerColor = orb->color;
+            orb->color = player->color;
+            player->color = newPlayerColor;
+
+            // Update HUD
+            hud->children[0]->color = newPlayerColor;
+            
+            orb->lastState = orb->currentState;
+            return;
+        }
+
+        orb->lastState = orb->currentState;
     }
 }
 
@@ -171,7 +289,7 @@ void Scene::ProcessCollision()
 void Scene::InitScene(Mesh* cc, Mesh* pp)
 {
     glm::mat4 Model;
-    room = new Scene_Node;
+    root = new Scene_Node;
 
     // Player
     player = new Player(pp);
@@ -185,7 +303,7 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     Model = glm::translate(glm::mat4(1), glm::vec3(128, 0, 0));
     right->relativeModel = Model;
     right->absoluteScale = glm::vec3(000, 256, 256); 
-    room->AddChild(right);
+    root->AddChild(right);
     walls.push_back(right);
     
     // Left face:
@@ -193,7 +311,7 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     Model = glm::translate(glm::mat4(1), glm::vec3(-128, 0, 0));
     left->relativeModel = Model;
     left->absoluteScale = glm::vec3(000, 256, 256); 
-    room->AddChild(left);
+    root->AddChild(left);
     walls.push_back(left);
 
     // Front face:
@@ -202,7 +320,7 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     front->relativeModel = Model;
     front->absoluteScale = glm::vec3(256, 256, 000);
     front->color = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
-    room->AddChild(front);
+    root->AddChild(front);
     walls.push_back(front);
 
     // Back face:
@@ -211,7 +329,7 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     back->relativeModel = Model;
     back->absoluteScale = glm::vec3(256, 256, 000);
     back->color = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
-    room->AddChild(back);
+    root->AddChild(back);
     walls.push_back(back);
 
     // Roof face:
@@ -220,32 +338,33 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     roof->relativeModel = Model;
     roof->absoluteScale = glm::vec3(256, 000, 256);
     roof->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
-    room->AddChild(roof);
+    root->AddChild(roof);
     
     // Floor face:
     Scene_Node* floor = new Scene_Node(cc);
     floor->absoluteScale = glm::vec3(256, 000, 256);
     floor->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
-    room->AddChild(floor);
+    root->AddChild(floor);
 
     // Door:
-    door = new Scene_Node(cc);
+    Scene_Node* door = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1), glm::vec3(128, 0, 0));
     door->relativeModel = Model;
     door->absoluteScale = glm::vec3(1, 128, 64);
     door->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
-    room->AddChild(door);
+    root->AddChild(door);
+    doors.push_back(door);
     
     // Orb:
-    orb = new Scene_Node(cc);
-    // Scene_Node* orb = new Scene_Node(cc);
+    Scene_Node* orb = new Orb(cc);
     Model = glm::translate(glm::mat4(1), glm::vec3(0, 8, -64));
     Model = glm::rotate(Model, glm::radians(45.f), glm::vec3(0, 1, 0));
     Model = glm::rotate(Model, glm::radians(45.f), glm::vec3(1, 0, 0));
     orb->relativeModel = Model;
     orb->absoluteScale = glm::vec3(8);
     orb->color = glm::vec4(1, 0, 0, 1);
-    room->AddChild(orb);
+    root->AddChild(orb);
+    orbs.push_back(orb);
 
     // HUD:
     hud = new Scene_Node;
@@ -357,12 +476,10 @@ void Scene::MouseCallback(GLFWwindow* window, int button, int action, int mods)
 // ====================================================================================================
 void Scene::DeleteAllPointers()
 {
-    if (room)
-        delete room;
-    
+    if (root)
+        delete root;
+
     if (player)
         delete player;
-    
-    if (hud)
-        delete hud;
+
 }

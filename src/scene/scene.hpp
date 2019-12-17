@@ -1,6 +1,17 @@
+#include <json/json.hpp>
+
+enum OBJECT_TYPE
+{
+    OBJECT_DOOR,
+    OBJECT_WALL,
+    OBJECT_ORB
+};
+
+
 namespace Scene
 {
     GLFWwindow* window;
+    Mesh *cube, *monkey;
 
     // Controls:
     double p_mX, p_mY,
@@ -14,9 +25,28 @@ namespace Scene
 
     bool holdMouse = false;
 
+    // Camera:
+    Camera camera;
+    float cameraAngle = 0.f;
+    GLint VP_location;
+
+    // TODO: Optimize collision checking
+    // Main scene:
+    Scene_Node* root;
+    std::vector<Scene_Node*> walls;
+    std::vector<Scene_Node*> doors;
+    std::vector<Scene_Node*> orbs;
+
+    // Player and HUD:
+    Player* player;
+    Scene_Node* hud;
+
     // Utility functions:
-    void UpdateData();
+    void InitScene(const std::string& scenePath);
+    void ParseScene(Scene_Node* parent, const nlohmann::json& data);
     void InitScene(Mesh* cc, Mesh* pp);
+
+    void UpdateData();
     void DrawScene(Scene_Node* scene, GLuint shaderId);
 
     bool Collide(Scene_Node* objectA, Scene_Node* objectB);
@@ -26,22 +56,5 @@ namespace Scene
     void MouseCallback(GLFWwindow* window, int button, int action, int mods);
 
     void DeleteAllPointers();
-
-    // Camera:
-    Camera camera;
-    float cameraAngle = 0.f;
-    GLint VP_location;
-
-    // Room:
-    Scene_Node* room;
-    std::vector<Scene_Node*> walls;
-
-    // Player:
-    Player* player;
-    Scene_Node* orb;
-    Scene_Node* door;
-
-    // HUD circles:
-    Scene_Node* hud;
-    bool lastState = false;
+    
 };

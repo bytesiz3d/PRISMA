@@ -31,7 +31,8 @@ Scene_Node::~Scene_Node()
 {
     for (auto& child : children)
     {
-        delete child;
+        if (child)
+            delete child;
         child = nullptr;
     }
 }
