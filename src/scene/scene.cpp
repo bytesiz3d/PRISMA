@@ -151,11 +151,11 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB)
 // ====================================================================================================
 void Scene::ProcessCollision()
 {
-    for (auto wall : room->children)
+    for (auto wall : walls)
     {
-        // Put either before the bottom floor to prevent collision testing against it
-        if (wall == door || wall == orb)
-            return;
+        // // Put either before the bottom floor to prevent collision testing against it
+        // if (wall == door || wall == orb)
+        //     return;
 
         if (Collide(player, wall))
         {
@@ -186,6 +186,7 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     right->relativeModel = Model;
     right->absoluteScale = glm::vec3(000, 256, 256); 
     room->AddChild(right);
+    walls.push_back(right);
     
     // Left face:
     Scene_Node* left = new Scene_Node(cc);
@@ -193,6 +194,7 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     left->relativeModel = Model;
     left->absoluteScale = glm::vec3(000, 256, 256); 
     room->AddChild(left);
+    walls.push_back(left);
 
     // Front face:
     Scene_Node* front = new Scene_Node(cc);
@@ -201,6 +203,7 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     front->absoluteScale = glm::vec3(256, 256, 000);
     front->color = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
     room->AddChild(front);
+    walls.push_back(front);
 
     // Back face:
     Scene_Node* back = new Scene_Node(cc);
@@ -209,6 +212,7 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     back->absoluteScale = glm::vec3(256, 256, 000);
     back->color = glm::vec4(21.f/255, 5.f/255, 42.f/255, 1.f);
     room->AddChild(back);
+    walls.push_back(back);
 
     // Roof face:
     Scene_Node* roof = new Scene_Node(cc);
@@ -218,6 +222,12 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     roof->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
     room->AddChild(roof);
     
+    // Floor face:
+    Scene_Node* floor = new Scene_Node(cc);
+    floor->absoluteScale = glm::vec3(256, 000, 256);
+    floor->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
+    room->AddChild(floor);
+
     // Door:
     door = new Scene_Node(cc);
     Model = glm::translate(glm::mat4(1), glm::vec3(128, 0, 0));
@@ -226,12 +236,6 @@ void Scene::InitScene(Mesh* cc, Mesh* pp)
     door->color = glm::vec4(1.f, 0.f, 0.f, 1.f);
     room->AddChild(door);
     
-    // Floor face:
-    Scene_Node* floor = new Scene_Node(cc);
-    floor->absoluteScale = glm::vec3(256, 000, 256);
-    floor->color = glm::vec4(5.f/255, 42.f/255, 40.f/255, 1.f);
-    room->AddChild(floor);
-
     // Orb:
     orb = new Scene_Node(cc);
     // Scene_Node* orb = new Scene_Node(cc);
@@ -268,12 +272,6 @@ void Scene::DrawScene(Scene_Node* scene, GLuint shaderId)
         for (auto& child : scene->children)
             DrawScene(child, shaderId);
     }
-}
-
-// ====================================================================================================
-bool TestCollision_Cubes(glm::mat4 objectA, glm::mat4 objectB)
-{
-    return false;
 }
 
 // ====================================================================================================

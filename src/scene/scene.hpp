@@ -34,6 +34,7 @@ namespace Scene
 
     // Room:
     Scene_Node* room;
+    std::vector<Scene_Node*> walls;
 
     // Player:
     Player* player;
