@@ -1,19 +1,19 @@
 {
     "Red door": {
         "type": 0,
-        "relativeModel": [1, 0, 0, 0,
+        "relativeModel": [1, 0, 0, 128,
                           0, 1, 0, 0,
                           0, 0, 1, 0,
-                          128, 0, 0, 1],
+                          0, 0, 0, 1],
 
         "absoluteScale": [2, 128, 64],
         "color": [1, 0, 0, 1],
         "children": {
             "Blue charm": {
-                "relativeModel": [1, 0, 0, 0,
+                "relativeModel": [1, 0, 0, -8,
                                   0, 1, 0, 0,
                                   0, 0, 1, 0,
-                                  -8, 0, 0, 1],
+                                  0, 0, 0, 1],
 
                 "absoluteScale": [4, 4, 4],
                 "color": [0, 0, 1, 1]
@@ -23,10 +23,10 @@
 
     "Rightmost wall": {
         "type": 1,
-        "relativeModel": [1, 0, 0, 0,
+        "relativeModel": [1, 0, 0, 128,
                           0, 1, 0, 0,
                           0, 0, 1, 0,
-                          128, 0, 0, 1],
+                          0, 0, 0, 1],
 
         "absoluteScale": [0, 256, 256]
     },
@@ -34,9 +34,9 @@
     "Red orb": {
         "type": 2,
         "relativeModel": [1, 0, 0, 0,
-                          0, 1, 0, 0,
-                          0, 0, 1, 0,
-                          0, 8, -64, 1],
+                          0, 1, 0, 8,
+                          0, 0, 1, -64,
+                          0, 0, 0, 1],
 
         "absoluteScale": [8, 8, 8],
         "color": [1, 0, 0, 1]

@@ -37,11 +37,12 @@ void Scene::ParseScene(Scene_Node* parent, const json& data)
     {
         auto relativeModel = data["relativeModel"].get<std::vector<float>>();
         element->relativeModel = glm::make_mat4(&relativeModel[0]);
+        element->relativeModel = glm::transpose(element->relativeModel);
     }
 
     if (data.find("absoluteScale") != data.end())
     {
-        auto absoluteScale = data["absoluteScale"].get <std::vector<float>>();
+        auto absoluteScale = data["absoluteScale"].get<std::vector<float>>();
         element->absoluteScale = glm::make_vec3(&absoluteScale[0]);
     }
 
