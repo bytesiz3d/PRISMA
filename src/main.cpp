@@ -43,9 +43,11 @@ int main()
         return -1;
     
     // Compile and link the shader program
-    GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/color.frag");
+    GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/texture.frag");
     GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
+    Scene::texture_sampler_location = glGetUniformLocation(cubeShaderProgram, "texture_sampler");
+    Scene::on_location = glGetUniformLocation(cubeShaderProgram, "on");
 
     // Create the mesh
     Mesh* cube = Mesh_Utils::WhiteCube();
@@ -54,11 +56,16 @@ int main()
     Scene::monkey = monkey;
 
     Scene::InitScene("../res/scenes/room.json");
+    Texture grid("../res/textures/tiles-256.png", GL_RGB);
+    // Texture wood("../res/textures/albedo.jpg", GL_RGB);
 
     //Scene::InitScene(cube, monkey);    
 
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
+
+    grid.Bind(0);
+    glUniform1f(Scene::texture_sampler_location, 0);
 
     // Game loop
     while (!glfwWindowShouldClose(Scene::window))
@@ -77,7 +84,10 @@ int main()
         glm::mat4 VP = Scene::camera.ViewProjectionMatrix();
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
 
+        glUniform1i(Scene::on_location, 1);
         Scene::DrawScene(Scene::root, cubeShaderProgram); 
+
+        glUniform1i(Scene::on_location, 0);
         Scene::DrawScene(Scene::player, cubeShaderProgram); 
         Scene::DrawScene(Scene::hud, hudShaderProgram);
         
@@ -138,7 +148,7 @@ bool InitWindow()
 
     // Set the depth test function
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LESS);
 
     // Anti-aliasing
     glEnable(GL_LINE_SMOOTH);
@@ -147,6 +157,11 @@ bool InitWindow()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glBlendEquation(GL_FUNC_ADD);
+
+    // Back-face culling
+    glEnable(GL_CULL_FACE);
+    glFrontFace(GL_CCW);
+    glCullFace(GL_BACK);
 
     return true;
 }

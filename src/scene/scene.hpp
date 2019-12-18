@@ -29,6 +29,8 @@ namespace Scene
     Camera camera;
     float cameraAngle = 0.f;
     GLint VP_location;
+    GLint texture_sampler_location;
+    GLint on_location;
 
     // TODO: Optimize collision checking
     // Main scene:
@@ -44,7 +46,6 @@ namespace Scene
     // Utility functions:
     void InitScene(const std::string& scenePath);
     void ParseScene(Scene_Node* parent, const nlohmann::json& data);
-    void InitScene(Mesh* cc, Mesh* pp);
 
     void UpdateData();
     void DrawScene(Scene_Node* scene, GLuint shaderId);

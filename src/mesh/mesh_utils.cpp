@@ -172,12 +172,12 @@ Mesh* Mesh_Utils::WhiteCube()
         //Upper Face
         -0.5,  0.5, -0.5,
         -0.5,  0.5,  0.5,
-        0.5,  0.5,  0.5,
-        0.5,  0.5, -0.5,
+         0.5,  0.5,  0.5,
+         0.5,  0.5, -0.5,
         //Lower Face
         -0.5, -0.5, -0.5,
-        0.5, -0.5, -0.5,
-        0.5, -0.5,  0.5,
+         0.5, -0.5, -0.5,
+         0.5, -0.5,  0.5,
         -0.5, -0.5,  0.5,
         //Right Face
         0.5, -0.5, -0.5,
@@ -191,43 +191,43 @@ Mesh* Mesh_Utils::WhiteCube()
         -0.5,  0.5, -0.5,
         //Front Face
         -0.5, -0.5,  0.5,
-        0.5, -0.5,  0.5,
-        0.5,  0.5,  0.5,
+         0.5, -0.5,  0.5,
+         0.5,  0.5,  0.5,
         -0.5,  0.5,  0.5,
         //Back Face
         -0.5, -0.5, -0.5,
         -0.5,  0.5, -0.5,
-        0.5,  0.5, -0.5,
-        0.5, -0.5, -0.5
+         0.5,  0.5, -0.5,
+         0.5, -0.5, -0.5
     };
 
     GLubyte colors[4*24];
     memset(colors, 0xFF, 4 * 24);
 
     float texCoords[2*24] = {
-        // ????? Face
+        // Upper Face
         0.f, 1.f,
         0.f, 0.f,
         1.f, 0.f,
         1.f, 1.f,
 
-        // ????? Face
-        0.f, 1.f,
+        // Lower Face
         0.f, 0.f,
         1.f, 0.f,
         1.f, 1.f,
+        0.f, 1.f,
         
-        // ????? Face
-        0.f, 1.f,
-        0.f, 0.f,
+        // Right Face
         1.f, 0.f,
         1.f, 1.f,
+        0.f, 1.f,
+        0.f, 0.f,
 
-        // ????? Face
-        0.f, 1.f,
+        // Left Face
         0.f, 0.f,
         1.f, 0.f,
         1.f, 1.f,
+        0.f, 1.f,
 
         // Front Face
         0.f, 0.f,
@@ -235,11 +235,11 @@ Mesh* Mesh_Utils::WhiteCube()
         1.f, 1.f,
         0.f, 1.f,
 
-        // ????? Face
+        // Back Face
+        1.f, 0.f,
+        1.f, 1.f,
         0.f, 1.f,
         0.f, 0.f,
-        1.f, 0.f,
-        1.f, 1.f
     };
 
     mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
@@ -247,6 +247,7 @@ Mesh* Mesh_Utils::WhiteCube()
     mesh->SetBufferData("texCoords", sizeof(GLfloat) * 2 * 24, texCoords, GL_STATIC_DRAW);
 
     GLuint elements[36] = {
+        //Upper Face
         0, 1, 2, 2, 3, 0,
         //Lower Face
         4, 5, 6, 6, 7, 4,

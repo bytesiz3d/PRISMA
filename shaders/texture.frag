@@ -9,6 +9,11 @@ out vec4 color;
 uniform mat4 tint;
 uniform sampler2D texture_sampler; // the sampler using which we will sample colors from the texture 
 
+uniform int on;
+
 void main(){
-    color = texture(texture_sampler, v_texcoord) * (tint * v_color);
+    color = (tint * v_color);
+
+    if (on > 0)
+        color = texture(texture_sampler, v_texcoord) * color;
 }

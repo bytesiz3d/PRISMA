@@ -31,6 +31,49 @@
         "absoluteScale": [0, 256, 256]
     },
 
+    "Leftmost wall": {
+        "type": 1,
+        "relativeModel": [1, 0, 0, -128,
+                          0, 1, 0, 0,
+                          0, 0, 1, 0,
+                          0, 0, 0, 1],
+
+        "absoluteScale": [0, 256, 256]
+    },
+
+    "Back wall": {
+        "type": 1,
+        "relativeModel": [1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 1, 128,
+                          0, 0, 0, 1],
+
+        "absoluteScale": [256, 256, 0]
+    },
+
+    "Front wall": {
+        "type": 1,
+        "relativeModel": [1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 1, -128,
+                          0, 0, 0, 1],
+
+        "absoluteScale": [256, 256, 0]
+    },
+
+    "Roof": {
+        "relativeModel": [1, 0, 0, 0,
+                          0, 1, 0, 256,
+                          0, 0, 1, 0,
+                          0, 0, 0, 1],
+
+        "absoluteScale": [256, 0, 256]
+    },
+
+    "Floor": {
+        "absoluteScale": [256, 0, 256]
+    },
+
     "Red orb": {
         "type": 2,
         "relativeModel": [1, 0, 0, 0,
@@ -40,5 +83,14 @@
 
         "absoluteScale": [8, 8, 8],
         "color": [1, 0, 0, 1]
+    },
+
+    "White cube": {
+        "relativeModel": [1, 0, 0, 0,
+                          0, 1, 0, 0,
+                          0, 0, 1, 0,
+                          0, 0, 0, 1],
+
+        "absoluteScale": [32, 32, 32]
     }
 }    
