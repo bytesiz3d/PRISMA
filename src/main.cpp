@@ -52,8 +52,8 @@ int main()
     // Create the mesh
     Mesh* cube = Mesh_Utils::WhiteCube();
     Mesh* monkey = Mesh_Utils::OBJMesh("../res/models/suzanne");
-    Scene::cube = cube;
-    Scene::monkey = monkey;
+    Scene::meshes[MESH_CUBE] = cube;
+    Scene::meshes[MESH_MODEL0] = monkey;
 
     Scene::InitScene("../res/scenes/room.json");
     Texture grid("../res/textures/tiles-256.png", GL_RGB);

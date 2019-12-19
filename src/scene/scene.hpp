@@ -1,17 +1,12 @@
 #include <json/json.hpp>
 
-enum OBJECT_TYPE
-{
-    OBJECT_DOOR,
-    OBJECT_WALL,
-    OBJECT_ORB
-};
-
+// Enumerating object type and mesh
+#include "enums.hpp"
 
 namespace Scene
 {
     GLFWwindow* window;
-    Mesh *cube, *monkey;
+    std::map<MESH_TYPE, Mesh*> meshes;
 
     // Controls:
     double p_mX, p_mY,

@@ -2,33 +2,48 @@ using json = nlohmann::json;
 
 // ====================================================================================================
 void Scene::ParseScene(Scene_Node* parent, const json& data)
-{
-    // TODO: Add mesh type to JSON file
+{   
+    if (data.find("comment") != data.end() || !parent)
+        return;
+
     Scene_Node* element;
 
+    Mesh* mesh = meshes[MESH_CUBE];
+    if (data.find("mesh") != data.end())
+    {
+        MESH_TYPE meshKey = data["mesh"].get<MESH_TYPE>();
+        if (meshes[meshKey] != 0)
+            mesh = meshes[meshKey];
+    }
+    
     // Fill the object vectors
     if (data.find("type") != data.end())
     {
-        switch ((int)data["type"])
+        OBJECT_TYPE type = data["type"].get<OBJECT_TYPE>();
+        switch (type)
+        // switch ((int)data["type"])
         {
         case OBJECT_DOOR:
-            element = new Scene_Node(cube);
+            element = new Scene_Node(mesh);
             doors.push_back(element);
             break;
 
         case OBJECT_WALL:
-            element = new Scene_Node(cube);
+            element = new Scene_Node(mesh);
             walls.push_back(element);
             break;
 
         case OBJECT_ORB:
-            element = new Orb(cube);
+            element = new Orb(mesh);
             orbs.push_back(element);
             break;
+
+        default:
+            element = new Scene_Node(mesh);
         }
     }
     else
-        element = new Scene_Node(cube);
+        element = new Scene_Node(mesh);
 
     parent->AddChild(element);
 
@@ -52,9 +67,11 @@ void Scene::ParseScene(Scene_Node* parent, const json& data)
         element->color = glm::make_vec4(&color[0]);
     }
 
-    // TODO: Fix this
-    //if (data.find("drawMode") != data.end())
-    //    element->drawMode = data["drawMode"];
+    if (data.find("drawMode") != data.end())
+    {
+        DRAW_MODE mode = data["drawMode"].get<DRAW_MODE>();
+        element->drawMode = mode;
+    }
 
     if (data.find("children") != data.end())
     {
@@ -69,7 +86,7 @@ void Scene::InitScene(const std::string& scenePath)
     glm::mat4 Model;
 
     // Player
-    player = new Player(monkey);
+    player = new Player(meshes[MESH_MODEL0]);
     player->position = glm::vec3(-64, 8, 0);
     player->absoluteScale = glm::vec3(8);
     player->color = glm::vec4(0, 1, 0, 1);
@@ -79,13 +96,13 @@ void Scene::InitScene(const std::string& scenePath)
     hud = new Scene_Node;
     hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
 
-    Scene_Node* primaryColor = new Scene_Node(cube);
+    Scene_Node* primaryColor = new Scene_Node(meshes[MESH_CUBE]);
     Model = glm::translate(glm::mat4(1), glm::vec3(0.75f, 0, 0));
     primaryColor->relativeModel = Model;
     primaryColor->color = player->color;
     hud->AddChild(primaryColor);
 
-    Scene_Node* secondaryColor = new Scene_Node(cube);
+    Scene_Node* secondaryColor = new Scene_Node(meshes[MESH_CUBE]);
     Model = glm::translate(glm::mat4(1), glm::vec3(0.85f, 0, 0));
     secondaryColor->relativeModel = Model;
     hud->AddChild(secondaryColor);

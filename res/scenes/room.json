@@ -1,6 +1,16 @@
 {
+    "Comments": {
+        "comment": [
+            "Add 'comment' inside any object to skip it",
+            "TODO: Design levels",
+            "mesh: default type is cube",
+            "type: default type is null",
+            "drawMode: default type is triangles"
+            ]
+    },
+    
     "Red door": {
-        "type": 0,
+        "type": "door",
         "relativeModel": [1, 0, 0, 128,
                           0, 1, 0, 0,
                           0, 0, 1, 0,
@@ -10,6 +20,7 @@
         "color": [1, 0, 0, 1],
         "children": {
             "Blue charm": {
+                "mesh": "model0",
                 "relativeModel": [1, 0, 0, -8,
                                   0, 1, 0, 0,
                                   0, 0, 1, 0,
@@ -22,7 +33,7 @@
     },
 
     "Rightmost wall": {
-        "type": 1,
+        "type": "wall",
         "relativeModel": [1, 0, 0, 128,
                           0, 1, 0, 0,
                           0, 0, 1, 0,
@@ -32,7 +43,7 @@
     },
 
     "Leftmost wall": {
-        "type": 1,
+        "type": "wall",
         "relativeModel": [1, 0, 0, -128,
                           0, 1, 0, 0,
                           0, 0, 1, 0,
@@ -42,7 +53,7 @@
     },
 
     "Back wall": {
-        "type": 1,
+        "type": "wall",
         "relativeModel": [1, 0, 0, 0,
                           0, 1, 0, 0,
                           0, 0, 1, 128,
@@ -52,7 +63,7 @@
     },
 
     "Front wall": {
-        "type": 1,
+        "type": "wall",
         "relativeModel": [1, 0, 0, 0,
                           0, 1, 0, 0,
                           0, 0, 1, -128,
@@ -75,7 +86,8 @@
     },
 
     "Red orb": {
-        "type": 2,
+        "type": "orb",
+        "drawMode": "lines",
         "relativeModel": [1, 0, 0, 0,
                           0, 1, 0, 8,
                           0, 0, 1, -64,
@@ -86,6 +98,7 @@
     },
 
     "White cube": {
+        "comment": "",
         "relativeModel": [1, 0, 0, 0,
                           0, 1, 0, 0,
                           0, 0, 1, 0,
