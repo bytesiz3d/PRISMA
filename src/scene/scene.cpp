@@ -15,7 +15,17 @@ void Scene::ParseScene(Scene_Node* parent, const json& data)
         if (meshes[meshKey] != 0)
             mesh = meshes[meshKey];
     }
-    
+
+    Texture* texture = nullptr;
+    if (data.find("texture") != data.end())
+    {
+        MESH_TEXTURE textureKey = (MESH_TEXTURE)data["texture"].get<int>();
+        if (textures[textureKey] != 0)
+            texture = textures[textureKey];
+    }
+    else
+        texture = textures[MESH_TEXTURE_NULL];
+
     // Fill the object vectors
     if (data.find("type") != data.end())
     {
@@ -46,6 +56,7 @@ void Scene::ParseScene(Scene_Node* parent, const json& data)
         element = new Scene_Node(mesh);
 
     parent->AddChild(element);
+    element->texture = texture;
 
     // Read available data
     if (data.find("relativeModel") != data.end())
@@ -91,6 +102,7 @@ void Scene::InitScene(const std::string& scenePath)
     player->absoluteScale = glm::vec3(8);
     player->color = glm::vec4(0, 1, 0, 1);
     player->orientation = { std::asin(0.3), std::asin(1), 0 };
+    player->texture = textures[MESH_TEXTURE_NULL];
 
     // HUD:
     hud = new Scene_Node;

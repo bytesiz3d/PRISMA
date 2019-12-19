@@ -1,7 +1,7 @@
 #include "scene_node.hpp"
 
 Scene_Node::Scene_Node()
-    : mesh(nullptr), parent(nullptr), worldModel(glm::mat4(1.f)), drawMode(GL_TRIANGLES)
+    : mesh(nullptr), texture(nullptr), parent(nullptr), worldModel(glm::mat4(1.f)), drawMode(GL_TRIANGLES)
 {
     children = std::vector<Scene_Node*>(0);
 
@@ -15,7 +15,7 @@ Scene_Node::Scene_Node(Mesh* _mesh,
                        glm::mat4 _relativeModel,
                        glm::vec3 _absoluteScale,
                        glm::vec4 _color)
-    : mesh(nullptr), parent(nullptr), worldModel(glm::mat4(1.f)), drawMode(GL_TRIANGLES)
+    : mesh(nullptr), texture(nullptr), parent(nullptr), worldModel(glm::mat4(1.f)), drawMode(GL_TRIANGLES)
 {
     mesh = _mesh;
     
@@ -64,5 +64,13 @@ void Scene_Node::Draw(GLuint shaderId)
     glUniformMatrix4fv(tint_location, 1, false, glm::value_ptr(tint));
 
     if (mesh)
+    {
+        if (texture)
+            texture->Bind();
+
         mesh->Draw(drawMode);
+        
+        if (texture)
+            texture->Unbind();
+    }
 }

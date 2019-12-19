@@ -4,6 +4,33 @@
 
 #include "texture.hpp"
 
+// Creates a white texture
+Texture::Texture()
+    : textureID(0), filePath(""), inputFormat(GL_RGBA), localBuffer(nullptr), width(256), height(256), bpp(0)
+{
+    localBuffer = new GLubyte[width * height * 4];
+    memset(localBuffer, 0xFF, width * height * 4);
+
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Sampling options:
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+ 
+    // Upload the texture
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    glPixelStorei(GL_PACK_ALIGNMENT, 1);
+    glTexImage2D(GL_TEXTURE_2D, 0, inputFormat,
+                 width, height, 0, inputFormat,
+                 GL_UNSIGNED_BYTE, localBuffer);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 Texture::Texture(const std::string& path, GLenum format)
     : textureID(0), filePath(path), inputFormat(format), localBuffer(nullptr), width(0), height(0), bpp(0)
 {

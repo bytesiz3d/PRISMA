@@ -48,3 +48,11 @@ NLOHMANN_JSON_SERIALIZE_ENUM(DRAW_MODE, {
         {DRAW_TRIANGLES, "triangles"},
         {DRAW_LINES, "lines"},
     })
+
+// TODO: Reference textures in json
+enum MESH_TEXTURE
+{
+    MESH_TEXTURE0,
+    MESH_TEXTURE1,
+    MESH_TEXTURE_NULL = -1
+};

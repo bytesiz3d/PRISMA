@@ -28,6 +28,7 @@
 #include "font/font.hpp"
 
 // *NOT SEPARATELY BUILT*
+// TODO: Add shaderIDs to the JSON file
 #include "scene/scene.hpp"
 
 // Window dimensions
@@ -47,26 +48,28 @@ int main()
     GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
     Scene::texture_sampler_location = glGetUniformLocation(cubeShaderProgram, "texture_sampler");
-    Scene::on_location = glGetUniformLocation(cubeShaderProgram, "on");
 
-    // Create the mesh
+    // Create meshes
     Mesh* cube = Mesh_Utils::WhiteCube();
     Mesh* monkey = Mesh_Utils::OBJMesh("../res/models/suzanne");
     Scene::meshes[MESH_CUBE] = cube;
     Scene::meshes[MESH_MODEL0] = monkey;
 
-    Scene::InitScene("../res/scenes/room.json");
+    // Create textures
     Texture grid("../res/textures/tiles-256.png", GL_RGB);
-    // Texture wood("../res/textures/albedo.jpg", GL_RGB);
+    Texture wood("../res/textures/albedo.jpg", GL_RGB);
+    Texture white;
+    Scene::textures[MESH_TEXTURE_NULL] = &white;
+    Scene::textures[MESH_TEXTURE0] = &grid;
+    Scene::textures[MESH_TEXTURE1] = &wood;
 
-    //Scene::InitScene(cube, monkey);    
+    // Initialize scene
+    Scene::InitScene("../res/scenes/room.json");
 
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
 
-    grid.Bind(0);
     glUniform1f(Scene::texture_sampler_location, 0);
-
     // Game loop
     while (!glfwWindowShouldClose(Scene::window))
     {
@@ -84,10 +87,7 @@ int main()
         glm::mat4 VP = Scene::camera.ViewProjectionMatrix();
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
 
-        glUniform1i(Scene::on_location, 1);
         Scene::DrawScene(Scene::root, cubeShaderProgram); 
-
-        glUniform1i(Scene::on_location, 0);
         Scene::DrawScene(Scene::player, cubeShaderProgram); 
         Scene::DrawScene(Scene::hud, hudShaderProgram);
         

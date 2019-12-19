@@ -8,12 +8,15 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "../mesh/mesh.hpp"
+#include "../texture/texture.hpp"
 
 class Scene_Node
 {
 private:
 public:
     Mesh* mesh;
+    Texture* texture;
+    
     Scene_Node* parent;
     std::vector<Scene_Node*> children;
 

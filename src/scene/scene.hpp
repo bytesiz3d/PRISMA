@@ -7,6 +7,7 @@ namespace Scene
 {
     GLFWwindow* window;
     std::map<MESH_TYPE, Mesh*> meshes;
+    std::map<MESH_TEXTURE, Texture*> textures;
 
     // Controls:
     double p_mX, p_mY,
