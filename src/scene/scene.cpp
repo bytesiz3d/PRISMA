@@ -98,10 +98,11 @@ void Scene::InitScene(const std::string& scenePath)
 
     // Player
     player = new Player(meshes[MESH_MODEL0]);
-    player->position = glm::vec3(-64, 8, 0);
+    player->position = glm::vec3(-64, 0, 0);
     player->absoluteScale = glm::vec3(8);
-    player->color = glm::vec4(0, 1, 0, 1);
-    player->orientation = { std::asin(0.3), std::asin(1), 0 };
+    //player->color = glm::vec4(0, 1, 0, 1);
+    player->direction = { 0, 0, 1 };
+    player->orientation = {0, std::asin(1), 0 };
     player->texture = textures[MESH_TEXTURE_NULL];
 
     // HUD:

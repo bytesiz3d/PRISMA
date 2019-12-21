@@ -44,16 +44,16 @@ int main()
         return -1;
     
     // Compile and link the shader program
-    GLuint cubeShaderProgram = Shader::LoadShader("../shaders/cube.vert", "../shaders/texture.frag");
+    GLuint cubeShaderProgram = Shader::LoadShader("../shaders/texture.vert", "../shaders/texture.frag");
     GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
     Scene::texture_sampler_location = glGetUniformLocation(cubeShaderProgram, "texture_sampler");
 
     // Create meshes
     Mesh* cube = Mesh_Utils::WhiteCube();
-    Mesh* monkey = Mesh_Utils::OBJMesh("../res/models/suzanne");
+    Mesh* player = Mesh_Utils::OBJMesh("../res/models/player");
     Scene::meshes[MESH_CUBE] = cube;
-    Scene::meshes[MESH_MODEL0] = monkey;
+    Scene::meshes[MESH_MODEL0] = player;
 
     // Create textures
     Texture grid("../res/textures/tiles-256.png", GL_RGB);
@@ -98,7 +98,7 @@ int main()
     glfwTerminate();
 
     delete cube;
-    delete monkey;
+    delete player;
 
     Scene::DeleteAllPointers();
     return 0;

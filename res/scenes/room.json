@@ -20,7 +20,7 @@
         "color": [1, 0, 0, 1],
         "children": {
             "Blue charm": {
-                "mesh": "model0",
+                "mesh": "cube",
                 "relativeModel": [1, 0, 0, -8,
                                   0, 1, 0, 0,
                                   0, 0, 1, 0,

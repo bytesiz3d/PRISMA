@@ -10,7 +10,6 @@ uniform mat4 M;
 uniform mat4 VP;
 
 void main(){
-    // Dividing by the aspect ratio to get squares:
     gl_Position = VP * M * vec4(position, 1.0f);
     v_color = color;
     v_texcoord = texcoord; // pass the texture coordinates as is to the fragment shader
