@@ -13,17 +13,17 @@ VertexDescriptor vd_pct[3] = {
     },
     {
         1,
-        "colors",
-        4,
-        GL_UNSIGNED_BYTE,
-        true,
+        "texCoords",
+        2,
+        GL_FLOAT,
+        false,
         0,
         0
     },
     {
         2,
-        "texCoords",
-        2,
+        "normals",
+        3,
         GL_FLOAT,
         false,
         0,

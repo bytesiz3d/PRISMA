@@ -4,12 +4,12 @@
 
 #include "texture.hpp"
 
-// Creates a white texture
-Texture::Texture()
+// Creates a colored texture
+Texture::Texture(GLubyte color)
     : textureID(0), filePath(""), inputFormat(GL_RGBA), localBuffer(nullptr), width(256), height(256), bpp(0)
 {
     localBuffer = new GLubyte[width * height * 4];
-    memset(localBuffer, 0xFF, width * height * 4);
+    memset(localBuffer, color, width * height * 4);
 
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_2D, textureID);

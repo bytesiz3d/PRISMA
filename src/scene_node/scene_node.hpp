@@ -10,12 +10,21 @@
 #include "../mesh/mesh.hpp"
 #include "../texture/texture.hpp"
 
+struct Material
+{
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
+};
+
 class Scene_Node
 {
 private:
 public:
     Mesh* mesh;
     Texture* texture;
+    Material material;
     
     Scene_Node* parent;
     std::vector<Scene_Node*> children;

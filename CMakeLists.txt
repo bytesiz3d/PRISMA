@@ -25,6 +25,10 @@ file(GLOB_RECURSE TEXTURES
   res/textures/*
   )
 
+file(GLOB_RECURSE SCENES
+  res/scenes/*
+  )
+
 # Project and Source Groups:
 project(${PROJECT_NAME} CXX) # Specifies the target project
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
@@ -65,6 +69,8 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   ${FONTS}
 
   ${TEXTURES}
+
+  ${SCENES}
   )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
@@ -144,6 +150,11 @@ source_group("Resources\\Models"
   ${TEXTURES}
   )
 
+ source_group("Resources\\Scenes"
+  FILES
+  ${SCENES}
+  )
+
 # Linking to third party libraries:
 ## OpenGL:
 find_package(OpenGL REQUIRED)
@@ -156,8 +167,8 @@ target_link_libraries(${PROJECT_NAME} glad)
 ## GLFW:
 option(GLFW_BUILD_EXAMPLES OFF) # Disabling additional build targets
 option(GLFW_BUILD_TESTS    OFF)
-option(GLFW_BUILD_DOCS 	 OFF)
-option(GLFW_INSTALL	 OFF)
+option(GLFW_BUILD_DOCS     OFF)
+option(GLFW_INSTALL        OFF)
 option(GLFW_VULKAN_STATIC  OFF)
 
 add_subdirectory(${THIRDPARTY_DIR}/glfw)
@@ -180,6 +191,20 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/syoyo)
 
 ## JSON:
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/nlohmann)
+
+## ASSIMP:
+set(ASSIMP_BUILD_OBJ_IMPORTER ON) # Build OBJ and FBX importers ONLY
+set(ASSIMP_BUILD_FBX_IMPORTER ON)
+
+set(ASSIMP_BUILD_ALL_IMPORTERS_BY_DEFAULT CACHE BOOL OFF)
+set(ASSIMP_BUILD_ALL_EXPORTERS_BY_DEFAULT CACHE BOOL OFF)
+set(ASSIMP_BUILD_TESTS                    CACHE BOOL OFF)
+set(ASSIMP_BUILD_ASSIMP_TOOLS             CACHE BOOL OFF)
+set(ASSIMP_NO_EXPORT  TRUE  CACHE BOOL "Disable export API."     FORCE)
+
+add_subdirectory(${THIRDPARTY_DIR}/assimp)
+target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/assimp/include)
+target_link_libraries(${PROJECT_NAME} assimp)
 
 # Options:
 set(BUILD_SHARED_LIBS FALSE CACHE BOOL "Enforce static linking." FORCE) # Build static libraries

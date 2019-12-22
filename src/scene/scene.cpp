@@ -98,8 +98,8 @@ void Scene::InitScene(const std::string& scenePath)
 
     // Player
     player = new Player(meshes[MESH_MODEL0]);
-    player->position = glm::vec3(-64, 0, 0);
-    player->absoluteScale = glm::vec3(8);
+    player->position = glm::vec3(-64, 8, 0);
+    player->absoluteScale = glm::vec3(16);
     //player->color = glm::vec4(0, 1, 0, 1);
     player->direction = { 0, 0, 1 };
     player->orientation = {0, std::asin(1), 0 };
@@ -146,6 +146,27 @@ void Scene::UpdateData()
     // Move player:
     dm = movementP - movementN;
     player->UpdatePlayer(mouseDelta, dm);
+
+    // Swap colors
+    if (movementP[1] > 0)
+    {
+        if ((bool)movementP[1] != swapped)
+        {
+            // Swap colors
+            glm::vec4 newPlayerColor = hud->children[1]->color;
+            hud->children[1]->color = player->color;
+            player->color = newPlayerColor;
+
+            // Update HUD
+            hud->children[0]->color = newPlayerColor;
+            swapped = true;
+
+        }
+    }
+    else
+        swapped = false;
+
+
 
     ProcessCollision();
 
@@ -300,13 +321,10 @@ void Scene::ProcessCollision()
 
         if (orb->currentState && (orb->currentState != orb->lastState))
         {
-            // Swap colors
-            glm::vec4 newPlayerColor = orb->color;
-            orb->color = player->color;
-            player->color = newPlayerColor;
-
-            // Update HUD
-            hud->children[0]->color = newPlayerColor;
+            // Swap secondary color
+            glm::vec4 new2ndColor = orb->color;
+            orb->color = hud->children[1]->color;
+            hud->children[1]->color = new2ndColor;
             
             orb->lastState = orb->currentState;
             return;

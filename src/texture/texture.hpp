@@ -15,7 +15,7 @@ class Texture
 public:
     int width, height, bpp;
     Texture(const std::string& path, GLenum format = GL_RGBA);
-    Texture();
+    Texture(GLubyte color = 0xFF);
     ~Texture();
 
     void Bind(GLuint slot = 0) const;

@@ -20,6 +20,7 @@
         "color": [1, 0, 0, 1],
         "children": {
             "Blue charm": {
+                "comment" : "",
                 "mesh": "cube",
                 "relativeModel": [1, 0, 0, -8,
                                   0, 1, 0, 0,
@@ -40,7 +41,7 @@
                           0, 0, 1, 0,
                           0, 0, 0, 1],
 
-        "absoluteScale": [0, 256, 256]
+        "absoluteScale": [1, 256, 256]
     },
 
     "Leftmost wall": {
@@ -51,7 +52,7 @@
                           0, 0, 1, 0,
                           0, 0, 0, 1],
 
-        "absoluteScale": [0, 256, 256]
+        "absoluteScale": [1, 256, 256]
     },
 
     "Back wall": {
@@ -62,7 +63,7 @@
                           0, 0, 1, 128,
                           0, 0, 0, 1],
 
-        "absoluteScale": [256, 256, 0]
+        "absoluteScale": [256, 256, 1]
     },
 
     "Front wall": {
@@ -73,7 +74,7 @@
                           0, 0, 1, -128,
                           0, 0, 0, 1],
 
-        "absoluteScale": [256, 256, 0]
+        "absoluteScale": [256, 256, 1]
     },
 
     "Roof": {
@@ -83,17 +84,16 @@
                           0, 0, 1, 0,
                           0, 0, 0, 1],
 
-        "absoluteScale": [256, 0, 256]
+        "absoluteScale": [256, 1, 256]
     },
 
     "Floor": {
         "texture": 1,
-        "absoluteScale": [256, 0, 256]
+        "absoluteScale": [256, 1, 256]
     },
 
     "Red orb": {
         "type": "orb",
-        "drawMode": "lines",
         "relativeModel": [1, 0, 0, 0,
                           0, 1, 0, 8,
                           0, 0, 1, -64,
@@ -103,13 +103,14 @@
         "color": [1, 0, 0, 1]
     },
 
-    "White cube": {
-        "comment": "",
+    "Green orb": {
+        "type": "orb",
         "relativeModel": [1, 0, 0, 0,
-                          0, 1, 0, 0,
-                          0, 0, 1, 0,
+                          0, 1, 0, 8,
+                          0, 0, 1, 64,
                           0, 0, 0, 1],
 
-        "absoluteScale": [32, 32, 32]
+        "absoluteScale": [8, 8, 8],
+        "color": [0, 1, 0, 1]
     }
 }    

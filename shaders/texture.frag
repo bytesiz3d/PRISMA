@@ -6,7 +6,7 @@ in vec2 v_texcoord; // texture coordinates received from the vertex shader
 
 out vec4 color;
 
-uniform mat4 tint;
+uniform vec4 tint;
 uniform sampler2D texture_sampler; // the sampler using which we will sample colors from the texture 
 
 

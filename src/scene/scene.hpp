@@ -20,6 +20,7 @@ namespace Scene
     glm::vec2 mouseDelta(0);
 
     bool holdMouse = false;
+    bool swapped = false;
 
     // Camera:
     Camera camera;
