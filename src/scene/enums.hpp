@@ -23,6 +23,7 @@ enum MESH_TYPE
     MESH_MODEL1,
     MESH_MODEL2,
     MESH_MODEL3,
+    MESH_MODEL4,
     MESH_NULL = 0
 };
 
@@ -33,7 +34,8 @@ NLOHMANN_JSON_SERIALIZE_ENUM(MESH_TYPE, {
         {MESH_MODEL0, "model0"},
         {MESH_MODEL1, "model1"},
         {MESH_MODEL2, "model2"},
-        {MESH_MODEL3, "model3"}
+        {MESH_MODEL3, "model3"},
+        {MESH_MODEL4, "model4"}
     })
 
 enum DRAW_MODE
