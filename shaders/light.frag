@@ -29,7 +29,10 @@ struct Light
     vec3 position;
     float attenuation;
 };
-uniform Light light;
+
+#define NUM_ROOMS 16
+#define NUM_LIGHT_SUM_PER_ROOM 2 
+uniform Light lights[NUM_ROOMS * NUM_LIGHT_SUM_PER_ROOM];
 
 float diffuse(vec3 n, vec3 l)
 {
@@ -48,29 +51,37 @@ void main()
 {
     vec3 n = normalize(v_normal);
     vec3 v = normalize(v_view);
-    vec3 l = -light.direction; // For directional lights, the light vector is the inverse of the light direction
-    vec3 lights =
-        material.ambient * light.ambient +
-        material.diffuse * light.diffuse * diffuse(n, l) +
-        material.specular * light.specular * specular(n, l, v, material.shininess);
+    vec3 light_sum = vec3(0.f);
 
-    // Point light things:
-    l = light.position - v_world; // Point light
+    for (int i = 0; i < 1; i++)
+    {
+        // For directional light_sum, the light vector is the inverse of the light direction
+        vec3 l = -lights[i].direction;
 
-    // Normalize light vector and store distance
-    float d = length(l);
-    l /= d;
-    float attenuation = light.attenuation * d * d;
+        vec3 current_light =
+            material.ambient * lights[i].ambient +
+            material.diffuse * lights[i].diffuse * diffuse(n, l) +
+            material.specular * lights[i].specular * specular(n, l, v, material.shininess);
 
-    lights = 
-        material.diffuse * light.diffuse * diffuse(n, l) +
-        material.specular * light.specular * specular(n, l, v, material.shininess);
+        // Point light things:
+        l = lights[i].position - v_world; // Point light
 
-    lights /= attenuation;
-    lights += material.ambient * light.ambient;
+        // Normalize light vector and store distance
+        float d = length(l);
+        l /= d;
+        float attenuation = lights[i].attenuation * d * d;
 
-    color = vec4(lights, 1.f);
-    
+        current_light = 
+            material.diffuse * lights[i].diffuse * diffuse(n, l) +
+            material.specular * lights[i].specular * specular(n, l, v, material.shininess);
+
+        current_light /= attenuation;
+        current_light += material.ambient * lights[i].ambient;
+
+        light_sum += current_light;
+    }
+
+    color = vec4(light_sum, 1.f);
     vec4 t_color = tint;
     t_color = texture(texture_sampler, v_texcoord) * t_color;
     color = color * t_color;

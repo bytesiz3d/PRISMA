@@ -1,6 +1,7 @@
 #version 300 es
 layout(location=0) in vec3 position;
-layout(location=1) in vec2 texcoord; // We have a new attribute "texcoord" that contains the texture coordinates of the vertex
+layout(location=1) in vec3 normal;
+layout(location=2) in vec2 texcoord; // We have a new attribute "texcoord" that contains the texture coordinates of the vertex
 
 out vec4 v_color;
 out vec2 v_texcoord; // We will pass the texture coordinates to the fragment shader

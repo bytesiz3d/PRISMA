@@ -37,17 +37,6 @@ const GLuint WIDTH = 1280, HEIGHT = 720;
 // Start our window
 bool InitWindow();
 
-struct Light
-{
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
-    glm::vec3 direction;
-    glm::vec3 position;
-    float attenuation;
-
-} light;
-
 // ====================================================================================================
 int main()
 {
@@ -55,18 +44,20 @@ int main()
         return -1;
     
     // Compile and link the shader program
-    //GLuint cubeShaderProgram = Shader::LoadShader("../shaders/texture.vert", "../shaders/texture.frag");
+    // GLuint cubeShaderProgram = Shader::LoadShader("../shaders/texture.vert", "../shaders/texture.frag");
     GLuint cubeShaderProgram = Shader::LoadShader("../shaders/light.vert", "../shaders/light.frag");
     GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
 
     glUseProgram(cubeShaderProgram);
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
     Scene::texture_sampler_location = glGetUniformLocation(cubeShaderProgram, "texture_sampler");
+    Scene::cam_pos_location = glGetUniformLocation(cubeShaderProgram, "cam_position");
 
     // Create meshes
     Mesh* cube = Mesh_Utils::WhiteCube();
     Mesh* sphere = Mesh_Utils::Sphere();
-    Mesh* player = Mesh_Utils::OBJMesh("../res/models/player");
+    // Mesh* player = Mesh_Utils::OBJMesh("../res/models/player");
+    Mesh* player = Mesh_Utils::FBXMesh("../res/models/player");
     Scene::meshes[MESH_NULL] = nullptr;
     Scene::meshes[MESH_CUBE] = cube;
     Scene::meshes[MESH_SPHERE] = sphere;
@@ -84,34 +75,10 @@ int main()
 
     // Initialize scene
     Scene::InitScene("../res/scenes/room.json");
+    Scene::UploadLights(cubeShaderProgram);
 
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
-
-    // Setup lights
-    light.ambient = { 0.5, 0.5, 0.5 };
-    light.diffuse = { 1, 1, 1 };
-    light.specular = { 1, 1, 1 };
-    light.direction = { -1, -1, -1 };
-    light.direction = glm::normalize(light.direction);
-    light.position = { 0, 64, 0 };
-    light.attenuation = std::pow(2, -12);
-
-    int light_amb = glGetUniformLocation(cubeShaderProgram, "light.ambient");
-    int light_diff = glGetUniformLocation(cubeShaderProgram, "light.diffuse");
-    int light_spec = glGetUniformLocation(cubeShaderProgram, "light.specular");
-    int light_dir = glGetUniformLocation(cubeShaderProgram, "light.direction");
-    int light_pos = glGetUniformLocation(cubeShaderProgram, "light.position");
-    int light_att = glGetUniformLocation(cubeShaderProgram, "light.attenuation");
-
-    glUniform3f(light_amb, light.ambient.r, light.ambient.g, light.ambient.b);
-    glUniform3f(light_diff, light.diffuse.r, light.diffuse.g, light.diffuse.b);
-    glUniform3f(light_spec, light.specular.r, light.specular.g, light.specular.b);
-    glUniform3f(light_dir, light.direction.x, light.direction.y, light.direction.z);
-    glUniform3f(light_pos, light.position.x, light.position.y, light.position.z);
-    glUniform1f(light_att, light.attenuation);
-
-    int cam_pos = glGetUniformLocation(cubeShaderProgram, "cam_position");
 
     glUniform1f(Scene::texture_sampler_location, 0);
     // Game loop
@@ -130,7 +97,7 @@ int main()
         // Pass VP, camera position
         glm::mat4 VP = Scene::camera.ViewProjectionMatrix();
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
-        glUniform3f(cam_pos, Scene::camera.position.x, Scene::camera.position.y, Scene::camera.position.z);
+        glUniform3f(Scene::cam_pos_location, Scene::camera.position.x, Scene::camera.position.y, Scene::camera.position.z);
 
         Scene::DrawScene(Scene::root, cubeShaderProgram); 
         Scene::DrawScene(Scene::player, cubeShaderProgram); 
