@@ -12,7 +12,7 @@ void Scene::ParseScene(Scene_Node* parent, const json& data)
     if (data.find("mesh") != data.end())
     {
         MESH_TYPE meshKey = data["mesh"].get<MESH_TYPE>();
-        if (meshes[meshKey] != 0)
+        if (meshes.find(meshKey) != meshes.end())
             mesh = meshes[meshKey];
     }
 
@@ -98,7 +98,7 @@ void Scene::InitScene(const std::string& scenePath)
 
     // Player
     player = new Player(meshes[MESH_MODEL0]);
-    player->position = glm::vec3(-64, 8, 0);
+    player->position = glm::vec3(-86, 8, 0);
     player->absoluteScale = glm::vec3(16);
     //player->color = glm::vec4(0, 1, 0, 1);
     player->direction = { 0, 0, 1 };
@@ -287,7 +287,7 @@ void Scene::ProcessCollision()
     {
         if (Collide(player, door))
         {
-            if (player->color != door->color)
+            if (glm::vec3(player->color) != glm::vec3(door->color))
             {
                 // Revert the move and put the player one frame back
                 player->UpdatePlayer(mouseDelta, -dm);

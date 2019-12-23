@@ -61,6 +61,10 @@ glm::mat4 Scene_Node::ScaleWorldModel()
 
 void Scene_Node::Draw(GLuint shaderId)
 {
+    glm::mat4 mod = ScaleWorldModel();
+    if (!mesh)
+        return;
+    
     glUseProgram(shaderId);
 
     // Send M and M_it
@@ -68,7 +72,6 @@ void Scene_Node::Draw(GLuint shaderId)
     int M_it = glGetUniformLocation(shaderId, "M_it");
     int tint = glGetUniformLocation(shaderId, "tint");
 
-    glm::mat4 mod = ScaleWorldModel();
     glUniformMatrix4fv(M, 1, false, glm::value_ptr(mod));
 
     if (glm::determinant(mod) == 0)
@@ -90,15 +93,12 @@ void Scene_Node::Draw(GLuint shaderId)
 
     // Send color
     glUniform4f(tint, color.r, color.g, color.b, color.a);
-
-    if (mesh)
-    {
-        if (texture)
-            texture->Bind();
-
-        mesh->Draw(drawMode);
-        
-        if (texture)
-            texture->Unbind();
-    }
+    
+    if (texture)
+        texture->Bind();
+    
+    mesh->Draw(drawMode);
+    
+    if (texture)
+        texture->Unbind();
 }

@@ -65,17 +65,22 @@ int main()
 
     // Create meshes
     Mesh* cube = Mesh_Utils::WhiteCube();
+    Mesh* sphere = Mesh_Utils::Sphere();
     Mesh* player = Mesh_Utils::OBJMesh("../res/models/player");
+    Scene::meshes[MESH_NULL] = nullptr;
     Scene::meshes[MESH_CUBE] = cube;
+    Scene::meshes[MESH_SPHERE] = sphere;
     Scene::meshes[MESH_MODEL0] = player;
 
     // Create textures
     Texture grid("../res/textures/tiles-256.png", GL_RGB);
     Texture wood("../res/textures/albedo.jpg", GL_RGB);
+    Texture exit("../res/textures/exit.png", GL_RGB);
     Texture white;
     Scene::textures[MESH_TEXTURE_NULL] = &white;
     Scene::textures[MESH_TEXTURE0] = &wood;
     Scene::textures[MESH_TEXTURE1] = &grid;
+    Scene::textures[MESH_TEXTURE2] = &exit;
 
     // Initialize scene
     Scene::InitScene("../res/scenes/room.json");
@@ -84,7 +89,7 @@ int main()
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
 
     // Setup lights
-    light.ambient = { 0.1, 0.1, 0.1 };
+    light.ambient = { 0.5, 0.5, 0.5 };
     light.diffuse = { 1, 1, 1 };
     light.specular = { 1, 1, 1 };
     light.direction = { -1, -1, -1 };
@@ -139,7 +144,7 @@ int main()
 
     delete cube;
     delete player;
-    //delete sphere;
+    delete sphere;
 
     glDeleteProgram(cubeShaderProgram);
     glDeleteProgram(hudShaderProgram);
