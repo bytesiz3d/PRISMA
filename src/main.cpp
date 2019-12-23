@@ -58,10 +58,12 @@ int main()
     Mesh* sphere = Mesh_Utils::Sphere();
     // Mesh* player = Mesh_Utils::OBJMesh("../res/models/player");
     Mesh* player = Mesh_Utils::FBXMesh("../res/models/player");
+    Mesh* lamp = Mesh_Utils::FBXMesh("../res/models/lamp");
     Scene::meshes[MESH_NULL] = nullptr;
     Scene::meshes[MESH_CUBE] = cube;
     Scene::meshes[MESH_SPHERE] = sphere;
     Scene::meshes[MESH_MODEL0] = player;
+    Scene::meshes[MESH_MODEL4] = lamp;
 
     // Create textures
     Texture grid("../res/textures/tiles-256.png", GL_RGB);
@@ -99,8 +101,10 @@ int main()
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
         glUniform3f(Scene::cam_pos_location, Scene::camera.position.x, Scene::camera.position.y, Scene::camera.position.z);
 
+
         Scene::DrawScene(Scene::root, cubeShaderProgram); 
-        Scene::DrawScene(Scene::player, cubeShaderProgram); 
+        Scene::DrawScene(Scene::player, cubeShaderProgram);
+        Scene::DrawScene(Scene::lamp, cubeShaderProgram);
         Scene::DrawScene(Scene::hud, hudShaderProgram);
         
         // Swap the screen buffers
@@ -112,6 +116,8 @@ int main()
     delete cube;
     delete player;
     delete sphere;
+    delete lamp;
+    //delete sphere;
 
     glDeleteProgram(cubeShaderProgram);
     glDeleteProgram(hudShaderProgram);

@@ -2,6 +2,7 @@
 
 // Enumerating object type and mesh
 #include "enums.hpp"
+#include "../lamp/Lamp.h"
 
 struct Light
 {
@@ -50,6 +51,7 @@ namespace Scene
     // Player and HUD:
     Player* player;
     Scene_Node* hud;
+    Lamp* lamp;
 
     // Utility functions:
     void InitScene(const std::string& scenePath);
