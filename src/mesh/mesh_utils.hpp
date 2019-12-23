@@ -19,8 +19,8 @@ namespace Mesh_Utils
     Mesh* Sphere(GLuint hRes = 32, GLuint vRes = 32);
 
     Mesh* TextMesh(const std::string& text, Font* font);
-    Mesh* OBJMesh(const std::string& filePath);
 
+    Mesh* OBJMesh(const std::string& filePath);
     Mesh* FBXMesh(const std::string& filePath);
 
     // Mesh* ColoredSphere(GLuint hRes = 32, GLuint vRes = 32);

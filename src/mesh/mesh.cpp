@@ -13,8 +13,8 @@ VertexDescriptor vd_pct[3] = {
     },
     {
         1,
-        "texCoords",
-        2,
+        "normals",
+        3,
         GL_FLOAT,
         false,
         0,
@@ -22,8 +22,8 @@ VertexDescriptor vd_pct[3] = {
     },
     {
         2,
-        "normals",
-        3,
+        "texcoords",
+        2,
         GL_FLOAT,
         false,
         0,

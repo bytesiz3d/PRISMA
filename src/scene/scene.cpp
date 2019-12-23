@@ -84,11 +84,35 @@ void Scene::ParseScene(Scene_Node* parent, const json& data)
         element->drawMode = mode;
     }
 
+    // Light:
+    if (data.find("light") != data.end())
+    {
+        // Read data from file and append to vector
+        auto ambient     = data["light"]["ambient"]    .get<std::vector<float>>();
+        auto diffuse     = data["light"]["diffuse"]    .get<std::vector<float>>();
+        auto specular    = data["light"]["specular"]   .get<std::vector<float>>();
+        auto direction   = data["light"]["direction"]  .get<std::vector<float>>();
+        auto position    = data["light"]["position"]   .get<std::vector<float>>();
+        auto attenuation = data["light"]["attenuation"].get<float>();
+
+        Light current_light;
+        current_light.ambient     = glm::make_vec3(ambient.data());
+        current_light.diffuse     = glm::make_vec3(diffuse.data());
+        current_light.specular    = glm::make_vec3(specular.data());
+        current_light.direction   = glm::make_vec3(direction.data());
+        current_light.position    = glm::make_vec3(position.data());
+        current_light.attenuation = attenuation;   
+
+        current_light.direction   = glm::normalize(current_light.direction);
+        lights.push_back(current_light);
+    }
+
     if (data.find("children") != data.end())
     {
         for (auto child: data["children"])
             ParseScene(element, child);
     }
+
 }
 
 // ====================================================================================================
@@ -133,6 +157,38 @@ void Scene::InitScene(const std::string& scenePath)
     }
 }
 
+// ====================================================================================================
+// Upload light information to shader
+void Scene::UploadLights(GLuint shaderID)
+{
+    for (GLuint i = 0; i < lights.size(); i++)
+    {
+        const char* ambient = ("lights[" + std::to_string(i) + "].ambient").c_str();
+        int amb = glGetUniformLocation(shaderID, ambient);
+
+        const char* diffuse = ("lights[" + std::to_string(i) + "].diffuse").c_str();
+        int dif = glGetUniformLocation(shaderID, diffuse);
+
+        const char* specular = ("lights[" + std::to_string(i) + "].specular").c_str();
+        int spc = glGetUniformLocation(shaderID, specular);
+
+        const char* direction = ("lights[" + std::to_string(i) + "].direction").c_str();
+        int dir = glGetUniformLocation(shaderID, direction);
+
+        const char* position = ("lights[" + std::to_string(i) + "].position").c_str();
+        int pos = glGetUniformLocation(shaderID, position);
+
+        const char* attenuation = ("lights[" + std::to_string(i) + "].attenuation").c_str();
+        int att = glGetUniformLocation(shaderID, attenuation);
+
+        glUniform3f(amb, lights[i].ambient.r, lights[i].ambient.g, lights[i].ambient.b);
+        glUniform3f(dif, lights[i].diffuse.r, lights[i].diffuse.g, lights[i].diffuse.b);
+        glUniform3f(spc, lights[i].specular.r, lights[i].specular.g, lights[i].specular.b);
+        glUniform3f(dir, lights[i].direction.x, lights[i].direction.y, lights[i].direction.z);
+        glUniform3f(pos, lights[i].position.x, lights[i].position.y, lights[i].position.z);
+        glUniform1f(att, lights[i].attenuation);
+    }
+}
 // ====================================================================================================
 void Scene::UpdateData()
 {
