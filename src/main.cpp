@@ -80,7 +80,7 @@ int main()
     int level = 2;
     // Initialize scene
     if(level == 1)
-    Scene::InitScene("../res/scenes/room.json");
+    Scene::InitScene("../res/scenes/level1.json");
     else if(level == 2)
     Scene::InitScene("../res/scenes/level2.json");
 
