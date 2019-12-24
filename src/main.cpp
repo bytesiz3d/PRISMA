@@ -32,7 +32,7 @@
 #include "scene/scene.hpp"
 
 // Window dimensions
-const GLuint WIDTH = 1280, HEIGHT = 720;
+GLuint WIDTH = 1280, HEIGHT = 720;
 
 // Start our window
 bool InitWindow();
@@ -140,6 +140,11 @@ bool InitWindow()
 
     // Init GLFW
     glfwInit();
+    
+    // get the screen resolution
+    const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    WIDTH = mode->width;
+    HEIGHT = mode->height;
 
     // Set all the required options for GLFW
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -150,7 +155,7 @@ bool InitWindow()
     glfwWindowHint(GLFW_SAMPLES, 16);
 
     // Create a GLFWwindow object that we can use for GLFW's functions
-    Scene::window = glfwCreateWindow(WIDTH, HEIGHT, "GFX Playground", NULL, NULL);
+    Scene::window = glfwCreateWindow(WIDTH, HEIGHT, "GFX Playground", glfwGetPrimaryMonitor(), NULL);
     glfwMakeContextCurrent(Scene::window);
     if (Scene::window == NULL)
     {
