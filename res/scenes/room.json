@@ -149,6 +149,19 @@
                           0, 0, 0, 1],
         "mesh": "empty",
         "children": {
+
+            "Ceiling Light": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [1, 1, 1],
+                    "specular":  [1, 1, 1],
+                    "direction": [-1, -1, -1],
+                    "position":  [256, 64, 0],
+                    "attenuation": 0.000244141
+                }            
+            },
+
             "Blue door": {
                 "type": "door",
                 "relativeModel": [1, 0, 0, 0,
@@ -264,6 +277,19 @@
                           0, 0, 0, 1],
         "mesh": "empty",
         "children": {
+
+            "Ceiling Light": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [1, 1, 1],
+                    "specular":  [1, 1, 1],
+                    "direction": [-1, -1, -1],
+                    "position":  [256, 64, 256],
+                    "attenuation": 0.000244141
+                }            
+            },
+
             "Cyan door": {
                 "type": "door",
                 "relativeModel": [1, 0, 0, 128,
@@ -358,6 +384,19 @@
                           0, 0, 0, 1],
         "mesh": "empty",
         "children": {
+
+            "Ceiling Light": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [1, 1, 1],
+                    "specular":  [1, 1, 1],
+                    "direction": [-1, -1, -1],
+                    "position":  [512, 64, 256],
+                    "attenuation": 0.000244141
+                }            
+            },
+
             "Rightmost wall": {
                 "type": "wall",
                 "texture": 1,
@@ -437,6 +476,19 @@
                           0, 0, 0, 1],
         "mesh": "empty",
         "children": {
+
+            "Ceiling Light": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [1, 1, 1],
+                    "specular":  [1, 1, 1],
+                    "direction": [-1, -1, -1],
+                    "position":  [256, 64, -256],
+                    "attenuation": 0.000244141
+                }            
+            },
+
             "Green door": {
                 "type": "door",
                 "relativeModel": [1, 0, 0, 128,
@@ -529,6 +581,19 @@
                           0, 0, 0, 1],
         "mesh": "empty",
         "children": {
+
+            "Ceiling Light": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [1, 1, 1],
+                    "specular":  [1, 1, 1],
+                    "direction": [-1, -1, -1],
+                    "position":  [512, 64, -256],
+                    "attenuation": 0.000244141
+                }            
+            },
+
             "Rightmost wall": {
                 "type": "wall",
                 "texture": 1,
@@ -609,6 +674,54 @@
                           0, 0, 0, 1],
         "mesh": "empty",
         "children": {
+            "Ceiling Light": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [1, 1, 1],
+                    "specular":  [1, 1, 1],
+                    "direction": [-1, -1, -1],
+                    "position":  [0, 64, -256],
+                    "attenuation": 0.000244141
+                }            
+            },
+
+            "Celebrating Light Red": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [1, 0, 0],
+                    "specular":  [1, 0, 0],
+                    "direction": [-1, -1, -1],
+                    "position":  [30, 64, -256],
+                    "attenuation": 0.000844141
+                }        
+            },
+            
+            "Celebrating Light Green": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [0, 1, 0],
+                    "specular":  [0, 1, 0],
+                    "direction": [-1, -1, -1],
+                    "position":  [-30, 64, -256],
+                    "attenuation": 0.000844141
+                }        
+            },
+
+            "Celebrating Light Blue": {
+                "mesh" : "empty",
+                "light" : {
+                    "ambient":   [0, 0, 0],
+                    "diffuse":   [0, 1, 0],
+                    "specular":  [0, 1, 0],
+                    "direction": [-1, -1, -1],
+                    "position":  [0, 64, -256],
+                    "attenuation": 0.000844141
+                }        
+            },
+
             "Rightmost wall": {
                 "type": "wall",
                 "texture": 1,
