@@ -27,5 +27,5 @@ public:
            glm::vec4 _color = glm::vec4(1.f)
     );
 
-    void UpdateLamp();
+    void UpdateLamp(glm::vec3 newPosition);
 };

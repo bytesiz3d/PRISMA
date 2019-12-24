@@ -115,6 +115,57 @@ void Scene::ParseScene(Scene_Node* parent, const json& data)
 
 }
 
+glm::vec3 Scene::getNearestRoomPositionLv2(glm::vec3 playerPos) {
+
+    int indexOfMin = 0;
+    float minXZ = 3000;
+
+    for(int i=0;i<9;i++){
+        float Px = playerPos[0];
+        float Pz = playerPos[2];
+        float Rx = levelTwoRoomsX[i];
+        float Rz = levelTwoRoomsZ[i];
+
+        float dist = sqrt((Px-Rx)*(Px-Rx)+(Pz-Rz)*(Pz-Rz));
+        if(minXZ < dist){
+            minXZ = minXZ;
+        } else{
+            minXZ = dist;
+            indexOfMin = i;
+        }
+    }
+    glm::vec3 roomPos ;
+    roomPos[0] = levelTwoRoomsX[indexOfMin];
+    roomPos[2] = levelTwoRoomsZ[indexOfMin];
+    roomPos[1] = 130;
+    return roomPos;
+}
+glm::vec3 Scene::getNearestRoomPositionLv1(glm::vec3 playerPos) {
+
+    int indexOfMin = 0;
+    float minXZ = 3000;
+
+    for(int i=0;i<7;i++){
+        float Px = playerPos[0];
+        float Pz = playerPos[2];
+        float Rx = levelOneRoomsX[i];
+        float Rz = levelOneRoomsZ[i];
+
+        float dist = sqrt((Px-Rx)*(Px-Rx)+(Pz-Rz)*(Pz-Rz));
+        if(minXZ < dist){
+            minXZ = minXZ;
+        } else{
+            minXZ = dist;
+            indexOfMin = i;
+        }
+    }
+    glm::vec3 roomPos ;
+    roomPos[0] = levelOneRoomsX[indexOfMin];
+    roomPos[2] = levelOneRoomsZ[indexOfMin];
+    roomPos[1] = 130;
+    return roomPos;
+}
+
 // ====================================================================================================
 void Scene::InitScene(const std::string& scenePath)
 {
@@ -213,7 +264,13 @@ void Scene::UpdateData()
     // Move player:
     dm = movementP - movementN;
     player->UpdatePlayer(mouseDelta, dm);
-    lamp->UpdateLamp();
+    glm::vec3 lampPosition;
+    if(level==1){
+       lampPosition = getNearestRoomPositionLv1(player->position);
+    }else{
+        lampPosition = getNearestRoomPositionLv2(player->position);
+    }
+    lamp->UpdateLamp(lampPosition);
     // Swap colors
     if (movementP[1] > 0)
     {

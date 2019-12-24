@@ -33,6 +33,7 @@
 
 // Window dimensions
 GLuint WIDTH = 1280, HEIGHT = 720;
+int level;
 
 // Start our window
 bool InitWindow();
@@ -40,6 +41,7 @@ bool InitWindow();
 // ====================================================================================================
 int main()
 {
+    std::cin >> level;
     if (!InitWindow())
         return -1;
     
@@ -77,7 +79,7 @@ int main()
     Scene::textures[MESH_TEXTURE2] = &exit;
     Scene::textures[MESH_TEXTURE3] = &wall;
 
-    int level = 2;
+
     // Initialize scene
     if(level == 1)
     Scene::InitScene("../res/scenes/level1.json");

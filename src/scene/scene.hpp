@@ -48,6 +48,12 @@ namespace Scene
     std::vector<Scene_Node*> doors;
     std::vector<Scene_Node*> orbs;
 
+    float levelTwoRoomsX[9]={0,256,0,-256,-256,0,0,256,512};
+    float levelTwoRoomsZ[9]={0,0,256,256,512,-256,-512,-512,-512};
+
+    float levelOneRoomsX[7]={0,256,256,512,256,512,0};
+    float levelOneRoomsZ[7]={0,0,256,256,-256,-256,-256};
+
     // Player and HUD:
     Player* player;
     Scene_Node* hud;
@@ -56,6 +62,9 @@ namespace Scene
     // Utility functions:
     void InitScene(const std::string& scenePath);
     void ParseScene(Scene_Node* parent, const nlohmann::json& data);
+
+    glm::vec3 getNearestRoomPositionLv2(glm::vec3 playerPos);
+    glm::vec3 getNearestRoomPositionLv1(glm::vec3 playerPos);
 
     void UpdateData();
     void DrawScene(Scene_Node* scene, GLuint shaderId);

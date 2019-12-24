@@ -35,11 +35,9 @@ Lamp::Lamp(Mesh* _mesh,
     movementSens = 0.3f;
 }
 
-void Lamp::UpdateLamp()
+void Lamp::UpdateLamp(glm::vec3 newPosition)
 {
-
-    relativeModel = glm::translate(glm::mat4(1), position);
-
+    relativeModel = glm::translate(glm::mat4(1),  newPosition);
 }
 
 
