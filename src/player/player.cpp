@@ -59,11 +59,8 @@ void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement)
     if (jumped)
         v_velocity -= movementSens / 2;
     else
-    {
         v_velocity = 0;
-        jumped = false;
-        // position[1] = 0;
-    }
+
     position[1] += v_velocity * movementSens;
 
     

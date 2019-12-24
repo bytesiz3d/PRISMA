@@ -19,7 +19,7 @@
 Mesh* Mesh_Utils::DoorWall()
 {
     Mesh* mesh = new Mesh;
-    float positions[3*28] = {
+    float positions[3*32] = {
         //Upper Face
         -0.5,  1.0, -0.5,
         -0.5,  1.0,  0.5,
@@ -53,10 +53,14 @@ Mesh* Mesh_Utils::DoorWall()
         -0.5,  0.0, -0.5,
         -0.5,  1.0, -0.5,
          0.5,  1.0, -0.5,
-         0.5,  0.0, -0.5
+        0.5,  0.0, -0.5,
+        0.25,  0.0, -0.5,
+        0.25,  0.5, -0.5,
+        -0.25, 0.5, -0.5,
+        -0.25, 0.0, -0.5,
     };
 
-    float texcoords[2*28] = {
+    float texcoords[2*32] = {
         // Upper Face
         0.f, 1.f,
         0.f, 0.f,
@@ -96,9 +100,13 @@ Mesh* Mesh_Utils::DoorWall()
         1.f, 1.f,
         0.f, 1.f,
         0.f, 0.f,
+        0.25f, 0.f,
+        0.25f, 0.5f,
+        0.75f, 0.5f,
+        0.75f, 0.f,
     };
 
-    float normals[3*28] = {
+    float normals[3*32] = {
         //Upper Face
          0,  1,  0,
          0,  1,  0,
@@ -132,14 +140,18 @@ Mesh* Mesh_Utils::DoorWall()
          0,  0, -1,
          0,  0, -1,
          0,  0, -1,
-         0,  0, -1        
+         0,  0, -1,
+         0,  0, -1,
+         0,  0, -1,
+         0,  0, -1,
+         0,  0, -1,        
     };
 
-    mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * 28, positions, GL_STATIC_DRAW);
-    mesh->SetBufferData("texcoords", sizeof(GLfloat) * 2 * 28, texcoords, GL_STATIC_DRAW);
-    mesh->SetBufferData("normals", sizeof(GLfloat) * 3 * 28, normals, GL_STATIC_DRAW);
+    mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * 32, positions, GL_STATIC_DRAW);
+    mesh->SetBufferData("texcoords", sizeof(GLfloat) * 2 * 32, texcoords, GL_STATIC_DRAW);
+    mesh->SetBufferData("normals", sizeof(GLfloat) * 3 * 32, normals, GL_STATIC_DRAW);
 
-    GLuint elements[36] = {
+    GLuint elements[60] = {
         //Upper Face
         0, 1, 2, 2, 3, 0,
         //Lower Face
@@ -149,23 +161,23 @@ Mesh* Mesh_Utils::DoorWall()
         //Left Face
         12, 13, 14, 14, 15, 12,
         //Front Face
-        16, 17, 18, 18, 19, 16,
+        16, 17, 18, 18, 23, 16,
+        18, 19, 22, 22, 23, 18,
+        19, 20, 21, 21, 22, 19,
         //Back Face
-        20, 21, 22, 22, 23, 20
+        24, 25, 30, 30, 31, 24,
+        30, 25, 26, 26, 29, 30,
+        28, 29, 26, 26, 27, 28,
     };
-    mesh->SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
+    mesh->SetElementsData(sizeof(GLuint) * 60, elements, GL_STATIC_DRAW, 60, GL_UNSIGNED_INT);
 
-    // Setting the mesh's AABB:
-    for (GLuint i = 0; i < 28 * 3; i += 3)
-    {
-        mesh->AABB_min[0] = (positions[i + 0] < mesh->AABB_min[0]) ? positions[i + 0] : mesh->AABB_min[0];
-        mesh->AABB_min[1] = (positions[i + 1] < mesh->AABB_min[1]) ? positions[i + 1] : mesh->AABB_min[1];
-        mesh->AABB_min[2] = (positions[i + 2] < mesh->AABB_min[2]) ? positions[i + 2] : mesh->AABB_min[2];
+    mesh->AABB_min[0] = -0.5;
+    mesh->AABB_min[1] = 0;
+    mesh->AABB_min[2] = -0.5;
 
-        mesh->AABB_max[0] = (positions[i + 0] > mesh->AABB_max[0]) ? positions[i + 0] : mesh->AABB_max[0];
-        mesh->AABB_max[1] = (positions[i + 1] > mesh->AABB_max[1]) ? positions[i + 1] : mesh->AABB_max[1];
-        mesh->AABB_max[2] = (positions[i + 2] > mesh->AABB_max[2]) ? positions[i + 2] : mesh->AABB_max[2];
-    }
+    mesh->AABB_max[0] = 0.5;
+    mesh->AABB_max[1] = 1;
+    mesh->AABB_max[2] = 0.5;
 
     return mesh;
     
@@ -432,16 +444,6 @@ Mesh* Mesh_Utils::FBXMesh(const std::string& filePath)
         }
     }
 
-    std::cout << positions.size() << std::endl;
-    std::cout << normals.size() << std::endl;
-    std::cout << texcoords.size() << std::endl;
-    std::cout << indices.size() << std::endl;
-
-    mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size(), positions.data(), GL_STATIC_DRAW);
-    mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size(), normals.data(), GL_STATIC_DRAW);
-    mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size(), texcoords.data(), GL_STATIC_DRAW);
-    mesh->SetElementsData(sizeof(GLuint) * indices.size(), &indices[0], GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
-
     // Setting the mesh's AABB:
     for (GLuint i = 0; i < positions.size(); i += 3)
     {
@@ -453,6 +455,18 @@ Mesh* Mesh_Utils::FBXMesh(const std::string& filePath)
         mesh->AABB_max[1] = (positions[i + 1] > mesh->AABB_max[1]) ? positions[i + 1] : mesh->AABB_max[1];
         mesh->AABB_max[2] = (positions[i + 2] > mesh->AABB_max[2]) ? positions[i + 2] : mesh->AABB_max[2];
     }
+
+    for (GLuint i = 1; i < positions.size(); i += 3)
+        positions[i] -= mesh->AABB_min[1];
+
+    mesh->AABB_max[1] -= mesh->AABB_min[1];
+    mesh->AABB_min[1] = 0;
+
+    mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size(), positions.data(), GL_STATIC_DRAW);
+    mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size(), normals.data(), GL_STATIC_DRAW);
+    mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size(), texcoords.data(), GL_STATIC_DRAW);
+    mesh->SetElementsData(sizeof(GLuint) * indices.size(), &indices[0], GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
+
     return mesh;
 }
 

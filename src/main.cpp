@@ -54,7 +54,7 @@ int main()
     Scene::cam_pos_location = glGetUniformLocation(cubeShaderProgram, "cam_position");
 
     // Create meshes
-    Mesh* cube = Mesh_Utils::WhiteCube();
+    Mesh* cube = Mesh_Utils::DoorWall();
     Scene::meshes[MESH_CUBE] = cube;
 
     // Mesh* player = Mesh_Utils::OBJMesh("../res/models/player");
@@ -96,7 +96,7 @@ int main()
         glUniform3f(Scene::cam_pos_location, Scene::camera.position.x, Scene::camera.position.y, Scene::camera.position.z);
 
         Scene::DrawScene(Scene::root, cubeShaderProgram); 
-        //Scene::DrawScene(Scene::player, cubeShaderProgram); 
+        Scene::DrawScene(Scene::player, cubeShaderProgram); 
         Scene::DrawScene(Scene::hud, hudShaderProgram);
         
         // Swap the screen buffers

@@ -338,13 +338,22 @@ int Scene::Collide(Scene_Node* objectA, Scene_Node* objectB)
         1 : 0;
 
     double EPS = std::pow(2, -24);
-    // A above B
-    if (std::abs(A_min[1] - B_max[1]) <= EPS)
-        result = 2;
 
-    if (result == 1)
-        if (A_min[1] > B_min[1])
+    // TODO: Fix this
+    // // A above B
+    // if (A_min[1] - B_max[1] <= EPS && A_min[1] - B_max[1] >= -EPS)
+    // result = 2;
+
+    // // B above A
+    // else if (B_min[1] - A_max[1] <= EPS && B_min[1] - A_max[1] >= -EPS)
+    // result = 3;
+    if (result)
+    {
+        if (A_min[1] - B_min[1] > 0)
             result = 2;
+        else if (B_min[1] - A_min[1] > 0)
+            result = 3;
+    }
 
     return result;
 }
@@ -354,34 +363,26 @@ void Scene::ProcessCollision()
 {
     static int iteration = 0;
 
-    bool in_air = true;
+    // Assume the player is always in air
+    player->jumped = true;
     for (auto floor: floors)
     {
         int collide = Collide(player, floor);
-        // Side
-        if (collide == 1)
+        // Bottom
+        if (collide == 3)
         {
-            // Revert the move and put the player one frame back
-            player->UpdatePlayer(-mouseDelta, -dm);
-            player->UpdatePlayer(-mouseDelta, -dm);
-
-            std::cout << "Hit floor's side " << iteration++ << std::endl;
-            player->jumped = false;
-            return;
-
-            in_air = false;
+            std::cout << "BOTTOM" << std::endl;
+            player->v_velocity = 0;
         }
         // On the floor
         else if (collide == 2)
         {
-            std::cout << "Hit floor's top " << iteration++ << std::endl;
+            std::cout << "TOP" << std::endl;
             player->jumped = false;
-            in_air = false;
-            // break;
         }
+    //  if (collide)
+    //         player->jumped = false;
     }
-    if (in_air)
-        player->jumped = true;
 
     for (auto door: doors)
     {
