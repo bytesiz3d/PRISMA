@@ -99,9 +99,20 @@
         "absoluteScale": [256, 1, 256]
     },
 
-    "Floor": {
+    "Floor1": {
         "texture": 1,
+        "type": "floor",
         "absoluteScale": [256, 1, 256]
+    },
+    "Floor2": {
+        "texture": 1,
+        "type": "floor",
+        "relativeModel": [1, 0, 0, -64,
+                          0, 1, 0, 0,
+                          0, 0, 1, 64,
+                          0, 0, 0, 1],
+
+        "absoluteScale": [32, 12, 32]
     },
 
     "Red orb": {

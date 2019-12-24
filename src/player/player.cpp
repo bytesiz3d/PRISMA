@@ -9,10 +9,13 @@ Player::Player()
     pitch = -0.523598776f; // PI/6
     pitchSens = 0.001f;
 
+    jumped = false;
+    v_velocity = 0;
+
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-    movementSens = 0.3f;
+    movementSens = 0.25f;
 }
 
 Player::Player(Mesh* _mesh,
@@ -28,10 +31,13 @@ Player::Player(Mesh* _mesh,
     pitch = -0.523598776f;
     pitchSens = 0.001f;
 
+    jumped = false;
+    v_velocity = 0;
+
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-    movementSens = 0.3f;
+    movementSens = 0.2f;
 }
 
 
@@ -48,8 +54,19 @@ void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement)
 
     position += direction * movement[2];
     position += normal * movement[0];
-    // TODO: Add jumping
 
+    // Update vertical velocity
+    if (jumped)
+        v_velocity -= movementSens / 2;
+    else
+    {
+        v_velocity = 0;
+        jumped = false;
+        // position[1] = 0;
+    }
+    position[1] += v_velocity * movementSens;
+
+    
     // Translate to new position and adjust orientation
     relativeModel = glm::translate(glm::mat4(1), position);
     relativeModel = glm::rotate(relativeModel, -yaw, glm::vec3(0, 1, 0));

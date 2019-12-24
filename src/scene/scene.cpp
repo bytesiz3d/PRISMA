@@ -43,6 +43,11 @@ void Scene::ParseScene(Scene_Node* parent, const json& data)
             walls.push_back(element);
             break;
 
+        case OBJECT_FLOOR:
+            element = new Scene_Node(mesh);
+            floors.push_back(element);
+            break;
+
         case OBJECT_ORB:
             element = new Orb(mesh);
             orbs.push_back(element);
@@ -122,11 +127,10 @@ void Scene::InitScene(const std::string& scenePath)
 
     // Player
     player = new Player(meshes[MESH_MODEL0]);
-    player->position = glm::vec3(-64, 8, 0);
+    player->position = glm::vec3(-64, 1, 0);
     player->absoluteScale = glm::vec3(16);
-    //player->color = glm::vec4(0, 1, 0, 1);
     player->direction = { 0, 0, 1 };
-    player->orientation = {0, std::asin(1), 0 };
+    player->orientation = { 0, std::asin(1), 0 };
     player->texture = textures[MESH_TEXTURE_NULL];
 
     // HUD:
@@ -222,8 +226,6 @@ void Scene::UpdateData()
     else
         swapped = false;
 
-
-
     ProcessCollision();
 
     // Manually updating the camera
@@ -239,7 +241,7 @@ void Scene::UpdateData()
 }
 
 // ====================================================================================================
-bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB)
+int Scene::Collide(Scene_Node* objectA, Scene_Node* objectB)
 {
     // AABB:
     // Get the minimum (x, y, z) and the maximum (x, y, z) for both shapes.
@@ -293,13 +295,13 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB)
 
     glm::vec4 B_AABB_vertices[8] = {
         B_AABB_min,
-        { B_AABB_max[0],  A_AABB_min[1], A_AABB_min[2], 1 },
-        { B_AABB_max[0],  A_AABB_max[1], A_AABB_min[2], 1 },
-        { B_AABB_min[0],  A_AABB_max[1], A_AABB_min[2], 1 },
+        { B_AABB_max[0],  B_AABB_min[1], B_AABB_min[2], 1 },
+        { B_AABB_max[0],  B_AABB_max[1], B_AABB_min[2], 1 },
+        { B_AABB_min[0],  B_AABB_max[1], B_AABB_min[2], 1 },
         B_AABB_max,
-        { B_AABB_min[0],  A_AABB_max[1], A_AABB_max[2], 1 },
-        { B_AABB_min[0],  A_AABB_min[1], A_AABB_max[2], 1 },
-        { B_AABB_max[0],  A_AABB_min[1], A_AABB_max[2], 1 },
+        { B_AABB_min[0],  B_AABB_max[1], B_AABB_max[2], 1 },
+        { B_AABB_min[0],  B_AABB_min[1], B_AABB_max[2], 1 },
+        { B_AABB_max[0],  B_AABB_min[1], B_AABB_max[2], 1 },
     };
     
 
@@ -329,16 +331,58 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB)
         B_max[2] = transformed[2] > B_max[2] ? transformed[2] : B_max[2];
     }
     
-    return (
-        A_min[0] <= B_max[0] && B_min[0] <= A_max[0] &&
-        A_min[1] <= B_max[1] && B_min[1] <= A_max[1] &&
-        A_min[2] <= B_max[2] && B_min[2] <= A_max[2] 
-    );
+    int result = 
+        (A_min[0] <= B_max[0] && B_min[0] <= A_max[0] &&
+         A_min[1] <= B_max[1] && B_min[1] <= A_max[1] &&
+         A_min[2] <= B_max[2] && B_min[2] <= A_max[2]) ?
+        1 : 0;
+
+    double EPS = std::pow(2, -24);
+    // A above B
+    if (std::abs(A_min[1] - B_max[1]) <= EPS)
+        result = 2;
+
+    if (result == 1)
+        if (A_min[1] > B_min[1])
+            result = 2;
+
+    return result;
 }
 
 // ====================================================================================================
 void Scene::ProcessCollision()
 {
+    static int iteration = 0;
+
+    bool in_air = true;
+    for (auto floor: floors)
+    {
+        int collide = Collide(player, floor);
+        // Side
+        if (collide == 1)
+        {
+            // Revert the move and put the player one frame back
+            player->UpdatePlayer(-mouseDelta, -dm);
+            player->UpdatePlayer(-mouseDelta, -dm);
+
+            std::cout << "Hit floor's side " << iteration++ << std::endl;
+            player->jumped = false;
+            return;
+
+            in_air = false;
+        }
+        // On the floor
+        else if (collide == 2)
+        {
+            std::cout << "Hit floor's top " << iteration++ << std::endl;
+            player->jumped = false;
+            in_air = false;
+            // break;
+        }
+    }
+    if (in_air)
+        player->jumped = true;
+
     for (auto door: doors)
     {
         if (Collide(player, door))
@@ -357,8 +401,6 @@ void Scene::ProcessCollision()
     {
         if (Collide(player, wall))
         {
-            // std::cout << "debug: hit wall\n";
-
             // Revert the move and put the player one frame back
             player->UpdatePlayer(-mouseDelta, -dm);
             player->UpdatePlayer(-mouseDelta, -dm);
@@ -431,6 +473,14 @@ void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
             break;
         case GLFW_KEY_E:
             movementN[1] = 1;
+            break;
+         
+        case GLFW_KEY_SPACE:
+            if (!Scene::player->jumped)
+            {
+                Scene::player->jumped = true;
+                Scene::player->v_velocity = 8;
+            }
             break;
 
         default:

@@ -4,6 +4,7 @@ enum OBJECT_TYPE
     OBJECT_DOOR,
     OBJECT_WALL,
     OBJECT_ORB,
+    OBJECT_FLOOR,
     OBJECT_NULL = -1
 };
 
@@ -11,6 +12,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(OBJECT_TYPE, {
         {OBJECT_NULL, nullptr},
         {OBJECT_DOOR, "door"},
         {OBJECT_WALL, "wall"},
+        {OBJECT_FLOOR, "floor"},
         {OBJECT_ORB, "orb"},
     })
 

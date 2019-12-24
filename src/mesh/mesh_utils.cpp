@@ -16,6 +16,161 @@
 
 // TODO: Modify each function to contain texture coordinates
 
+Mesh* Mesh_Utils::DoorWall()
+{
+    Mesh* mesh = new Mesh;
+    float positions[3*28] = {
+        //Upper Face
+        -0.5,  1.0, -0.5,
+        -0.5,  1.0,  0.5,
+         0.5,  1.0,  0.5,
+         0.5,  1.0, -0.5,
+        //Lower Face
+        -0.5,  0.0, -0.5,
+         0.5,  0.0, -0.5,
+         0.5,  0.0,  0.5,
+        -0.5,  0.0,  0.5,
+        //Right Face
+         0.5,  0.0, -0.5,
+         0.5,  1.0, -0.5,
+         0.5,  1.0,  0.5,
+         0.5,  0.0,  0.5,
+        //Left Face
+        -0.5,  0.0, -0.5,
+        -0.5,  0.0,  0.5,
+        -0.5,  1.0,  0.5,
+        -0.5,  1.0, -0.5,
+        //Front Face
+        -0.5,  0.0,  0.5,
+        -0.25,  0.0,  0.5,
+        -0.25,  0.5,  0.5,
+        0.25,  0.5,  0.5,
+        0.25,  0.0,  0.5,
+         0.5,  0.0,  0.5,
+         0.5,  1.0,  0.5,
+        -0.5,  1.0,  0.5,
+        //Back Face
+        -0.5,  0.0, -0.5,
+        -0.5,  1.0, -0.5,
+         0.5,  1.0, -0.5,
+         0.5,  0.0, -0.5
+    };
+
+    float texcoords[2*28] = {
+        // Upper Face
+        0.f, 1.f,
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+
+        // Lower Face
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+        0.f, 1.f,
+        
+        // Right Face
+        1.f, 0.f,
+        1.f, 1.f,
+        0.f, 1.f,
+        0.f, 0.f,
+
+        // Left Face
+        0.f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+        0.f, 1.f,
+
+        // Front Face
+        0.f, 0.f,
+        0.25f, 0.f,
+        0.25f, 0.5f,
+        0.75f, 0.5f,
+        0.75f, 0.f,
+        1.f, 0.f,
+        1.f, 1.f,
+        0.f, 1.f,
+
+        // Back Face
+        1.f, 0.f,
+        1.f, 1.f,
+        0.f, 1.f,
+        0.f, 0.f,
+    };
+
+    float normals[3*28] = {
+        //Upper Face
+         0,  1,  0,
+         0,  1,  0,
+         0,  1,  0,
+         0,  1,  0,
+        //Lower Face
+         0, -1,  0,
+         0, -1,  0,
+         0, -1,  0,
+         0, -1,  0,
+        //Right Face
+         1,  0,  0,
+         1,  0,  0,
+         1,  0,  0,
+         1,  0,  0,
+        //Left Face
+        -1,  0,  0,
+        -1,  0,  0,
+        -1,  0,  0,
+        -1,  0,  0,
+        //Front Face
+         0,  0,  1,
+         0,  0,  1,
+         0,  0,  1,
+         0,  0,  1,
+         0,  0,  1,
+         0,  0,  1,
+         0,  0,  1,
+         0,  0,  1,
+        //Back Face
+         0,  0, -1,
+         0,  0, -1,
+         0,  0, -1,
+         0,  0, -1        
+    };
+
+    mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * 28, positions, GL_STATIC_DRAW);
+    mesh->SetBufferData("texcoords", sizeof(GLfloat) * 2 * 28, texcoords, GL_STATIC_DRAW);
+    mesh->SetBufferData("normals", sizeof(GLfloat) * 3 * 28, normals, GL_STATIC_DRAW);
+
+    GLuint elements[36] = {
+        //Upper Face
+        0, 1, 2, 2, 3, 0,
+        //Lower Face
+        4, 5, 6, 6, 7, 4,
+        //Right Face
+        8, 9, 10, 10, 11, 8,
+        //Left Face
+        12, 13, 14, 14, 15, 12,
+        //Front Face
+        16, 17, 18, 18, 19, 16,
+        //Back Face
+        20, 21, 22, 22, 23, 20
+    };
+    mesh->SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
+
+    // Setting the mesh's AABB:
+    for (GLuint i = 0; i < 28 * 3; i += 3)
+    {
+        mesh->AABB_min[0] = (positions[i + 0] < mesh->AABB_min[0]) ? positions[i + 0] : mesh->AABB_min[0];
+        mesh->AABB_min[1] = (positions[i + 1] < mesh->AABB_min[1]) ? positions[i + 1] : mesh->AABB_min[1];
+        mesh->AABB_min[2] = (positions[i + 2] < mesh->AABB_min[2]) ? positions[i + 2] : mesh->AABB_min[2];
+
+        mesh->AABB_max[0] = (positions[i + 0] > mesh->AABB_max[0]) ? positions[i + 0] : mesh->AABB_max[0];
+        mesh->AABB_max[1] = (positions[i + 1] > mesh->AABB_max[1]) ? positions[i + 1] : mesh->AABB_max[1];
+        mesh->AABB_max[2] = (positions[i + 2] > mesh->AABB_max[2]) ? positions[i + 2] : mesh->AABB_max[2];
+    }
+
+    return mesh;
+    
+}
+
 Mesh* Mesh_Utils::WhiteCube()
 {
     Mesh* mesh = new Mesh;

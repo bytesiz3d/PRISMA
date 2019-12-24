@@ -12,6 +12,7 @@
 namespace Mesh_Utils
 {
     Mesh* WhiteCube();
+    Mesh* DoorWall();
 
     // GLuint eP(GLuint row, GLuint column, GLuint hRes);
     // Mesh* WhiteSphere(GLuint hRes = 32, GLuint vRes = 32);

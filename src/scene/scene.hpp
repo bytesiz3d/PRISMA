@@ -44,6 +44,7 @@ namespace Scene
     // Main scene:
     Scene_Node* root;
     std::vector<Scene_Node*> walls;
+    std::vector<Scene_Node*> floors;
     std::vector<Scene_Node*> doors;
     std::vector<Scene_Node*> orbs;
 
@@ -59,7 +60,10 @@ namespace Scene
     void DrawScene(Scene_Node* scene, GLuint shaderId);
     void UploadLights(GLuint shaderID);
 
-    bool Collide(Scene_Node* objectA, Scene_Node* objectB);
+    // 0 if no collision
+    // 1 if not above
+    // 2 if above
+    int Collide(Scene_Node* objectA, Scene_Node* objectB);
     void ProcessCollision();
 
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);

@@ -12,6 +12,10 @@ private:
 public:
     float yaw;
     float pitch;
+
+    bool jumped;
+    float v_velocity;
+    
     glm::vec3 direction;
     glm::vec3 position;
     glm::vec3 normal;
