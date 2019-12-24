@@ -33,6 +33,7 @@ struct Light
 #define NUM_ROOMS 16
 #define NUM_LIGHT_SUM_PER_ROOM 2 
 uniform Light lights[NUM_ROOMS * NUM_LIGHT_SUM_PER_ROOM];
+uniform int LightsNum ;
 
 float diffuse(vec3 n, vec3 l)
 {
@@ -53,7 +54,7 @@ void main()
     vec3 v = normalize(v_view);
     vec3 light_sum = vec3(0.f);
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < LightsNum; i++)
     {
         // For directional light_sum, the light vector is the inverse of the light direction
         vec3 l = -lights[i].direction;

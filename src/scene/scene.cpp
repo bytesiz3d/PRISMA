@@ -129,6 +129,15 @@ void Scene::InitScene(const std::string& scenePath)
     player->orientation = {0, std::asin(1), 0 };
     player->texture = textures[MESH_TEXTURE_NULL];
 
+    // Lamp
+    lamp = new Lamp(meshes[MESH_MODEL4]);
+    lamp->position = glm::vec3(0, 130, 0);
+    lamp->absoluteScale = glm::vec3(5);
+    lamp->color = glm::vec4(1, 1, 1, 1);
+    lamp->direction = { 0, 0, 1 };
+    lamp->orientation = {0, std::asin(1), 0 };
+    lamp->texture = textures[MESH_TEXTURE_NULL];
+
     // HUD:
     hud = new Scene_Node;
     hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
@@ -161,6 +170,8 @@ void Scene::InitScene(const std::string& scenePath)
 // Upload light information to shader
 void Scene::UploadLights(GLuint shaderID)
 {
+    int size = glGetUniformLocation(shaderID, "LightsNum");
+    glUniform1i(size , lights.size());
     for (GLuint i = 0; i < lights.size(); i++)
     {
         const char* ambient = ("lights[" + std::to_string(i) + "].ambient").c_str();
@@ -202,7 +213,7 @@ void Scene::UpdateData()
     // Move player:
     dm = movementP - movementN;
     player->UpdatePlayer(mouseDelta, dm);
-
+    lamp->UpdateLamp();
     // Swap colors
     if (movementP[1] > 0)
     {
