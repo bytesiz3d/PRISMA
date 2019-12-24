@@ -67,14 +67,21 @@ int main()
     Texture grid("../res/textures/tiles-256.png", GL_RGB);
     Texture wood("../res/textures/albedo.jpg", GL_RGB);
     Texture exit("../res/textures/exit.png", GL_RGB);
+    Texture wall("../res/textures/wall.jpg", GL_RGB);
     Texture white;
     Scene::textures[MESH_TEXTURE_NULL] = &white;
     Scene::textures[MESH_TEXTURE0] = &wood;
     Scene::textures[MESH_TEXTURE1] = &grid;
     Scene::textures[MESH_TEXTURE2] = &exit;
+    Scene::textures[MESH_TEXTURE3] = &wall;
 
+    int level = 2;
     // Initialize scene
+    if(level == 1)
     Scene::InitScene("../res/scenes/room.json");
+    else if(level == 2)
+    Scene::InitScene("../res/scenes/level2.json");
+
     Scene::UploadLights(cubeShaderProgram);
 
     // Create the camera object
