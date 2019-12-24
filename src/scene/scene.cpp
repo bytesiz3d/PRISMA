@@ -161,6 +161,8 @@ void Scene::InitScene(const std::string& scenePath)
 // Upload light information to shader
 void Scene::UploadLights(GLuint shaderID)
 {
+    int size = glGetUniformLocation(shaderID, "LightsNum");
+    glUniform1i(size , lights.size());
     for (GLuint i = 0; i < lights.size(); i++)
     {
         const char* ambient = ("lights[" + std::to_string(i) + "].ambient").c_str();
