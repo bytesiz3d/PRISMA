@@ -62,7 +62,7 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   src/orb/orb.hpp
   src/orb/orb.cpp
   
-  src/lamp/Lamp.hpp
+  src/lamp/Lamp.h
   src/lamp/Lamp.cpp
   
   ${SHADERS}
