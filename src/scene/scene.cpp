@@ -265,6 +265,14 @@ void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
             movementN[1] = 1;
             break;
 
+        case GLFW_KEY_1:
+            level = 1;
+        break;
+
+        case GLFW_KEY_2:
+            level = 2;
+        break;
+
         default:
             break;
         }

@@ -27,6 +27,8 @@
 // Window dimensions
 const GLuint WIDTH = 1280, HEIGHT = 720;
 
+int level ;
+
 // Start our window
 bool InitWindow();
 
@@ -42,35 +44,62 @@ int main()
     Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
 
     // Create the font
-    Font nsm("../fonts/nsm.ttf");
+    //Font nsm("../fonts/nsm.ttf");
+    Font airstrike("../fonts/airstrikebold.ttf");
 
     // Create the mesh
     Mesh* cube = Mesh_Utils::WhiteCube();
-    Mesh* text = Mesh_Utils::TextMesh("I love my team", &nsm);
+    Mesh* PRISMA = Mesh_Utils::TextMesh("PRISMA", &airstrike);
+    Mesh* Level1 = Mesh_Utils::TextMesh("Level 1", &airstrike);
+    Mesh* Level2 = Mesh_Utils::TextMesh("Level 2", &airstrike);
     Scene::InitScene(cube);  
-    {
+    
         // HUD:
         Scene::hud = new Scene_Node;
         Scene::hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
 
         glm::mat4 Model;
-        Scene_Node* primaryColor = new Scene_Node(text);
-        Model = glm::translate(glm::mat4(1), glm::vec3(0.f, 0, 0));
-        primaryColor->absoluteScale = glm::vec3(0.03f);
-        primaryColor->relativeModel = Model;
-        Scene::hud->AddChild(primaryColor);
-    }
+        Scene_Node* prismatext = new Scene_Node(PRISMA);
+        Model = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 1.4f, 0));
+        prismatext->absoluteScale = glm::vec3(0.08f);
+        prismatext->relativeModel = Model;
+        prismatext->color = glm::vec4(0.1,0.5f,0.5f,1);
+        Scene::hud->AddChild(prismatext);
+
+
+        glm::mat4 Model1;
+        Scene_Node* level1text = new Scene_Node(Level1);
+        Model1 = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 0.8, 0));
+        level1text->absoluteScale = glm::vec3(0.08f);
+        level1text->relativeModel = Model1;
+        level1text->color = glm::vec4(0,0.f,1.f,1);
+        Scene::hud->AddChild(level1text);
+
+        glm::mat4 Model2;
+        Scene_Node* level2text = new Scene_Node(Level2);
+        Model2 = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 0.4, 0));
+        level2text->absoluteScale = glm::vec3(0.08f);
+        level2text->relativeModel = Model2;
+        level2text->color = glm::vec4(1.f,1.f,1.f,1);
+        Scene::hud->AddChild(level2text);
+
+
+    
     glUseProgram(hudShaderProgram);
+
+    
 
     // Load the font, just like a texture
     Scene::texture_sampler_location = glGetUniformLocation(hudShaderProgram, "texture_sampler");
-    nsm.Bind(0);
+    //nsm.Bind(0);
+    airstrike.Bind(0);
     glUniform1i(Scene::texture_sampler_location, 0);
     
     // Create the camera object
     Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
 
-    // Game loop
+    // Game loop 
+    int count = 0;
     while (!glfwWindowShouldClose(Scene::window))
     {
         // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
@@ -82,14 +111,25 @@ int main()
         // Clear the color buffer
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glUseProgram(cubeShaderProgram);
-
+       // glm::vec3(primaryColor->color) += glm::vec3(0.01f,0.01f,0.01f);
+       if(count == 250)
+       {
+            prismatext->color = glm::vec4(0.2f,0.5,0.7f,1);
+            count = 0;
+       }
+       else
+       {
+            prismatext->color += glm::vec4(0.005f,0.f,0.003f,0);
+       }
+       count++;
         // Pass the VP matrix to the main shader
         glm::mat4 VP = Scene::camera.ViewProjectionMatrix();
         glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
 
-        Scene::DrawScene(Scene::room, cubeShaderProgram); 
-        Scene::DrawScene(Scene::player, cubeShaderProgram); 
+        //Scene::DrawScene(Scene::room, cubeShaderProgram); 
+        //Scene::DrawScene(Scene::player, cubeShaderProgram); 
         Scene::DrawScene(Scene::hud, hudShaderProgram);
+       
         
         // Swap the screen buffers
         glfwSwapBuffers(Scene::window);
@@ -98,7 +138,9 @@ int main()
     glfwTerminate();
 
     delete cube;
-    delete text;
+    delete PRISMA;
+    delete Level1;
+    delete Level2;
 
     Scene::DeleteAllPointers();
     return 0;
