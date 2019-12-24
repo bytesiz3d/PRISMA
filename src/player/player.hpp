@@ -28,4 +28,7 @@ public:
            );
 
     void UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement);
+
+private:
+    float calculateSensitivity();
 };

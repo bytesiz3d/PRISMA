@@ -1,4 +1,5 @@
 #include "player.hpp"
+#include <GLFW/glfw3.h>
 
 Player::Player()
     : Scene_Node()
@@ -12,7 +13,7 @@ Player::Player()
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-    movementSens = 0.3f;
+    movementSens = calculateSensitivity();
 }
 
 Player::Player(Mesh* _mesh,
@@ -31,7 +32,7 @@ Player::Player(Mesh* _mesh,
     direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
     normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-    movementSens = 0.3f;
+    movementSens = calculateSensitivity();
 }
 
 
@@ -60,3 +61,9 @@ void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement)
     relativeModel = glm::rotate(relativeModel, orientation[0], glm::vec3(1, 0, 0));
 }
 
+float Player::calculateSensitivity() {
+    
+    // get the screen resolution
+    const GLFWvidmode * mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    return 0.0007f * mode->width;
+}
