@@ -29,10 +29,13 @@ Player::Player(Mesh* _mesh,
   direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
   normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
 
-  movementSens = 0.3f;
+  movementSens = 0.075f;
 }
 
 void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement) {
+  auto now = system_clock::now();
+  auto duration = duration_cast<milliseconds>(now - lastUpdate);
+
   yaw += mouseDelta[0] * yawSens;
   pitch += -mouseDelta[1] * pitchSens;
   pitch = glm::min(0.f, glm::max(pitch, -1.57079633f));
@@ -40,7 +43,7 @@ void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement) {
   direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
   normal = glm::vec3(-std::sin(yaw), 0, std::cos(yaw));
 
-  movement *= movementSens;
+  movement *= movementSens * duration.count();
 
   position += direction * movement[2];
   position += normal * movement[0];
@@ -54,4 +57,6 @@ void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement) {
   relativeModel = glm::rotate(relativeModel, orientation[1], glm::vec3(0, 1, 0));
   relativeModel = glm::rotate(relativeModel, orientation[2], glm::vec3(0, 0, 1));
   relativeModel = glm::rotate(relativeModel, orientation[0], glm::vec3(1, 0, 0));
+
+  lastUpdate = now;
 }
