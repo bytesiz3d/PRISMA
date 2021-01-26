@@ -1,0 +1,17 @@
+BasedOnStyle: google
+
+BreakBeforeBraces: Custom
+BraceWrapping:
+  BeforeElse: true
+ 
+ColumnLimit: 0
+
+IndentWidth: 2
+IndentCaseLabels: false
+
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerIndentWidth: 2
+ContinuationIndentWidth: 2
+
+SpaceBeforeParens: ControlStatements
+SpaceBeforeRangeBasedForLoopColon: false

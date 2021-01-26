@@ -219,3 +219,5 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
                            UNICODE
                            _UNICODE
                            _CRT_SECURE_NO_WARNINGS)
+
+add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)

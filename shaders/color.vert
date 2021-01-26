@@ -1,4 +1,4 @@
-#version 300 es
+#version 330
 layout(location=0) in vec3 position;
 
 out vec4 v_color; // Since vertex shaders do not draw, we need to pass the color data to the fragment shader
