@@ -6,7 +6,7 @@
             "mesh: default type is cube",
             "type: default type is null",
             "drawMode: default type is triangles"
-            ]
+        ]
     },
     
     "Ceiling Light": {

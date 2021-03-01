@@ -40,7 +40,6 @@ int main() {
   if (!InitWindow()) return -1;
 
   // Compile and link the shader program
-  // GLuint cubeShaderProgram = Shader::LoadShader("../shaders/texture.vert", "../shaders/texture.frag");
   GLuint cubeShaderProgram = Shader::LoadShader("../shaders/light.vert", "../shaders/light.frag");
   GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
 
@@ -54,8 +53,9 @@ int main() {
   Scene::meshes[MESH_CUBE] = cube;
 
   // Mesh* player = Mesh_Utils::OBJMesh("../res/models/player");
-  Mesh* player = Mesh_Utils::FBXMesh("../res/models/player");
-  Scene::meshes[MESH_MODEL0] = player;
+  // Mesh* player = Mesh_Utils::FBXMesh("../res/models/player");
+  // Scene::meshes[MESH_MODEL0] = player;
+  Scene::meshes[MESH_MODEL0] = cube;
 
   // Create textures
   Texture grid("../res/textures/tiles-256.png", GL_RGB);
@@ -103,8 +103,7 @@ int main() {
   glfwTerminate();
 
   delete cube;
-  delete player;
-  // delete sphere;
+  // delete player;
 
   glDeleteProgram(cubeShaderProgram);
   glDeleteProgram(hudShaderProgram);
@@ -119,8 +118,8 @@ bool InitWindow() {
   glfwInit();
 
   // Set all the required options for GLFW
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
   glfwWindowHint(GLFW_DEPTH_BITS, 32);

@@ -6,12 +6,10 @@ enum OBJECT_TYPE {
   OBJECT_NULL = -1
 };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(OBJECT_TYPE, {
-                                            {OBJECT_NULL, nullptr},
-                                            {OBJECT_DOOR, "door"},
-                                            {OBJECT_WALL, "wall"},
-                                            {OBJECT_ORB, "orb"},
-                                          })
+NLOHMANN_JSON_SERIALIZE_ENUM(OBJECT_TYPE, {{OBJECT_NULL, nullptr},
+                                           {OBJECT_DOOR, "door"},
+                                           {OBJECT_WALL, "wall"},
+                                           {OBJECT_ORB, "orb"}})
 
 enum MESH_TYPE {
   // Add objects here as needed
@@ -38,11 +36,9 @@ enum DRAW_MODE {
   DRAW_NULL = 0
 };
 
-NLOHMANN_JSON_SERIALIZE_ENUM(DRAW_MODE, {
-                                          {DRAW_NULL, nullptr},
-                                          {DRAW_TRIANGLES, "triangles"},
-                                          {DRAW_LINES, "lines"},
-                                        })
+NLOHMANN_JSON_SERIALIZE_ENUM(DRAW_MODE, {{DRAW_NULL, nullptr},
+                                         {DRAW_TRIANGLES, "triangles"},
+                                         {DRAW_LINES, "lines"}})
 
 // TODO: Reference textures in json
 enum MESH_TEXTURE {
