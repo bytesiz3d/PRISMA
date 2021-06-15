@@ -35,10 +35,18 @@ const GLuint WIDTH = 1280, HEIGHT = 720;
 // Start our window
 bool InitWindow();
 
+void RunGame();
+
 // ====================================================================================================
 int main() {
   if (!InitWindow()) return -1;
+  RunGame();
+  glfwTerminate();
+  return 0;
+}
 
+// ====================================================================================================
+void RunGame() {
   // Compile and link the shader program
   GLuint cubeShaderProgram = Shader::LoadShader("../shaders/light.vert", "../shaders/light.frag");
   GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
@@ -100,16 +108,13 @@ int main() {
     glfwSwapBuffers(Scene::window);
   }
 
-  glfwTerminate();
-
-  delete cube;
   // delete player;
+  delete cube;
 
   glDeleteProgram(cubeShaderProgram);
   glDeleteProgram(hudShaderProgram);
 
   Scene::DeleteAllPointers();
-  return 0;
 }
 
 // ====================================================================================================
