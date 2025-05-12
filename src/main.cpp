@@ -38,7 +38,8 @@ void RunGame();
 
 // ====================================================================================================
 int main() {
-  if (!InitWindow()) return -1;
+  if (!InitWindow())
+    return -1;
   RunGame();
   glfwTerminate();
   return 0;

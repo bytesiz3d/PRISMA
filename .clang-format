@@ -15,3 +15,10 @@ ContinuationIndentWidth: 2
 
 SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: false
+
+ReflowComments: false
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortBlocksOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false

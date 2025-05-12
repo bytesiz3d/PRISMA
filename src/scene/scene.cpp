@@ -2,20 +2,23 @@ using json = nlohmann::json;
 
 // ====================================================================================================
 void Scene::ParseScene(Scene_Node* parent, const json& data) {
-  if (data.find("comment") != data.end() || !parent) return;
+  if (data.find("comment") != data.end() || !parent)
+    return;
 
   Scene_Node* element;
 
   Mesh* mesh = meshes[MESH_CUBE];
   if (data.find("mesh") != data.end()) {
     MESH_TYPE meshKey = data["mesh"].get<MESH_TYPE>();
-    if (meshes[meshKey] != 0) mesh = meshes[meshKey];
+    if (meshes[meshKey] != 0)
+      mesh = meshes[meshKey];
   }
 
   Texture* texture = nullptr;
   if (data.find("texture") != data.end()) {
     MESH_TEXTURE textureKey = (MESH_TEXTURE)data["texture"].get<int>();
-    if (textures[textureKey] != 0) texture = textures[textureKey];
+    if (textures[textureKey] != 0)
+      texture = textures[textureKey];
   }
   else
     texture = textures[MESH_TEXTURE_NULL];
@@ -96,7 +99,8 @@ void Scene::ParseScene(Scene_Node* parent, const json& data) {
   }
 
   if (data.find("children") != data.end()) {
-    for (auto child: data["children"]) ParseScene(element, child);
+    for (auto child: data["children"])
+      ParseScene(element, child);
   }
 }
 
@@ -179,7 +183,8 @@ void Scene::UpdateData() {
   mouseDelta = glm::vec2(mX - p_mX, mY - p_mY);
   p_mX = mX, p_mY = mY;
 
-  if (!holdMouse) mouseDelta = glm::vec2(0);
+  if (!holdMouse)
+    mouseDelta = glm::vec2(0);
 
   // Move player:
   dm = movementP - movementN;
@@ -323,7 +328,8 @@ void Scene::ProcessCollision() {
 
   for (auto sn_orb: orbs) {
     Orb* orb = static_cast<Orb*>(sn_orb);
-    if (!orb) continue;
+    if (!orb)
+      continue;
 
     orb->currentState = Collide(player, orb);
 
@@ -345,7 +351,8 @@ void Scene::ProcessCollision() {
 void Scene::DrawScene(Scene_Node* scene, GLuint shaderId) {
   if (scene) {
     scene->Draw(shaderId);
-    for (auto& child: scene->children) DrawScene(child, shaderId);
+    for (auto& child: scene->children)
+      DrawScene(child, shaderId);
   }
 }
 
@@ -426,7 +433,9 @@ void Scene::MouseCallback(GLFWwindow* window, int button, int action,
 
 // ====================================================================================================
 void Scene::DeleteAllPointers() {
-  if (root) delete root;
+  if (root)
+    delete root;
 
-  if (player) delete player;
+  if (player)
+    delete player;
 }
