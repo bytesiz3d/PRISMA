@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.0)
 
 # Setting build options and C++ language standard:
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_STANDARD 14)
-add_compile_options(-w)
+set(CMAKE_CXX_STANDARD 17)
+# add_compile_options(-w)
 
 # Project Variables:
 set(PROJECT_NAME "PRISMA")
@@ -177,10 +177,11 @@ target_link_libraries(${PROJECT_NAME} glfw)
 
 ## GLM:
 option(GLM_TEST_ENABLE OFF) # Disabling additional build targets
+option(GLM_BUILD_INSTALL OFF)
 
 add_subdirectory(${THIRDPARTY_DIR}/glm)
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/glm)
-target_link_libraries(${PROJECT_NAME} glm_static)
+target_link_libraries(${PROJECT_NAME} glm)
 
 ## STB_IMAGE:
 ## STB_TRUETYPE:
