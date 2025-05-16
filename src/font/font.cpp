@@ -25,7 +25,7 @@ Font::Font(const std::string& path, GLuint _size)
   charInfo = std::make_unique<stbtt_packedchar[]>(charCount);
 
   stbtt_pack_context context;
-  if (!stbtt_PackBegin(&context, atlasData.get(), atlasWidth, atlasHeight, 0, 1, nullptr)) {
+  if (!stbtt_PackBegin(&context, atlasData.get(), atlasWidth, atlasHeight, 0, 0, nullptr)) {
     std::cerr << "Failed to initialize font" << std::endl;
     return;  // ?
   }
@@ -70,7 +70,7 @@ GlyphInfo Font::GetGlyphInfo(GLubyte c, float offsetX, float offsetY) {
   auto ymax = -quad.y0;
 
   GlyphInfo info{};
-  info.offsetX = offsetX;
+  info.offsetX = std::fmax(offsetX, xmax);
   info.offsetY = offsetY;
   info.positions[0] = {xmin, ymin, 0};
   info.positions[1] = {xmin, ymax, 0};
