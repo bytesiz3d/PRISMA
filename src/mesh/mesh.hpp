@@ -9,7 +9,8 @@
 #include <GLFW/glfw3.h>
 
 // GLM
-//#include <glm/vec3.hpp>
+#include <glm/vec3.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 struct VertexDescriptor {
   GLuint attributeLocation;
@@ -34,7 +35,7 @@ class Mesh {
 
  public:
   // Axis-aligned bounding box info:
-  float AABB_min[3], AABB_max[3];
+  glm::vec3 AABB_min, AABB_max;
 
   Mesh(VertexDescriptor* inDescriptors = nullptr, int n = 3);
   ~Mesh();

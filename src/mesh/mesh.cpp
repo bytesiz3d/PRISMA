@@ -27,11 +27,13 @@ VertexDescriptor vd_pct[3] = {
 
 Mesh::Mesh(VertexDescriptor* inDescriptors, int n)
   : elementCount(0), elementType(0) {
-  AABB_min[0] = 1000.f, AABB_min[1] = 1000.f, AABB_min[2] = 1000.f;
-  AABB_max[0] = -1000.f, AABB_max[1] = -1000.f, AABB_max[2] = -1000.f;
+  AABB_min = glm::vec3(1000.f);
+  AABB_max = glm::vec3(-1000.f);
 
-  if (!inDescriptors)
+  if (!inDescriptors) {
     inDescriptors = vd_pct;
+    n = sizeof(vd_pct) / sizeof(VertexDescriptor);
+  }
 
   for (GLuint i = 0; i < n; i++)
     descriptors.push_back(inDescriptors[i]);

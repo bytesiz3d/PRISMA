@@ -5,6 +5,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <array>
 
 // GLAD
 #include <glad/glad.h>
@@ -16,8 +17,8 @@
 #include <glm/vec3.hpp>
 
 struct GlyphInfo {
-    glm::vec3 positions[4] = { glm::vec3(0.f) };
-    glm::vec2 uvs[4] = { glm::vec2(0.f) };
+    std::array<glm::vec3, 4> positions = { glm::vec3(0.f) };
+    std::array<glm::vec2, 4> uvs = { glm::vec2(0.f) };
     float offsetX = 0.f;
     float offsetY = 0.f;
 };

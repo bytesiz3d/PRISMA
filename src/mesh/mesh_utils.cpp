@@ -1,5 +1,8 @@
 #pragma once
 
+#include <glm/common.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "mesh_utils.hpp"
 
@@ -18,135 +21,116 @@
 
 Mesh* Mesh_Utils::WhiteCube() {
   Mesh* mesh = new Mesh;
-  float positions[3 * 24] = {
+  const int CUBE_SIDES = 6;
+  const int CUBE_VERTICES = 4;
+
+  const std::array<glm::vec3, CUBE_SIDES * CUBE_VERTICES> positions = {
     //Upper Face
-    -0.5, 1.0, -0.5,
-    -0.5, 1.0, 0.5,
-    0.5, 1.0, 0.5,
-    0.5, 1.0, -0.5,
+    glm::vec3(-0.5, 1.0, -0.5),
+    glm::vec3(-0.5, 1.0, 0.5),
+    glm::vec3(0.5, 1.0, 0.5),
+    glm::vec3(0.5, 1.0, -0.5),
     //Lower Face
-    -0.5, 0.0, -0.5,
-    0.5, 0.0, -0.5,
-    0.5, 0.0, 0.5,
-    -0.5, 0.0, 0.5,
+    glm::vec3(-0.5, 0.0, -0.5),
+    glm::vec3(0.5, 0.0, -0.5),
+    glm::vec3(0.5, 0.0, 0.5),
+    glm::vec3(-0.5, 0.0, 0.5),
     //Right Face
-    0.5, 0.0, -0.5,
-    0.5, 1.0, -0.5,
-    0.5, 1.0, 0.5,
-    0.5, 0.0, 0.5,
+    glm::vec3(0.5, 0.0, -0.5),
+    glm::vec3(0.5, 1.0, -0.5),
+    glm::vec3(0.5, 1.0, 0.5),
+    glm::vec3(0.5, 0.0, 0.5),
     //Left Face
-    -0.5, 0.0, -0.5,
-    -0.5, 0.0, 0.5,
-    -0.5, 1.0, 0.5,
-    -0.5, 1.0, -0.5,
+    glm::vec3(-0.5, 0.0, -0.5),
+    glm::vec3(-0.5, 0.0, 0.5),
+    glm::vec3(-0.5, 1.0, 0.5),
+    glm::vec3(-0.5, 1.0, -0.5),
     //Front Face
-    -0.5, 0.0, 0.5,
-    0.5, 0.0, 0.5,
-    0.5, 1.0, 0.5,
-    -0.5, 1.0, 0.5,
+    glm::vec3(-0.5, 0.0, 0.5),
+    glm::vec3(0.5, 0.0, 0.5),
+    glm::vec3(0.5, 1.0, 0.5),
+    glm::vec3(-0.5, 1.0, 0.5),
     //Back Face
-    -0.5, 0.0, -0.5,
-    -0.5, 1.0, -0.5,
-    0.5, 1.0, -0.5,
-    0.5, 0.0, -0.5};
-
-  float texcoords[2 * 24] = {
-    // Upper Face
-    0.f,
-    1.f,
-    0.f,
-    0.f,
-    1.f,
-    0.f,
-    1.f,
-    1.f,
-
-    // Lower Face
-    0.f,
-    0.f,
-    1.f,
-    0.f,
-    1.f,
-    1.f,
-    0.f,
-    1.f,
-
-    // Right Face
-    1.f,
-    0.f,
-    1.f,
-    1.f,
-    0.f,
-    1.f,
-    0.f,
-    0.f,
-
-    // Left Face
-    0.f,
-    0.f,
-    1.f,
-    0.f,
-    1.f,
-    1.f,
-    0.f,
-    1.f,
-
-    // Front Face
-    0.f,
-    0.f,
-    1.f,
-    0.f,
-    1.f,
-    1.f,
-    0.f,
-    1.f,
-
-    // Back Face
-    1.f,
-    0.f,
-    1.f,
-    1.f,
-    0.f,
-    1.f,
-    0.f,
-    0.f,
+    glm::vec3(-0.5, 0.0, -0.5),
+    glm::vec3(-0.5, 1.0, -0.5),
+    glm::vec3(0.5, 1.0, -0.5),
+    glm::vec3(0.5, 0.0, -0.5)
   };
 
-  float normals[3 * 24] = {
-    //Upper Face
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    0, 1, 0,
-    //Lower Face
-    0, -1, 0,
-    0, -1, 0,
-    0, -1, 0,
-    0, -1, 0,
-    //Right Face
-    1, 0, 0,
-    1, 0, 0,
-    1, 0, 0,
-    1, 0, 0,
-    //Left Face
-    -1, 0, 0,
-    -1, 0, 0,
-    -1, 0, 0,
-    -1, 0, 0,
-    //Front Face
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    0, 0, 1,
-    //Back Face
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1,
-    0, 0, -1};
+  const std::array<glm::vec2, CUBE_SIDES * CUBE_VERTICES> texcoords = {
+    // Upper Face
+    glm::vec2(0.f, 1.f),
+    glm::vec2(0.f, 0.f),
+    glm::vec2(1.f, 0.f),
+    glm::vec2(1.f, 1.f),
 
-  mesh->SetBufferData("positions", sizeof(GLfloat) * 3 * 24, positions, GL_STATIC_DRAW);
-  mesh->SetBufferData("texcoords", sizeof(GLfloat) * 2 * 24, texcoords, GL_STATIC_DRAW);
-  mesh->SetBufferData("normals", sizeof(GLfloat) * 3 * 24, normals, GL_STATIC_DRAW);
+    // Lower Face
+    glm::vec2(0.f, 0.f),
+    glm::vec2(1.f, 0.f),
+    glm::vec2(1.f, 1.f),
+    glm::vec2(0.f, 1.f),
+
+    // Right Face
+    glm::vec2(1.f, 0.f),
+    glm::vec2(1.f, 1.f),
+    glm::vec2(0.f, 1.f),
+    glm::vec2(0.f, 0.f),
+
+    // Left Face
+    glm::vec2(0.f, 0.f),
+    glm::vec2(1.f, 0.f),
+    glm::vec2(1.f, 1.f),
+    glm::vec2(0.f, 1.f),
+
+    // Front Face
+    glm::vec2(0.f, 0.f),
+    glm::vec2(1.f, 0.f),
+    glm::vec2(1.f, 1.f),
+    glm::vec2(0.f, 1.f),
+
+    // Back Face
+    glm::vec2(1.f, 0.f),
+    glm::vec2(1.f, 1.f),
+    glm::vec2(0.f, 1.f),
+    glm::vec2(0.f, 0.f),
+  };
+
+  const std::array<glm::vec3, CUBE_SIDES * CUBE_VERTICES> normals = {
+    //Upper Face
+    glm::vec3(0, 1, 0),
+    glm::vec3(0, 1, 0),
+    glm::vec3(0, 1, 0),
+    glm::vec3(0, 1, 0),
+    //Lower Face
+    glm::vec3(0, -1, 0),
+    glm::vec3(0, -1, 0),
+    glm::vec3(0, -1, 0),
+    glm::vec3(0, -1, 0),
+    //Right Face
+    glm::vec3(1, 0, 0),
+    glm::vec3(1, 0, 0),
+    glm::vec3(1, 0, 0),
+    glm::vec3(1, 0, 0),
+    //Left Face
+    glm::vec3(-1, 0, 0),
+    glm::vec3(-1, 0, 0),
+    glm::vec3(-1, 0, 0),
+    glm::vec3(-1, 0, 0),
+    //Front Face
+    glm::vec3(0, 0, 1),
+    glm::vec3(0, 0, 1),
+    glm::vec3(0, 0, 1),
+    glm::vec3(0, 0, 1),
+    //Back Face
+    glm::vec3(0, 0, -1),
+    glm::vec3(0, 0, -1),
+    glm::vec3(0, 0, -1),
+    glm::vec3(0, 0, -1)
+  };
+
+  mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size() * positions[0].length(), glm::value_ptr(positions.front()), GL_STATIC_DRAW);
+  mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size() * texcoords[0].length(), glm::value_ptr(texcoords.front()), GL_STATIC_DRAW);
+  mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size() * normals[0].length(), glm::value_ptr(normals.front()), GL_STATIC_DRAW);
 
   GLuint elements[36] = {
     //Upper Face
@@ -164,14 +148,9 @@ Mesh* Mesh_Utils::WhiteCube() {
   mesh->SetElementsData(sizeof(GLuint) * 36, elements, GL_STATIC_DRAW, 36, GL_UNSIGNED_INT);
 
   // Setting the mesh's AABB:
-  for (GLuint i = 0; i < 24 * 3; i += 3) {
-    mesh->AABB_min[0] = (positions[i + 0] < mesh->AABB_min[0]) ? positions[i + 0] : mesh->AABB_min[0];
-    mesh->AABB_min[1] = (positions[i + 1] < mesh->AABB_min[1]) ? positions[i + 1] : mesh->AABB_min[1];
-    mesh->AABB_min[2] = (positions[i + 2] < mesh->AABB_min[2]) ? positions[i + 2] : mesh->AABB_min[2];
-
-    mesh->AABB_max[0] = (positions[i + 0] > mesh->AABB_max[0]) ? positions[i + 0] : mesh->AABB_max[0];
-    mesh->AABB_max[1] = (positions[i + 1] > mesh->AABB_max[1]) ? positions[i + 1] : mesh->AABB_max[1];
-    mesh->AABB_max[2] = (positions[i + 2] > mesh->AABB_max[2]) ? positions[i + 2] : mesh->AABB_max[2];
+  for (const auto& position: positions) {
+    mesh->AABB_min = glm::min(mesh->AABB_min, position);
+    mesh->AABB_max = glm::max(mesh->AABB_max, position);
   }
 
   return mesh;
@@ -228,13 +207,10 @@ Mesh* Mesh_Utils::OBJMesh(const std::string& filePath) {
   // Setting the mesh's AABB:
   auto vertices = attrib.vertices.data();
   for (GLuint i = 0; i < attrib.vertices.size(); i += 3) {
-    mesh->AABB_min[0] = (vertices[i + 0] < mesh->AABB_min[0]) ? vertices[i + 0] : mesh->AABB_min[0];
-    mesh->AABB_min[1] = (vertices[i + 1] < mesh->AABB_min[1]) ? vertices[i + 1] : mesh->AABB_min[1];
-    mesh->AABB_min[2] = (vertices[i + 2] < mesh->AABB_min[2]) ? vertices[i + 2] : mesh->AABB_min[2];
+    auto pos = glm::vec3(vertices[i + 0], vertices[i + 1], vertices[i + 2]);
 
-    mesh->AABB_max[0] = (vertices[i + 0] > mesh->AABB_max[0]) ? vertices[i + 0] : mesh->AABB_max[0];
-    mesh->AABB_max[1] = (vertices[i + 1] > mesh->AABB_max[1]) ? vertices[i + 1] : mesh->AABB_max[1];
-    mesh->AABB_max[2] = (vertices[i + 2] > mesh->AABB_max[2]) ? vertices[i + 2] : mesh->AABB_max[2];
+    mesh->AABB_min = glm::min(mesh->AABB_min, pos);
+    mesh->AABB_max = glm::max(mesh->AABB_max, pos);
   }
   return mesh;
 }
@@ -255,23 +231,19 @@ Mesh* Mesh_Utils::FBXMesh(const std::string& filePath) {
 
   // Allocate space for meshes
   Mesh* mesh = new Mesh;
-  std::vector<float> positions, texcoords, normals;
+  std::vector<glm::vec3> positions, normals;
+  std::vector<glm::vec2> texcoords;
   std::vector<GLuint> indices;
 
   for (GLuint m = 0; m < scene->mNumMeshes; m++) {
     aiMesh* meshData = scene->mMeshes[m];
     for (GLuint i = 0; i < meshData->mNumVertices; i++) {
-      positions.push_back(meshData->mVertices[i].x);
-      positions.push_back(meshData->mVertices[i].y);
-      positions.push_back(meshData->mVertices[i].z);
+      positions.emplace_back(meshData->mVertices[i].x, meshData->mVertices[i].y, meshData->mVertices[i].z);
 
-      normals.push_back(meshData->mNormals[i].x);
-      normals.push_back(meshData->mNormals[i].y);
-      normals.push_back(meshData->mNormals[i].z);
+      normals.emplace_back(meshData->mNormals[i].x, meshData->mNormals[i].y, meshData->mNormals[i].z);
 
       if (meshData->mTextureCoords[0]) {
-        texcoords.push_back(meshData->mTextureCoords[0][i].x);
-        texcoords.push_back(meshData->mTextureCoords[0][i].y);
+        texcoords.emplace_back(meshData->mTextureCoords[0][i].x, meshData->mTextureCoords[0][i].y);
       }
     }
 
@@ -287,20 +259,15 @@ Mesh* Mesh_Utils::FBXMesh(const std::string& filePath) {
   std::cout << texcoords.size() << std::endl;
   std::cout << indices.size() << std::endl;
 
-  mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size(), positions.data(), GL_STATIC_DRAW);
-  mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size(), normals.data(), GL_STATIC_DRAW);
-  mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size(), texcoords.data(), GL_STATIC_DRAW);
+  mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size() * positions[0].length(), glm::value_ptr(positions.front()), GL_STATIC_DRAW);
+  mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size() * normals[0].length(), glm::value_ptr(normals.front()), GL_STATIC_DRAW);
+  mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size() * texcoords[0].length(), glm::value_ptr(texcoords.front()), GL_STATIC_DRAW);
   mesh->SetElementsData(sizeof(GLuint) * indices.size(), &indices[0], GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
 
   // Setting the mesh's AABB:
-  for (GLuint i = 0; i < positions.size(); i += 3) {
-    mesh->AABB_min[0] = (positions[i + 0] < mesh->AABB_min[0]) ? positions[i + 0] : mesh->AABB_min[0];
-    mesh->AABB_min[1] = (positions[i + 1] < mesh->AABB_min[1]) ? positions[i + 1] : mesh->AABB_min[1];
-    mesh->AABB_min[2] = (positions[i + 2] < mesh->AABB_min[2]) ? positions[i + 2] : mesh->AABB_min[2];
-
-    mesh->AABB_max[0] = (positions[i + 0] > mesh->AABB_max[0]) ? positions[i + 0] : mesh->AABB_max[0];
-    mesh->AABB_max[1] = (positions[i + 1] > mesh->AABB_max[1]) ? positions[i + 1] : mesh->AABB_max[1];
-    mesh->AABB_max[2] = (positions[i + 2] > mesh->AABB_max[2]) ? positions[i + 2] : mesh->AABB_max[2];
+  for (const auto& position: positions) {
+    mesh->AABB_min = glm::min(mesh->AABB_min, position);
+    mesh->AABB_max = glm::max(mesh->AABB_max, position);
   }
   return mesh;
 }
@@ -309,8 +276,8 @@ Mesh* Mesh_Utils::TextMesh(const std::string& text, Font* font) {
   Mesh* mesh = new Mesh;
 
   // Initialize the containers for our data
-  std::vector<float> positions;
-  std::vector<float> texcoords;
+  std::vector<glm::vec3> positions;
+  std::vector<glm::vec2> texcoords;
   std::vector<GLuint> indices;
 
   GLuint lastIndex = 0;
@@ -320,13 +287,8 @@ Mesh* Mesh_Utils::TextMesh(const std::string& text, Font* font) {
     offsetX = glyphInfo.offsetX;
     offsetY = glyphInfo.offsetY;
 
-    for (GLubyte i = 0; i < 4; i++) {
-      for (GLubyte j = 0; j < 3; j++)
-        positions.emplace_back(glyphInfo.positions[i][j]);
-
-      for (GLubyte j = 0; j < 2; j++)
-        texcoords.emplace_back(glyphInfo.uvs[i][j]);
-    }
+    positions.insert(positions.end(), glyphInfo.positions.begin(), glyphInfo.positions.end());
+    texcoords.insert(texcoords.end(), glyphInfo.uvs.begin(), glyphInfo.uvs.end());
 
     indices.push_back(lastIndex);
     indices.push_back(lastIndex + 1);
@@ -338,20 +300,15 @@ Mesh* Mesh_Utils::TextMesh(const std::string& text, Font* font) {
     lastIndex += 4;
   }
 
-  mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size(), &positions[0], GL_STATIC_DRAW);
-  mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size(), &texcoords[0], GL_STATIC_DRAW);
+  mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size() * positions[0].length(), glm::value_ptr(positions.front()), GL_STATIC_DRAW);
+  mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size() * texcoords[0].length(), glm::value_ptr(texcoords.front()), GL_STATIC_DRAW);
 
   mesh->SetElementsData(sizeof(GLuint) * indices.size(), &indices[0], GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
 
   // Setting the mesh's AABB:
-  for (GLuint i = 0; i < positions.size(); i += 3) {
-    mesh->AABB_min[0] = (positions[i + 0] < mesh->AABB_min[0]) ? positions[i + 0] : mesh->AABB_min[0];
-    mesh->AABB_min[1] = (positions[i + 1] < mesh->AABB_min[1]) ? positions[i + 1] : mesh->AABB_min[1];
-    mesh->AABB_min[2] = (positions[i + 2] < mesh->AABB_min[2]) ? positions[i + 2] : mesh->AABB_min[2];
-
-    mesh->AABB_max[0] = (positions[i + 0] > mesh->AABB_max[0]) ? positions[i + 0] : mesh->AABB_max[0];
-    mesh->AABB_max[1] = (positions[i + 1] > mesh->AABB_max[1]) ? positions[i + 1] : mesh->AABB_max[1];
-    mesh->AABB_max[2] = (positions[i + 2] > mesh->AABB_max[2]) ? positions[i + 2] : mesh->AABB_max[2];
+  for (const auto& position: positions) {
+    mesh->AABB_min = glm::min(mesh->AABB_min, position);
+    mesh->AABB_max = glm::max(mesh->AABB_max, position);
   }
 
   return mesh;
@@ -361,7 +318,8 @@ Mesh* Mesh_Utils::Sphere(GLuint hRes, GLuint vRes) {
   Mesh* mesh = new Mesh;
   const double sph_PI = std::acos(-1);
 
-  std::vector<float> positions, texcoords, normals;
+  std::vector<glm::vec3> positions, normals;
+  std::vector<glm::vec2> texcoords;
   std::vector<GLuint> indices;
 
   double theta, cos_theta, sin_theta;
@@ -376,16 +334,11 @@ Mesh* Mesh_Utils::Sphere(GLuint hRes, GLuint vRes) {
       cos_phi = std::cos(phi);
       sin_phi = std::sin(phi);
 
-      positions.push_back(sin_theta * sin_phi);
-      positions.push_back(cos_theta);
-      positions.push_back(sin_theta * cos_phi);
+      positions.emplace_back(sin_theta * sin_phi, cos_theta, sin_theta * cos_phi);
 
-      texcoords.push_back((float)i / vRes);
-      texcoords.push_back((float)j / hRes);
+      texcoords.emplace_back((float)i / vRes, (float)j / hRes);
 
-      normals.push_back(sin_theta * sin_phi);
-      normals.push_back(cos_theta);
-      normals.push_back(sin_theta * cos_phi);
+      normals.emplace_back(sin_theta * sin_phi, cos_theta, sin_theta * cos_phi);
     }
   }
 
@@ -403,18 +356,13 @@ Mesh* Mesh_Utils::Sphere(GLuint hRes, GLuint vRes) {
       indices.push_back(index);
     }
 
-  mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size(), positions.data(), GL_STATIC_DRAW);
-  mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size(), texcoords.data(), GL_STATIC_DRAW);
-  mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size(), normals.data(), GL_STATIC_DRAW);
+  mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size()* positions[0].length(), glm::value_ptr(positions.front()), GL_STATIC_DRAW);
+  mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size() * texcoords[0].length(), glm::value_ptr(texcoords.front()), GL_STATIC_DRAW);
+  mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size() * normals[0].length(), glm::value_ptr(normals.front()), GL_STATIC_DRAW);
   mesh->SetElementsData(sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
 
-  mesh->AABB_min[0] = -1.f;
-  mesh->AABB_min[1] = -1.f;
-  mesh->AABB_min[2] = -1.f;
-
-  mesh->AABB_max[0] = 1.f;
-  mesh->AABB_max[1] = 1.f;
-  mesh->AABB_max[2] = 1.f;
+  mesh->AABB_min = glm::vec3(-1.f, -1.f, -1.f);
+  mesh->AABB_max = glm::vec3(1.f, 1.f, 1.f);
 
   return mesh;
 }

@@ -1,3 +1,4 @@
+#include <glad/glad.h>
 #include "GLFW/glfw3.h"
 using json = nlohmann::json;
 #include <string>
@@ -300,16 +301,8 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
   glm::vec3 A_min(1000), A_max(-1000);
   glm::mat4 A_world = objectA->ScaleWorldModel();
 
-  glm::vec4 A_AABB_min = {
-    objectA->mesh->AABB_min[0],
-    objectA->mesh->AABB_min[1],
-    objectA->mesh->AABB_min[2],
-    1.f};
-  glm::vec4 A_AABB_max = {
-    objectA->mesh->AABB_max[0],
-    objectA->mesh->AABB_max[1],
-    objectA->mesh->AABB_max[2],
-    1.f};
+  glm::vec4 A_AABB_min = {objectA->mesh->AABB_min, 1.0f};
+  glm::vec4 A_AABB_max = {objectA->mesh->AABB_max, 1.f};
 
   glm::vec4 A_AABB_vertices[8] = {
     A_AABB_min,
@@ -326,16 +319,8 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
   glm::vec3 B_min(1000), B_max(-1000);
   glm::mat4 B_world = objectB->ScaleWorldModel();
 
-  glm::vec4 B_AABB_min = {
-    objectB->mesh->AABB_min[0],
-    objectB->mesh->AABB_min[1],
-    objectB->mesh->AABB_min[2],
-    1.f};
-  glm::vec4 B_AABB_max = {
-    objectB->mesh->AABB_max[0],
-    objectB->mesh->AABB_max[1],
-    objectB->mesh->AABB_max[2],
-    1.f};
+  glm::vec4 B_AABB_min = {objectB->mesh->AABB_min, 1.f};
+  glm::vec4 B_AABB_max = {objectB->mesh->AABB_max, 1.f};
 
   glm::vec4 B_AABB_vertices[8] = {
     B_AABB_min,
@@ -348,29 +333,17 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
     {B_AABB_max[0], A_AABB_min[1], A_AABB_max[2], 1},
   };
 
-  glm::vec4 transformed(0);
+  glm::vec3 transformed(0);
   for (GLubyte i = 0; i < 8; i++) {
     // A:
     transformed = A_world * A_AABB_vertices[i];
-
-    A_min[0] = transformed[0] < A_min[0] ? transformed[0] : A_min[0];
-    A_min[1] = transformed[1] < A_min[1] ? transformed[1] : A_min[1];
-    A_min[2] = transformed[2] < A_min[2] ? transformed[2] : A_min[2];
-
-    A_max[0] = transformed[0] > A_max[0] ? transformed[0] : A_max[0];
-    A_max[1] = transformed[1] > A_max[1] ? transformed[1] : A_max[1];
-    A_max[2] = transformed[2] > A_max[2] ? transformed[2] : A_max[2];
+    A_min = glm::min(A_min, transformed);
+    A_max = glm::max(A_max, transformed);
 
     // B:
     transformed = B_world * B_AABB_vertices[i];
-
-    B_min[0] = transformed[0] < B_min[0] ? transformed[0] : B_min[0];
-    B_min[1] = transformed[1] < B_min[1] ? transformed[1] : B_min[1];
-    B_min[2] = transformed[2] < B_min[2] ? transformed[2] : B_min[2];
-
-    B_max[0] = transformed[0] > B_max[0] ? transformed[0] : B_max[0];
-    B_max[1] = transformed[1] > B_max[1] ? transformed[1] : B_max[1];
-    B_max[2] = transformed[2] > B_max[2] ? transformed[2] : B_max[2];
+    B_min = glm::min(B_min, transformed);
+    B_max = glm::max(B_max, transformed);
   }
 
   return (
