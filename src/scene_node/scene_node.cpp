@@ -67,6 +67,7 @@ void Scene_Node::Draw(GLuint shaderId) {
 
   if (glm::determinant(mod) == 0) {
     // handle error
+    std::cout << "uh oh" << std::endl;
     return;
   }
 
@@ -88,12 +89,12 @@ void Scene_Node::Draw(GLuint shaderId) {
   glUniform4f(tint, color.r, color.g, color.b, color.a);
 
   if (mesh) {
-    if (texture)
-      texture->Bind();
+  if (texture)
+    texture->Bind();
 
-    mesh->Draw(drawMode);
+  mesh->Draw(drawMode);
 
-    if (texture)
-      texture->Unbind();
+  if (texture)
+    texture->Unbind();
   }
 }

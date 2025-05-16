@@ -31,4 +31,7 @@ class Player
          glm::vec4 _color = glm::vec4(1.f));
 
   void UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement);
+
+ private:
+  float calculateSensitivity();
 };

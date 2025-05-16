@@ -5,6 +5,9 @@ set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 17)
 # add_compile_options(-w)
 
+project(${PROJECT_NAME} CXX) # Specifies the target project
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON) # Export compile_commands.json
+
 # Project Variables:
 set(PROJECT_NAME "PRISMA")
 set(THIRDPARTY_DIR "deps")
@@ -30,7 +33,6 @@ file(GLOB_RECURSE SCENES
   )
 
 # Project and Source Groups:
-project(${PROJECT_NAME} CXX) # Specifies the target project
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
   # Build the executable from these files
   src/main.cpp 
@@ -71,7 +73,7 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   ${TEXTURES}
 
   ${SCENES}
-  )
+        src/lamp/Lamp.h src/lamp/Lamp.cpp)
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
 source_group("Code"
@@ -220,5 +222,3 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
                            UNICODE
                            _UNICODE
                            _CRT_SECURE_NO_WARNINGS)
-
-add_definitions(-DCMAKE_EXPORT_COMPILE_COMMANDS=ON)

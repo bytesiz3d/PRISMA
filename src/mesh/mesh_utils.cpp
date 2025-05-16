@@ -282,6 +282,11 @@ Mesh* Mesh_Utils::FBXMesh(const std::string& filePath) {
     }
   }
 
+  std::cout << positions.size() << std::endl;
+  std::cout << normals.size() << std::endl;
+  std::cout << texcoords.size() << std::endl;
+  std::cout << indices.size() << std::endl;
+
   mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size(), positions.data(), GL_STATIC_DRAW);
   mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size(), normals.data(), GL_STATIC_DRAW);
   mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size(), texcoords.data(), GL_STATIC_DRAW);

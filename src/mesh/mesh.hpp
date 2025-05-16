@@ -6,6 +6,7 @@
 
 // GLAD
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 
 // GLM
 //#include <glm/vec3.hpp>

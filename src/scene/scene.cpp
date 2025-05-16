@@ -1,4 +1,6 @@
+#include "GLFW/glfw3.h"
 using json = nlohmann::json;
+#include <string>
 
 // ====================================================================================================
 void Scene::ParseScene(Scene_Node* parent, const json& data) {
@@ -10,7 +12,7 @@ void Scene::ParseScene(Scene_Node* parent, const json& data) {
   Mesh* mesh = meshes[MESH_CUBE];
   if (data.find("mesh") != data.end()) {
     MESH_TYPE meshKey = data["mesh"].get<MESH_TYPE>();
-    if (meshes[meshKey] != 0)
+    if (meshes.find(meshKey) != meshes.end())
       mesh = meshes[meshKey];
   }
 
@@ -104,18 +106,78 @@ void Scene::ParseScene(Scene_Node* parent, const json& data) {
   }
 }
 
+glm::vec3 Scene::getNearestRoomPositionLv2(glm::vec3 playerPos) {
+  int indexOfMin = 0;
+  float minXZ = 3000;
+
+  for (int i = 0; i < 9; i++) {
+    float Px = playerPos[0];
+    float Pz = playerPos[2];
+    float Rx = levelTwoRoomsX[i];
+    float Rz = levelTwoRoomsZ[i];
+
+    float dist = sqrt((Px - Rx) * (Px - Rx) + (Pz - Rz) * (Pz - Rz));
+    if (minXZ < dist) {
+      minXZ = minXZ;
+    }
+    else {
+      minXZ = dist;
+      indexOfMin = i;
+    }
+  }
+  glm::vec3 roomPos;
+  roomPos[0] = levelTwoRoomsX[indexOfMin];
+  roomPos[2] = levelTwoRoomsZ[indexOfMin];
+  roomPos[1] = 130;
+  return roomPos;
+}
+glm::vec3 Scene::getNearestRoomPositionLv1(glm::vec3 playerPos) {
+  int indexOfMin = 0;
+  float minXZ = 3000;
+
+  for (int i = 0; i < 7; i++) {
+    float Px = playerPos[0];
+    float Pz = playerPos[2];
+    float Rx = levelOneRoomsX[i];
+    float Rz = levelOneRoomsZ[i];
+
+    float dist = sqrt((Px - Rx) * (Px - Rx) + (Pz - Rz) * (Pz - Rz));
+    if (minXZ < dist) {
+      minXZ = minXZ;
+    }
+    else {
+      minXZ = dist;
+      indexOfMin = i;
+    }
+  }
+  glm::vec3 roomPos;
+  roomPos[0] = levelOneRoomsX[indexOfMin];
+  roomPos[2] = levelOneRoomsZ[indexOfMin];
+  roomPos[1] = 130;
+  return roomPos;
+}
+
 // ====================================================================================================
 void Scene::InitScene(const std::string& scenePath) {
   glm::mat4 Model;
 
   // Player
   player = new Player(meshes[MESH_MODEL0]);
-  player->position = glm::vec3(-64, 8, 0);
+  player->position = glm::vec3(-86, 8, 0);
   player->absoluteScale = glm::vec3(16);
-  // player->color = glm::vec4(0, 1, 0, 1);
+  //player->color = glm::vec4(0, 1, 0, 1);
   player->direction = {0, 0, 1};
   player->orientation = {0, std::asin(1), 0};
   player->texture = textures[MESH_TEXTURE_NULL];
+
+  // Lamp
+  lamp = new Lamp(meshes[MESH_MODEL4]);
+  lamp->position = glm::vec3(0, 130, 0);
+  lamp->absoluteScale = glm::vec3(5);
+  lamp->color = glm::vec4(1, 1, 1, 1);
+  lamp->direction = {0, 0, 1};
+  lamp->orientation = {0, std::asin(1), 0};
+  lamp->texture = textures[MESH_TEXTURE_NULL];
 
   // HUD:
   hud = new Scene_Node;
@@ -139,7 +201,7 @@ void Scene::InitScene(const std::string& scenePath) {
 
   root = new Scene_Node;
   for (auto element: sceneData) {
-    // std::cout << element.type_name();
+    //std::cout << element.type_name();
     ParseScene(root, element);
   }
 }
@@ -149,7 +211,7 @@ void Scene::InitScene(const std::string& scenePath) {
 void Scene::UploadLights(GLuint shaderID) {
   int size = glGetUniformLocation(shaderID, "LightsNum");
   glUniform1i(size, lights.size());
-  char location[64];
+char location[64];
   for (GLuint i = 0; i < lights.size(); i++) {
     std::sprintf(location, "lights[%d].ambient", i);
     int amb = glGetUniformLocation(shaderID, location);
@@ -189,7 +251,14 @@ void Scene::UpdateData() {
   // Move player:
   dm = movementP - movementN;
   player->UpdatePlayer(mouseDelta, dm);
-
+  glm::vec3 lampPosition;
+  if (level == 1) {
+    lampPosition = getNearestRoomPositionLv1(player->position);
+  }
+  else {
+    lampPosition = getNearestRoomPositionLv2(player->position);
+  }
+  lamp->UpdateLamp(lampPosition);
   // Swap colors
   if (movementP[1] > 0) {
     if ((bool)movementP[1] != swapped) {
@@ -231,12 +300,16 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
   glm::vec3 A_min(1000), A_max(-1000);
   glm::mat4 A_world = objectA->ScaleWorldModel();
 
-  glm::vec4 A_AABB_min = {objectA->mesh->AABB_min[0],
-                          objectA->mesh->AABB_min[1],
-                          objectA->mesh->AABB_min[2], 1.f};
-  glm::vec4 A_AABB_max = {objectA->mesh->AABB_max[0],
-                          objectA->mesh->AABB_max[1],
-                          objectA->mesh->AABB_max[2], 1.f};
+  glm::vec4 A_AABB_min = {
+    objectA->mesh->AABB_min[0],
+    objectA->mesh->AABB_min[1],
+    objectA->mesh->AABB_min[2],
+    1.f};
+  glm::vec4 A_AABB_max = {
+    objectA->mesh->AABB_max[0],
+    objectA->mesh->AABB_max[1],
+    objectA->mesh->AABB_max[2],
+    1.f};
 
   glm::vec4 A_AABB_vertices[8] = {
     A_AABB_min,
@@ -253,12 +326,16 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
   glm::vec3 B_min(1000), B_max(-1000);
   glm::mat4 B_world = objectB->ScaleWorldModel();
 
-  glm::vec4 B_AABB_min = {objectB->mesh->AABB_min[0],
-                          objectB->mesh->AABB_min[1],
-                          objectB->mesh->AABB_min[2], 1.f};
-  glm::vec4 B_AABB_max = {objectB->mesh->AABB_max[0],
-                          objectB->mesh->AABB_max[1],
-                          objectB->mesh->AABB_max[2], 1.f};
+  glm::vec4 B_AABB_min = {
+    objectB->mesh->AABB_min[0],
+    objectB->mesh->AABB_min[1],
+    objectB->mesh->AABB_min[2],
+    1.f};
+  glm::vec4 B_AABB_max = {
+    objectB->mesh->AABB_max[0],
+    objectB->mesh->AABB_max[1],
+    objectB->mesh->AABB_max[2],
+    1.f};
 
   glm::vec4 B_AABB_vertices[8] = {
     B_AABB_min,
@@ -296,16 +373,17 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
     B_max[2] = transformed[2] > B_max[2] ? transformed[2] : B_max[2];
   }
 
-  return (A_min[0] <= B_max[0] && B_min[0] <= A_max[0] &&
-          A_min[1] <= B_max[1] && B_min[1] <= A_max[1] &&
-          A_min[2] <= B_max[2] && B_min[2] <= A_max[2]);
+  return (
+    A_min[0] <= B_max[0] && B_min[0] <= A_max[0] &&
+    A_min[1] <= B_max[1] && B_min[1] <= A_max[1] &&
+    A_min[2] <= B_max[2] && B_min[2] <= A_max[2]);
 }
 
 // ====================================================================================================
 void Scene::ProcessCollision() {
   for (auto door: doors) {
     if (Collide(player, door)) {
-      if (player->color != door->color) {
+      if (glm::vec3(player->color) != glm::vec3(door->color)) {
         // Revert the move and put the player one frame back
         player->UpdatePlayer(mouseDelta, -dm);
         player->UpdatePlayer(mouseDelta, -dm);
@@ -358,24 +436,27 @@ void Scene::DrawScene(Scene_Node* scene, GLuint shaderId) {
 
 // ====================================================================================================
 // Is called whenever a key is pressed/released via GLFW
-void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action,
-                        int mode) {
+void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GL_TRUE);
 
   if (action == GLFW_PRESS) {
     switch (key) {
     case GLFW_KEY_W:
+    case GLFW_KEY_UP:
       movementP[2] = 1;
       break;
     case GLFW_KEY_S:
+    case GLFW_KEY_DOWN:
       movementN[2] = 1;
       break;
 
     case GLFW_KEY_D:
+    case GLFW_KEY_RIGHT:
       movementP[0] = 1;
       break;
     case GLFW_KEY_A:
+    case GLFW_KEY_LEFT:
       movementN[0] = 1;
       break;
 
@@ -394,16 +475,20 @@ void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action,
   if (action == GLFW_RELEASE) {
     switch (key) {
     case GLFW_KEY_W:
+    case GLFW_KEY_UP:
       movementP[2] = 0;
       break;
     case GLFW_KEY_S:
+    case GLFW_KEY_DOWN:
       movementN[2] = 0;
       break;
 
     case GLFW_KEY_D:
+    case GLFW_KEY_RIGHT:
       movementP[0] = 0;
       break;
     case GLFW_KEY_A:
+    case GLFW_KEY_LEFT:
       movementN[0] = 0;
       break;
 
@@ -421,8 +506,7 @@ void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action,
 }
 
 // ====================================================================================================
-void Scene::MouseCallback(GLFWwindow* window, int button, int action,
-                          int mods) {
+void Scene::MouseCallback(GLFWwindow* window, int button, int action, int mods) {
   if (button == GLFW_MOUSE_BUTTON_LEFT || button == GLFW_MOUSE_BUTTON_RIGHT) {
     if (action == GLFW_PRESS)
       holdMouse = true;
