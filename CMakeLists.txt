@@ -32,6 +32,10 @@ file(GLOB_RECURSE SCENES
   res/scenes/*
   )
 
+file(GLOB_RECURSE FONTS
+  fonts/*
+  )
+
 # Project and Source Groups:
 add_executable(${PROJECT_NAME} # Creates an executable file with a name that matches PROJECT_NAME
   # Build the executable from these files

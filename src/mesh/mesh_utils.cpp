@@ -341,10 +341,6 @@ Mesh* Mesh_Utils::TextMesh(const std::string& text, Font* font) {
   mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size(), &positions[0], GL_STATIC_DRAW);
   mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size(), &texcoords[0], GL_STATIC_DRAW);
 
-  // Normals
-  std::vector<float> normals(positions.size(), 0.f);
-  mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size(), &normals[0], GL_STATIC_DRAW);
-
   mesh->SetElementsData(sizeof(GLuint) * indices.size(), &indices[0], GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
 
   // Setting the mesh's AABB:

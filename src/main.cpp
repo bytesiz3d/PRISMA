@@ -30,26 +30,105 @@
 
 // Window dimensions
 GLuint WIDTH = 1280, HEIGHT = 720;
-int level;
+int level = -1;
 
 // Start our window
 bool InitWindow();
 
+void MainMenu();
 void RunGame();
 
 // ====================================================================================================
 int main() {
-  std::cout << "Enter level (1 or 2): ";
-  std::cin >> level;
-  if (level != 1 && level != 2) {
-    std::cout << "Invalid level. Exiting." << std::endl;
-    return -1;
-  }
   if (!InitWindow())
     return -1;
+  MainMenu();
   RunGame();
   glfwTerminate();
   return 0;
+}
+
+// ====================================================================================================
+void MainMenu() {
+  glDisable(GL_CULL_FACE);
+
+  // Compile and link the shader program
+  GLuint shaderProgram = Shader::LoadShader("../shaders/font.vert", "../shaders/font.frag");
+
+  // Create the font
+  Font font("../fonts/airstrikebold.ttf");
+
+  // Create the mesh
+  Mesh* PRISMA = Mesh_Utils::TextMesh("PRISMA", &font);
+  Mesh* Level1 = Mesh_Utils::TextMesh("Level 1", &font);
+  Mesh* Level2 = Mesh_Utils::TextMesh("Level 2", &font);
+
+  // HUD:
+  Scene::hud = new Scene_Node;
+  Scene::hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
+
+  glm::mat4 Model;
+  Scene_Node* prismatext = new Scene_Node(PRISMA);
+  Model = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 1.4f, 0));
+  prismatext->absoluteScale = glm::vec3(0.08f);
+  prismatext->relativeModel = Model;
+  prismatext->color = glm::vec4(0.1, 0.5f, 0.5f, 1);
+  Scene::hud->AddChild(prismatext);
+
+  glm::mat4 Model1;
+  Scene_Node* level1text = new Scene_Node(Level1);
+  Model1 = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 0.8, 0));
+  level1text->absoluteScale = glm::vec3(0.08f);
+  level1text->relativeModel = Model1;
+  level1text->color = glm::vec4(0, 0.f, 1.f, 1);
+  Scene::hud->AddChild(level1text);
+
+  glm::mat4 Model2;
+  Scene_Node* level2text = new Scene_Node(Level2);
+  Model2 = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 0.4, 0));
+  level2text->absoluteScale = glm::vec3(0.08f);
+  level2text->relativeModel = Model2;
+  level2text->color = glm::vec4(1.f, 1.f, 1.f, 1);
+  Scene::hud->AddChild(level2text);
+
+  glUseProgram(shaderProgram);
+
+  // Load the font, just like a texture
+  Scene::texture_sampler_location = glGetUniformLocation(shaderProgram, "texture_sampler");
+  font.Bind(0);
+  glUniform1i(Scene::texture_sampler_location, 0);
+
+  int count = 0;
+  // Game loop
+  while (!glfwWindowShouldClose(Scene::window) && level == -1) {
+    // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
+    glfwPollEvents();
+
+    // Render
+    // Clear the color buffer
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glUseProgram(shaderProgram);
+
+    if (count == 250) {
+      prismatext->color = glm::vec4(0.2f, 0.5, 0.7f, 1);
+      count = 0;
+    }
+    else {
+      prismatext->color += glm::vec4(0.005f, 0.f, 0.003f, 0);
+    }
+    count++;
+    Scene::DrawScene(Scene::hud, shaderProgram);
+
+    // Swap the screen buffers
+    glfwSwapBuffers(Scene::window);
+  }
+
+  glDeleteProgram(shaderProgram);
+  delete PRISMA;
+  delete Level1;
+  delete Level2;
+
+  Scene::DeleteAllPointers();
 }
 
 // ====================================================================================================
@@ -131,8 +210,7 @@ void RunGame() {
   delete player;
   delete sphere;
   delete lamp;
-  
-  glfwTerminate();
+
   glDeleteProgram(cubeShaderProgram);
   glDeleteProgram(hudShaderProgram);
 

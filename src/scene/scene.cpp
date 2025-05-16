@@ -211,7 +211,7 @@ void Scene::InitScene(const std::string& scenePath) {
 void Scene::UploadLights(GLuint shaderID) {
   int size = glGetUniformLocation(shaderID, "LightsNum");
   glUniform1i(size, lights.size());
-char location[64];
+  char location[64];
   for (GLuint i = 0; i < lights.size(); i++) {
     std::sprintf(location, "lights[%d].ambient", i);
     int amb = glGetUniformLocation(shaderID, location);
@@ -465,6 +465,14 @@ void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
       break;
     case GLFW_KEY_E:
       movementN[1] = 1;
+      break;
+
+    case GLFW_KEY_1:
+      level = 1;
+      break;
+
+    case GLFW_KEY_2:
+      level = 2;
       break;
 
     default:
