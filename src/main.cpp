@@ -27,6 +27,7 @@
 // *NOT SEPARATELY BUILT*
 // TODO: Add shaderIDs to the JSON file
 #include "scene/scene.hpp"
+#include "utils/opengl_utils.h"
 
 // Window dimensions
 GLuint WIDTH = 1280, HEIGHT = 720;
@@ -236,6 +237,7 @@ bool InitWindow() {
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
   glfwWindowHint(GLFW_DEPTH_BITS, 32);
   glfwWindowHint(GLFW_SAMPLES, 16);
+  glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
   // Create a GLFWwindow object that we can use for GLFW's functions
   Scene::window = glfwCreateWindow(WIDTH, HEIGHT, "GFX Playground", glfwGetPrimaryMonitor(), NULL);
@@ -278,6 +280,7 @@ bool InitWindow() {
   glFrontFace(GL_CCW);
   glCullFace(GL_BACK);
 
+  OpenglUtils::initOpenglDebugOutput();
   return true;
 }
 

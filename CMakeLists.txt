@@ -67,7 +67,13 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
 
   src/orb/orb.hpp
   src/orb/orb.cpp
-  
+
+  src/lamp/Lamp.h
+  src/lamp/Lamp.cpp
+
+  src/utils/opengl_utils.h
+  src/utils/opengl_utils.cpp
+
   ${SHADERS}
 
   ${MODELS}
@@ -77,7 +83,7 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   ${TEXTURES}
 
   ${SCENES}
-        src/lamp/Lamp.h src/lamp/Lamp.cpp)
+)
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
 source_group("Code"
@@ -226,3 +232,7 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
                            UNICODE
                            _UNICODE
                            _CRT_SECURE_NO_WARNINGS)
+
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+  target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG)
+endif()
