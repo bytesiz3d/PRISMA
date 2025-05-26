@@ -46,15 +46,9 @@ GLint cam_pos_location;
 // TODO: Optimize collision checking
 // Main scene:
 Scene_Node* root;
-std::vector<Scene_Node*> walls;
-std::vector<Scene_Node*> doors;
-std::vector<Scene_Node*> orbs;
+std::unordered_map<OBJECT_TYPE, std::vector<Scene_Node*>> objects;
 
-float levelTwoRoomsX[9] = {0, 256, 0, -256, -256, 0, 0, 256, 512};
-float levelTwoRoomsZ[9] = {0, 0, 256, 256, 512, -256, -512, -512, -512};
-
-float levelOneRoomsX[7] = {0, 256, 256, 512, 256, 512, 0};
-float levelOneRoomsZ[7] = {0, 0, 256, 256, -256, -256, -256};
+std::vector<glm::vec3> levelRooms;
 
 // Player and HUD:
 Player* player;
@@ -63,10 +57,9 @@ Lamp* lamp;
 
 // Utility functions:
 void InitScene(const std::string& scenePath);
-void ParseScene(Scene_Node* parent, const nlohmann::json& data);
+void ParseScene(Scene_Node* parent, const nlohmann::json& data, bool isRoot = false);
 
-glm::vec3 getNearestRoomPositionLv2(glm::vec3 playerPos);
-glm::vec3 getNearestRoomPositionLv1(glm::vec3 playerPos);
+glm::vec3 getLampPosition(glm::vec3 playerPos);
 
 void UpdateData();
 void DrawScene(Scene_Node* scene, GLuint shaderId);

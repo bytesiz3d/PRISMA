@@ -4,158 +4,76 @@ using json = nlohmann::json;
 #include <string>
 
 // ====================================================================================================
-void Scene::ParseScene(Scene_Node* parent, const json& data) {
-  if (data.find("comment") != data.end() || !parent)
+void Scene::ParseScene(Scene_Node* parent, const json& data, bool isRoot) {
+  if (data.value("disabled", false) || !parent)
     return;
 
-  Scene_Node* element;
+  const MESH_TYPE meshKey = data.value("mesh", MESH_CUBE);
 
-  Mesh* mesh = meshes[MESH_CUBE];
-  if (data.find("mesh") != data.end()) {
-    MESH_TYPE meshKey = data["mesh"].get<MESH_TYPE>();
-    if (meshes.find(meshKey) != meshes.end())
-      mesh = meshes[meshKey];
-  }
+  Scene_Node* element = new Scene_Node(meshes[meshKey]);
 
-  Texture* texture = nullptr;
-  if (data.find("texture") != data.end()) {
-    MESH_TEXTURE textureKey = (MESH_TEXTURE)data["texture"].get<int>();
-    if (textures[textureKey] != 0)
-      texture = textures[textureKey];
-  }
-  else
-    texture = textures[MESH_TEXTURE_NULL];
+  const MESH_TEXTURE textureKey = data.value("texture", MESH_TEXTURE_NULL);
+  element->texture = textures[textureKey];
 
-  // Fill the object vectors
-  if (data.find("type") != data.end()) {
-    OBJECT_TYPE type = data["type"].get<OBJECT_TYPE>();
-    switch (type)
-    // switch ((int)data["type"])
-    {
-    case OBJECT_DOOR:
-      element = new Scene_Node(mesh);
-      doors.push_back(element);
-      break;
-
-    case OBJECT_WALL:
-      element = new Scene_Node(mesh);
-      walls.push_back(element);
-      break;
-
-    case OBJECT_ORB:
-      element = new Orb(mesh);
-      orbs.push_back(element);
-      break;
-
-    default:
-      element = new Scene_Node(mesh);
-    }
-  }
-  else
-    element = new Scene_Node(mesh);
-
-  parent->AddChild(element);
-  element->texture = texture;
+  const OBJECT_TYPE objectKey = data.value("type", OBJECT_NULL);
+  objects[objectKey].push_back(element);
 
   // Read available data
-  if (data.find("relativeModel") != data.end()) {
-    auto relativeModel = data["relativeModel"].get<std::vector<float>>();
-    element->relativeModel = glm::make_mat4(&relativeModel[0]);
-    element->relativeModel = glm::transpose(element->relativeModel);
-  }
+  const auto translate = data.value("translate", std::array{0.f, 0.f, 0.f});
+  auto translate_vec = glm::make_vec3(translate.data());
+  element->relativeModel = glm::translate(glm::mat4(1), translate_vec);
 
-  if (data.find("absoluteScale") != data.end()) {
-    auto absoluteScale = data["absoluteScale"].get<std::vector<float>>();
-    element->absoluteScale = glm::make_vec3(&absoluteScale[0]);
-  }
+  auto absoluteScale = data.value("absoluteScale", std::array{1.f, 1.f, 1.f});
+  element->absoluteScale = glm::make_vec3(absoluteScale.data());
 
-  if (data.find("color") != data.end()) {
-    auto color = data["color"].get<std::vector<float>>();
-    element->color = glm::make_vec4(&color[0]);
-  }
+  auto color = data.value("color", std::array{1.f, 1.f, 1.f, 1.f});
+  element->color = glm::make_vec4(color.data());
 
-  if (data.find("drawMode") != data.end()) {
-    DRAW_MODE mode = data["drawMode"].get<DRAW_MODE>();
-    element->drawMode = mode;
-  }
+  element->drawMode = data.value("drawMode", DRAW_TRIANGLES);
 
   // Light:
   if (data.find("light") != data.end()) {
-    // Read data from file and append to vector
-    auto ambient = data["light"]["ambient"].get<std::vector<float>>();
-    auto diffuse = data["light"]["diffuse"].get<std::vector<float>>();
-    auto specular = data["light"]["specular"].get<std::vector<float>>();
-    auto direction = data["light"]["direction"].get<std::vector<float>>();
-    auto position = data["light"]["position"].get<std::vector<float>>();
-    auto attenuation = data["light"]["attenuation"].get<float>();
+    typedef std::array<float, 3> vec3;
+
+    auto light = data["light"];
 
     Light current_light;
-    current_light.ambient = glm::make_vec3(ambient.data());
-    current_light.diffuse = glm::make_vec3(diffuse.data());
-    current_light.specular = glm::make_vec3(specular.data());
-    current_light.direction = glm::make_vec3(direction.data());
-    current_light.position = glm::make_vec3(position.data());
-    current_light.attenuation = attenuation;
+    current_light.ambient = glm::make_vec3(light["ambient"].get<vec3>().data());
+    current_light.diffuse = glm::make_vec3(light["diffuse"].get<vec3>().data());
+    current_light.specular = glm::make_vec3(light["specular"].get<vec3>().data());
+    current_light.position = glm::make_vec3(light["position"].get<vec3>().data());
+    current_light.attenuation = light["attenuation"].get<float>();
+    current_light.direction = glm::normalize(glm::make_vec3(light["direction"].get<vec3>().data()));
 
-    current_light.direction = glm::normalize(current_light.direction);
     lights.push_back(current_light);
   }
 
-  if (data.find("children") != data.end()) {
-    for (auto child: data["children"])
-      ParseScene(element, child);
+  if (isRoot) {
+    levelRooms.push_back(translate_vec);
+  }
+
+  parent->AddChild(element);
+
+  for (auto child: data.value("children", json::array())) {
+    ParseScene(element, child);
   }
 }
 
-glm::vec3 Scene::getNearestRoomPositionLv2(glm::vec3 playerPos) {
-  int indexOfMin = 0;
-  float minXZ = 3000;
+// We only have one lamp, and we move it to the nearest room (where the player is)
+glm::vec3 Scene::getLampPosition(glm::vec3 playerPos) {
+  glm::vec3 nearestRoom(0);
+  float minDist = std::numeric_limits<float>::max();
 
-  for (int i = 0; i < 9; i++) {
-    float Px = playerPos[0];
-    float Pz = playerPos[2];
-    float Rx = levelTwoRoomsX[i];
-    float Rz = levelTwoRoomsZ[i];
-
-    float dist = sqrt((Px - Rx) * (Px - Rx) + (Pz - Rz) * (Pz - Rz));
-    if (minXZ < dist) {
-      minXZ = minXZ;
-    }
-    else {
-      minXZ = dist;
-      indexOfMin = i;
-    }
+  for (const auto& room: levelRooms) {
+    auto distance = glm::distance(playerPos, room);
+      if (distance < minDist) {
+        minDist = distance;
+        nearestRoom = room;
+      }
   }
-  glm::vec3 roomPos;
-  roomPos[0] = levelTwoRoomsX[indexOfMin];
-  roomPos[2] = levelTwoRoomsZ[indexOfMin];
-  roomPos[1] = 130;
-  return roomPos;
-}
-glm::vec3 Scene::getNearestRoomPositionLv1(glm::vec3 playerPos) {
-  int indexOfMin = 0;
-  float minXZ = 3000;
 
-  for (int i = 0; i < 7; i++) {
-    float Px = playerPos[0];
-    float Pz = playerPos[2];
-    float Rx = levelOneRoomsX[i];
-    float Rz = levelOneRoomsZ[i];
-
-    float dist = sqrt((Px - Rx) * (Px - Rx) + (Pz - Rz) * (Pz - Rz));
-    if (minXZ < dist) {
-      minXZ = minXZ;
-    }
-    else {
-      minXZ = dist;
-      indexOfMin = i;
-    }
-  }
-  glm::vec3 roomPos;
-  roomPos[0] = levelOneRoomsX[indexOfMin];
-  roomPos[2] = levelOneRoomsZ[indexOfMin];
-  roomPos[1] = 130;
-  return roomPos;
+  nearestRoom.y = 130;
+  return nearestRoom;
 }
 
 // ====================================================================================================
@@ -201,9 +119,9 @@ void Scene::InitScene(const std::string& scenePath) {
   sceneFile >> sceneData;
 
   root = new Scene_Node;
-  for (auto element: sceneData) {
-    //std::cout << element.type_name();
-    ParseScene(root, element);
+  levelRooms.resize(sceneData.size());
+  for (auto room: sceneData) {
+    ParseScene(root, room, true);
   }
 }
 
@@ -252,14 +170,7 @@ void Scene::UpdateData() {
   // Move player:
   dm = movementP - movementN;
   player->UpdatePlayer(mouseDelta, dm);
-  glm::vec3 lampPosition;
-  if (level == 1) {
-    lampPosition = getNearestRoomPositionLv1(player->position);
-  }
-  else {
-    lampPosition = getNearestRoomPositionLv2(player->position);
-  }
-  lamp->UpdateLamp(lampPosition);
+  lamp->UpdateLamp(getLampPosition(player->position));
   // Swap colors
   if (movementP[1] > 0) {
     if ((bool)movementP[1] != swapped) {
@@ -354,7 +265,7 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
 
 // ====================================================================================================
 void Scene::ProcessCollision() {
-  for (auto door: doors) {
+  for (const auto door: objects[OBJECT_DOOR]) {
     if (Collide(player, door)) {
       if (glm::vec3(player->color) != glm::vec3(door->color)) {
         // Revert the move and put the player one frame back
@@ -365,7 +276,7 @@ void Scene::ProcessCollision() {
     }
   }
 
-  for (auto wall: walls) {
+  for (const auto wall: objects[OBJECT_WALL]) {
     if (Collide(player, wall)) {
       // std::cout << "debug: hit wall\n";
 
@@ -377,7 +288,7 @@ void Scene::ProcessCollision() {
     }
   }
 
-  for (auto sn_orb: orbs) {
+  for (auto sn_orb: objects[OBJECT_ORB]) {
     Orb* orb = static_cast<Orb*>(sn_orb);
     if (!orb)
       continue;

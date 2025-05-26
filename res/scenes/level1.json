@@ -1,1170 +1,800 @@
-{
-    "Comments": {
-        "comment": [
-            "Add 'comment' inside any object to skip it",
-            "TODO: Design levels",
-            "mesh: default type is cube",
-            "type: default type is null",
-            "drawMode: default type is triangles"
-            ]
-    },
-    
-    "Room1": {
+[
+    {
+        "name": "Room1",
         "mesh": "empty",
-        "children": {
-            "Red door": {
+        "children": [
+            {
+                "name": "Red door",
                 "type": "door",
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [128, 0, 0],
                 "absoluteScale": [2, 128, 64],
                 "color": [1, 0, 0, 0.5]
             },
-
-            "Ceiling Light": {
-                "mesh" : "none",
-                "light" : {
-                    "ambient":   [0.2, 0.2, 0.2],
-                    "diffuse":   [1, 1, 1],
-                    "specular":  [1, 1, 1],
+            {
+                "name": "Ceiling Light",
+                "mesh": "none",
+                "light": {
+                    "ambient": [0.2, 0.2, 0.2],
+                    "diffuse": [1, 1, 1],
+                    "specular": [1, 1, 1],
                     "direction": [-1, -1, -1],
-                    "position":  [0, 64, 0],
+                    "position": [0, 64, 0],
                     "attenuation": 0.000244141
-                }            
+                }
             },
-
-            "Exit door": {
+            {
+                "name": "Exit door",
                 "type": "door",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, -128],
                 "absoluteScale": [64, 128, 2],
                 "color": [1, 1, 0, 1]
             },
-
-            "Exit Text": {
-                "texture" : 2 ,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 40,
-                                  0, 0, 1, -126,
-                                  0, 0, 0, 1],
-        
+            {
+                "name": "Exit Text",
+                "texture": 2,
+                "translate": [0, 40, -126],
                 "absoluteScale": [40, 16, 0.1],
                 "color": [1, 1, 0, 1]
             },
-
-        
-            "Rightmost wall": {
+            {
+                "name": "Rightmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Leftmost wall": {
+            {
+                "name": "Leftmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, -128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [-128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Back wall": {
+            {
+                "name": "Back wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, 128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Front wall": {
+            {
+                "name": "Front wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, -128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Roof": {
+            {
+                "name": "Roof",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 256,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 256, 0],
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Floor": {
+            {
+                "name": "Floor",
                 "texture": 1,
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Red orb": {
+            {
+                "name": "Red orb",
                 "type": "orb",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 8,
-                                  0, 0, 1, -64,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 8, -64],
                 "absoluteScale": [8, 8, 8],
                 "color": [1, 0, 0, 1]
             },
-        
-            "Blue orb": {
+            {
+                "name": "Blue orb",
                 "type": "orb",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 8,
-                                  0, 0, 1, 64,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 8, 64],
                 "absoluteScale": [8, 8, 8],
                 "color": [0, 0, 1, 1]
             }
-        }
+        ]
     },
-
-
-    "Room2": {
-        "relativeModel": [1, 0, 0, 256,
-                          0, 1, 0, 0,
-                          0, 0, 1, 0,
-                          0, 0, 0, 1],
+    {
+        "name": "Room2",
+        "translate": [256, 0, 0],
         "mesh": "empty",
-        "children": {
-
-            "Ceiling Light": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [1, 1, 1],
-                    "specular":  [1, 1, 1],
+        "children": [
+            {
+                "name": "Ceiling Light",
+                "mesh": "empty",
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [1, 1, 1],
+                    "specular": [1, 1, 1],
                     "direction": [-1, -1, -1],
-                    "position":  [256, 64, 0],
+                    "position": [256, 64, 0],
                     "attenuation": 0.000244141
-                }            
+                }
             },
-
-            "Blue door": {
+            {
+                "name": "Blue door",
                 "type": "door",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, -128],
                 "absoluteScale": [64, 128, 2],
                 "color": [0, 0, 1, 0.5]
             },
-
-            "Magenta door": {
+            {
+                "name": "Magenta door",
                 "type": "door",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, 128],
                 "absoluteScale": [64, 128, 2],
                 "color": [1, 0, 1, 0.5]
             },
-
-            "Rightmost wall": {
+            {
+                "name": "Rightmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Leftmost wall": {
+            {
+                "name": "Leftmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, -128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [-128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Back wall": {
+            {
+                "name": "Back wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, 128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Front wall": {
+            {
+                "name": "Front wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, -128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Roof": {
+            {
+                "name": "Roof",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 256,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 256, 0],
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Floor": {
+            {
+                "name": "Floor",
                 "texture": 1,
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Magenta orb": {
+            {
+                "name": "Magenta orb",
                 "type": "orb",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 8,
-                                  0, 0, 1, -64,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 8, -64],
                 "absoluteScale": [8, 8, 8],
-                "color": [1, 0 , 1, 1]
+                "color": [1, 0, 1, 1]
             },
-
-            "Green orb": {
+            {
+                "name": "Green orb",
                 "type": "orb",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 8,
-                                  0, 0, 1, 64,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 8, 64],
                 "absoluteScale": [8, 8, 8],
-                "color": [0 , 1, 0 , 1]
+                "color": [0, 1, 0, 1]
             }
-
-        }
-    } ,
-
-
-
-    "Room3": {
-        "relativeModel": [1, 0, 0, 256,
-                          0, 1, 0, 0,
-                          0, 0, 1, 256,
-                          0, 0, 0, 1],
+        ]
+    },
+    {
+        "name": "Room3",
+        "translate": [256, 0, 256],
         "mesh": "empty",
-        "children": {
-
-            "Ceiling Light": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [1, 1, 1],
-                    "specular":  [1, 1, 1],
+        "children": [
+            {
+                "name": "Ceiling Light",
+                "mesh": "empty",
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [1, 1, 1],
+                    "specular": [1, 1, 1],
                     "direction": [-1, -1, -1],
-                    "position":  [256, 64, 256],
+                    "position": [256, 64, 256],
                     "attenuation": 0.000244141
-                }            
+                }
             },
-
-            "Cyan door": {
+            {
+                "name": "Cyan door",
                 "type": "door",
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [128, 0, 0],
                 "absoluteScale": [2, 128, 64],
                 "color": [0.5, 1, 0.98, 0.5]
             },
-
-            "Rightmost wall": {
+            {
+                "name": "Rightmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Leftmost wall": {
+            {
+                "name": "Leftmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, -128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [-128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Back wall": {
+            {
+                "name": "Back wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, 128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Front wall": {
+            {
+                "name": "Front wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, -128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Roof": {
+            {
+                "name": "Roof",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 256,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 256, 0],
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Floor": {
+            {
+                "name": "Floor",
                 "texture": 1,
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Magenta orb": {
+            {
+                "name": "Magenta orb",
                 "type": "orb",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 8,
-                                  0, 0, 1, 64,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 8, 64],
                 "absoluteScale": [8, 8, 8],
-                "color": [1, 0 , 1, 1]
+                "color": [1, 0, 1, 1]
             }
-
-            
-        }
+        ]
     },
-
-
-    
-    "Room4": {
-        "relativeModel": [1, 0, 0, 512,
-                          0, 1, 0, 0,
-                          0, 0, 1, 256,
-                          0, 0, 0, 1],
+    {
+        "name": "Room4",
+        "translate": [512, 0, 256],
         "mesh": "empty",
-        "children": {
-
-            "Ceiling Light": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [1, 1, 1],
-                    "specular":  [1, 1, 1],
+        "children": [
+            {
+                "name": "Ceiling Light",
+                "mesh": "empty",
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [1, 1, 1],
+                    "specular": [1, 1, 1],
                     "direction": [-1, -1, -1],
-                    "position":  [512, 64, 256],
+                    "position": [512, 64, 256],
                     "attenuation": 0.000244141
-                }            
+                }
             },
-
-            "Rightmost wall": {
+            {
+                "name": "Rightmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Leftmost wall": {
+            {
+                "name": "Leftmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, -128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [-128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Back wall": {
+            {
+                "name": "Back wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, 128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Front wall": {
+            {
+                "name": "Front wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, -128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Roof": {
+            {
+                "name": "Roof",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 256,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 256, 0],
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Floor": {
+            {
+                "name": "Floor",
                 "texture": 1,
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Yellow orb": {
+            {
+                "name": "Yellow orb",
                 "type": "orb",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 8,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 8, 0],
                 "absoluteScale": [8, 8, 8],
-                "color": [1, 1 , 0, 1]
+                "color": [1, 1, 0, 1]
             }
-        }
+        ]
     },
-
-    "Room5": {
-        "relativeModel": [1, 0, 0, 256,
-                          0, 1, 0, 0,
-                          0, 0, 1, -256,
-                          0, 0, 0, 1],
+    {
+        "name": "Room5",
+        "translate": [256, 0, -256],
         "mesh": "empty",
-        "children": {
-
-            "Ceiling Light": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [1, 1, 1],
-                    "specular":  [1, 1, 1],
+        "children": [
+            {
+                "name": "Ceiling Light",
+                "mesh": "empty",
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [1, 1, 1],
+                    "specular": [1, 1, 1],
                     "direction": [-1, -1, -1],
-                    "position":  [256, 64, -256],
+                    "position": [256, 64, -256],
                     "attenuation": 0.000244141
-                }            
+                }
             },
-
-            "Green door": {
+            {
+                "name": "Green door",
                 "type": "door",
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [128, 0, 0],
                 "absoluteScale": [2, 128, 64],
                 "color": [0, 1, 0, 0.5]
             },
-
-            "Rightmost wall": {
+            {
+                "name": "Rightmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Leftmost wall": {
+            {
+                "name": "Leftmost wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, -128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [-128, 0, 0],
                 "absoluteScale": [1, 256, 256]
             },
-        
-            "Back wall": {
+            {
+                "name": "Back wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, 128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Front wall": {
+            {
+                "name": "Front wall",
                 "type": "wall",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 0, -128],
                 "absoluteScale": [256, 256, 1]
             },
-        
-            "Roof": {
+            {
+                "name": "Roof",
                 "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 256,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 256, 0],
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Floor": {
+            {
+                "name": "Floor",
                 "texture": 1,
                 "absoluteScale": [256, 1, 256]
             },
-        
-            "Blue orb": {
+            {
+                "name": "Blue orb",
                 "type": "orb",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 8,
-                                  0, 0, 1, -64,
-                                  0, 0, 0, 1],
-        
+                "translate": [0, 8, -64],
                 "absoluteScale": [8, 8, 8],
-                "color": [0, 0 , 1, 1]
+                "color": [0, 0, 1, 1]
             }
-
-            
-        }
+        ]
     },
-
-    "Room6": {
-        "relativeModel": [1, 0, 0, 512,
-                          0, 1, 0, 0,
-                          0, 0, 1, -256,
-                          0, 0, 0, 1],
+    {
+        "name": "Room6",
+        "translate": [512, 0, -256],
         "mesh": "empty",
-        "children": {
-
-            "Ceiling Light": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [1, 1, 1],
-                    "specular":  [1, 1, 1],
-                    "direction": [-1, -1, -1],
-                    "position":  [512, 64, -256],
-                    "attenuation": 0.000244141
-                }            
-            },
-
-            "Rightmost wall": {
-                "type": "wall",
-                "texture": 1,
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [1, 256, 256]
-            },
-        
-            "Leftmost wall": {
-                "type": "wall",
-                "texture": 1,
-                "relativeModel": [1, 0, 0, -128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [1, 256, 256]
-            },
-        
-            "Back wall": {
-                "type": "wall",
-                "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 128,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [256, 256, 1]
-            },
-        
-            "Front wall": {
-                "type": "wall",
-                "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [256, 256, 1]
-            },
-        
-            "Roof": {
-                "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 256,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [256, 1, 256]
-            },
-        
-            "Floor": {
-                "texture": 1,
-                "absoluteScale": [256, 1, 256]
-            },
-        
-            "Cyan orb": {
-                "type": "orb",
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 8,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [8, 8, 8],
-                "color":[0.5, 1, 0.98, 1]
-            }
-        }
-    },
-
-
-    "Winning Room": {
-        "relativeModel": [1, 0, 0, 0,
-                          0, 1, 0, 0,
-                          0, 0, 1, -256,
-                          0, 0, 0, 1],
-        "mesh": "empty",
-        "children": {
-            "Ceiling Light": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [1, 1, 1],
-                    "specular":  [1, 1, 1],
-                    "direction": [-1, -1, -1],
-                    "position":  [0, 64, -256],
-                    "attenuation": 0.000244141
-                }            
-            },
-
-            "Celebrating Light Red": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [1, 0, 0],
-                    "specular":  [1, 0, 0],
-                    "direction": [-1, -1, -1],
-                    "position":  [30, 64, -256],
-                    "attenuation": 0.000844141
-                }        
-            },
-            
-            "Celebrating Light Green": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [0, 1, 0],
-                    "specular":  [0, 1, 0],
-                    "direction": [-1, -1, -1],
-                    "position":  [-30, 64, -256],
-                    "attenuation": 0.000844141
-                }        
-            },
-
-            "Celebrating Light Blue": {
-                "mesh" : "empty",
-                "light" : {
-                    "ambient":   [0, 0, 0],
-                    "diffuse":   [0, 1, 0],
-                    "specular":  [0, 1, 0],
-                    "direction": [-1, -1, -1],
-                    "position":  [0, 64, -256],
-                    "attenuation": 0.000844141
-                }        
-            },
-
-            "Rightmost wall": {
-                "type": "wall",
-                "texture": 1,
-                "relativeModel": [1, 0, 0, 128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [1, 256, 256]
-            },
-        
-            "Leftmost wall": {
-                "type": "wall",
-                "texture": 1,
-                "relativeModel": [1, 0, 0, -128,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [1, 256, 256]
-            },
-        
-            "Back wall": {
-                "type": "wall",
-                "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, 128,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [256, 256, 1]
-            },
-        
-            "Front wall": {
-                "type": "wall",
-                "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 0,
-                                  0, 0, 1, -128,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [256, 256, 1]
-            },
-        
-            "Roof": {
-                "texture": 1,
-                "relativeModel": [1, 0, 0, 0,
-                                  0, 1, 0, 256,
-                                  0, 0, 1, 0,
-                                  0, 0, 0, 1],
-        
-                "absoluteScale": [256, 1, 256]
-            },
-        
-            "Floor": {
-                "texture": 1,
-                "absoluteScale": [256, 1, 256]
-            },
-        
-            "WIN": {
+        "children": [
+            {
+                "name": "Ceiling Light",
                 "mesh": "empty",
-                "relativeModel": [1, 0, 0, 60,
-                                  0, 1, 0, 50,
-                                  0, 0, 1, -80,
-                                  0, 0, 0, 1],
-                "children" :{
-
-                    "W" :{
-                        "mesh" : "empty",
-                        "relativeModel":[1, 0, 0, -120,
-                                         0, 1, 0, 0,
-                                         0, 0, 1, 0,
-                                         0, 0, 0, 1],
-                        "children":{
-                            "#0" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, -4,
-                                                  0, 1, 0, 6,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-                            "#1" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 0,
-                                                0, 1, 0, 0,
-                                                0, 0, 1, 0,
-                                                0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-                            "#2" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 4,
-                                                0, 1, 0, -6,
-                                                0, 0, 1, 0,
-                                                0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#3" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 8,
-                                                0, 1, 0, -12,
-                                                0, 0, 1, 0,
-                                                0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#4" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 12,
-                                                0, 1, 0, -6,
-                                                0, 0, 1, 0,
-                                                0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#5" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 16,
-                                                0, 1, 0, 0,
-                                                0, 0, 1, 0,
-                                                0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#6" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 20,
-                                                  0, 1, 0, 6,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#7" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 24,
-                                                  0, 1, 0, 0,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-                            "#8" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 28,
-                                                  0, 1, 0, -6,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#9" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 32,
-                                                  0, 1, 0, -12,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#10" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 36,
-                                                  0, 1, 0, -6,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#11" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 40,
-                                                  0, 1, 0, 0,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#12" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 44,
-                                                  0, 1, 0, 6,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            }
-                        } 
-                    } , 
-
-                    "I" :{
-                        "mesh" : "empty",
-                        "relativeModel":[1, 0, 0, -55,
-                                         0, 1, 0, 8,
-                                         0, 0, 1, 0,
-                                         0, 0, 0, 1],
-                        "children":{
-                            "#0" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 0,
-                                                  0, 1, 0, 0,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-                            "#1" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 8,
-                                                  0, 1, 0, 0,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-                            "#2" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 16,
-                                                  0, 1, 0, 0,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#3" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 8,
-                                                  0, 1, 0, -8,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#4" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 8,
-                                                  0, 1, 0, -16,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#5" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 0,
-                                                  0, 1, 0, -24,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#6" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 8,
-                                                  0, 1, 0, -24,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#7" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 16,
-                                                  0, 1, 0, -24,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            }
-                        } 
-                    } ,
-
-
-                    "N" :{
-                        "mesh" : "empty",
-                        "relativeModel":[1, 0, 0, -20,
-                                         0, 1, 0, 8,
-                                         0, 0, 1, 0,
-                                         0, 0, 0, 1],
-                        "children":{
-
-                            "#1" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, -2,
-                                                  0, 1, 0, 0,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#2" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, -2,
-                                                  0, 1, 0, -8,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } , 
-
-
-                            "#3" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, -2,
-                                                  0, 1, 0, -16,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#4" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, -2,
-                                                  0, 1, 0, -24,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#5" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 6,
-                                                  0, 1, 0, -6,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#6" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 12,
-                                                  0, 1, 0, -12,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#7" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 18,
-                                                  0, 1, 0, -18,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#8" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 26,
-                                                  0, 1, 0, -24,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            },
-
-
-                            "#9" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 26,
-                                                  0, 1, 0, -16,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#10" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 26,
-                                                  0, 1, 0, -8,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            } ,
-
-
-                            "#11" : {
-                                "mesh" : "sphere" , 
-                                "relativeModel": [1, 0, 0, 26,
-                                                  0, 1, 0, 0,
-                                                  0, 0, 1, 0,
-                                                  0, 0, 0, 1],
-                                "absoluteScale": [4, 4, 4],
-                                "color": [1, 1, 0 , 0.9]
-                            }
-                        } 
-                    }
-
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [1, 1, 1],
+                    "specular": [1, 1, 1],
+                    "direction": [-1, -1, -1],
+                    "position": [512, 64, -256],
+                    "attenuation": 0.000244141
                 }
-        
+            },
+            {
+                "name": "Rightmost wall",
+                "type": "wall",
+                "texture": 1,
+                "translate": [128, 0, 0],
+                "absoluteScale": [1, 256, 256]
+            },
+            {
+                "name": "Leftmost wall",
+                "type": "wall",
+                "texture": 1,
+                "translate": [-128, 0, 0],
+                "absoluteScale": [1, 256, 256]
+            },
+            {
+                "name": "Back wall",
+                "type": "wall",
+                "texture": 1,
+                "translate": [0, 0, 128],
+                "absoluteScale": [256, 256, 1]
+            },
+            {
+                "name": "Front wall",
+                "type": "wall",
+                "texture": 1,
+                "translate": [0, 0, -128],
+                "absoluteScale": [256, 256, 1]
+            },
+            {
+                "name": "Roof",
+                "texture": 1,
+                "translate": [0, 256, 0],
+                "absoluteScale": [256, 1, 256]
+            },
+            {
+                "name": "Floor",
+                "texture": 1,
+                "absoluteScale": [256, 1, 256]
+            },
+            {
+                "name": "Cyan orb",
+                "type": "orb",
+                "translate": [0, 8, 0],
+                "absoluteScale": [8, 8, 8],
+                "color": [0.5, 1, 0.98, 1]
             }
-        }
+        ]
+    },
+    {
+        "name": "Winning Room",
+        "translate": [0, 0, -256],
+        "mesh": "empty",
+        "children": [
+            {
+                "name": "Ceiling Light",
+                "mesh": "empty",
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [1, 1, 1],
+                    "specular": [1, 1, 1],
+                    "direction": [-1, -1, -1],
+                    "position": [0, 64, -256],
+                    "attenuation": 0.000244141
+                }
+            },
+            {
+                "name": "Celebrating Light Red",
+                "mesh": "empty",
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [1, 0, 0],
+                    "specular": [1, 0, 0],
+                    "direction": [-1, -1, -1],
+                    "position": [30, 64, -256],
+                    "attenuation": 0.000844141
+                }
+            },
+            {
+                "name": "Celebrating Light Green",
+                "mesh": "empty",
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [0, 1, 0],
+                    "specular": [0, 1, 0],
+                    "direction": [-1, -1, -1],
+                    "position": [-30, 64, -256],
+                    "attenuation": 0.000844141
+                }
+            },
+            {
+                "name": "Celebrating Light Blue",
+                "mesh": "empty",
+                "light": {
+                    "ambient": [0, 0, 0],
+                    "diffuse": [0, 1, 0],
+                    "specular": [0, 1, 0],
+                    "direction": [-1, -1, -1],
+                    "position": [0, 64, -256],
+                    "attenuation": 0.000844141
+                }
+            },
+            {
+                "name": "Rightmost wall",
+                "type": "wall",
+                "texture": 1,
+                "translate": [128, 0, 0],
+                "absoluteScale": [1, 256, 256]
+            },
+            {
+                "name": "Leftmost wall",
+                "type": "wall",
+                "texture": 1,
+                "translate": [-128, 0, 0],
+                "absoluteScale": [1, 256, 256]
+            },
+            {
+                "name": "Back wall",
+                "type": "wall",
+                "texture": 1,
+                "translate": [0, 0, 128],
+                "absoluteScale": [256, 256, 1]
+            },
+            {
+                "name": "Front wall",
+                "type": "wall",
+                "texture": 1,
+                "translate": [0, 0, -128],
+                "absoluteScale": [256, 256, 1]
+            },
+            {
+                "name": "Roof",
+                "texture": 1,
+                "translate": [0, 256, 0],
+                "absoluteScale": [256, 1, 256]
+            },
+            {
+                "name": "Floor",
+                "texture": 1,
+                "absoluteScale": [256, 1, 256]
+            },
+            {
+                "name": "WIN",
+                "mesh": "empty",
+                "translate": [60, 50, -80],
+                "children": [
+                    {
+                        "name": "W",
+                        "mesh": "empty",
+                        "translate": [-120, 0, 0],
+                        "children": [
+                            {
+                                "name": "#0",
+                                "mesh": "sphere",
+                                "translate": [-4, 6, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#1",
+                                "mesh": "sphere",
+                                "translate": [0, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#2",
+                                "mesh": "sphere",
+                                "translate": [4, -6, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#3",
+                                "mesh": "sphere",
+                                "translate": [8, -12, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#4",
+                                "mesh": "sphere",
+                                "translate": [12, -6, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#5",
+                                "mesh": "sphere",
+                                "translate": [16, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#6",
+                                "mesh": "sphere",
+                                "translate": [20, 6, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#7",
+                                "mesh": "sphere",
+                                "translate": [24, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#8",
+                                "mesh": "sphere",
+                                "translate": [28, -6, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#9",
+                                "mesh": "sphere",
+                                "translate": [32, -12, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#10",
+                                "mesh": "sphere",
+                                "translate": [36, -6, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#11",
+                                "mesh": "sphere",
+                                "translate": [40, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#12",
+                                "mesh": "sphere",
+                                "translate": [44, 6, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "I",
+                        "mesh": "empty",
+                        "translate": [-55, 8, 0],
+                        "children": [
+                            {
+                                "name": "#0",
+                                "mesh": "sphere",
+                                "translate": [0, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#1",
+                                "mesh": "sphere",
+                                "translate": [8, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#2",
+                                "mesh": "sphere",
+                                "translate": [16, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#3",
+                                "mesh": "sphere",
+                                "translate": [8, -8, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#4",
+                                "mesh": "sphere",
+                                "translate": [8, -16, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#5",
+                                "mesh": "sphere",
+                                "translate": [0, -24, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#6",
+                                "mesh": "sphere",
+                                "translate": [8, -24, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#7",
+                                "mesh": "sphere",
+                                "translate": [16, -24, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "N",
+                        "mesh": "empty",
+                        "translate": [-20, 8, 0],
+                        "children": [
+                            {
+                                "name": "#1",
+                                "mesh": "sphere",
+                                "translate": [-2, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#2",
+                                "mesh": "sphere",
+                                "translate": [-2, -8, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#3",
+                                "mesh": "sphere",
+                                "translate": [-2, -16, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#4",
+                                "mesh": "sphere",
+                                "translate": [-2, -24, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#5",
+                                "mesh": "sphere",
+                                "translate": [6, -6, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#6",
+                                "mesh": "sphere",
+                                "translate": [12, -12, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#7",
+                                "mesh": "sphere",
+                                "translate": [18, -18, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#8",
+                                "mesh": "sphere",
+                                "translate": [26, -24, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#9",
+                                "mesh": "sphere",
+                                "translate": [26, -16, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#10",
+                                "mesh": "sphere",
+                                "translate": [26, -8, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            },
+                            {
+                                "name": "#11",
+                                "mesh": "sphere",
+                                "translate": [26, 0, 0],
+                                "absoluteScale": [4, 4, 4],
+                                "color": [1, 1, 0, 0.9]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
-}    
+]
