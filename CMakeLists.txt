@@ -233,6 +233,21 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
                            _UNICODE
                            _CRT_SECURE_NO_WARNINGS)
 
+
 if (CMAKE_BUILD_TYPE MATCHES Debug)
   target_compile_definitions(${PROJECT_NAME} PRIVATE DEBUG)
+  
+  if (MSVC)
+    set(SANITIZERS_OPTIONS /fsanitize=address /RTC1)
+    set(COMPILE_FLAGS /Zi /Od /Ob0 /Od ${SANITIZERS_OPTIONS})
+    set(LINK_FLAGS ${SANITIZERS_OPTIONS})
+  elseif (NOT MINGW)
+    set(SANITIZERS_OPTIONS -fsanitize=address -fsanitize=leak -fsanitize=undefined)
+    set(COMPILE_FLAGS ${SANITIZERS_OPTIONS} -g3)
+    set(LINK_FLAGS ${SANITIZERS_OPTIONS} -fno-omit-frame-pointer -fno-optimize-sibling-calls)
+  endif()
+
+  target_compile_options(${PROJECT_NAME} PRIVATE ${COMPILE_FLAGS})
+
+  target_link_options(${PROJECT_NAME} PRIVATE ${LINK_FLAGS})
 endif()
