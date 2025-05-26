@@ -179,7 +179,7 @@ void RunGame() {
   // Create the camera object
   Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
 
-  glUniform1f(Scene::texture_sampler_location, 0);
+  glUniform1i(Scene::texture_sampler_location, 0);
   // Game loop
   while (!glfwWindowShouldClose(Scene::window)) {
     // Check if any events have been activated (key pressed, mouse moved etc.)

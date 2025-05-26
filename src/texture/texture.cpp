@@ -28,6 +28,9 @@ Texture::Texture(GLubyte color)
   glGenerateMipmap(GL_TEXTURE_2D);
 
   glBindTexture(GL_TEXTURE_2D, 0);
+
+  delete[] localBuffer;
+  localBuffer = nullptr;
 }
 
 Texture::Texture(const std::string& path, GLenum format)
