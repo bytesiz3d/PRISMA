@@ -164,9 +164,6 @@ void Scene::UpdateData() {
   mouseDelta = glm::vec2(mX - p_mX, mY - p_mY);
   p_mX = mX, p_mY = mY;
 
-  if (!holdMouse)
-    mouseDelta = glm::vec2(0);
-
   // Move player:
   dm = movementP - movementN;
   player->UpdatePlayer(mouseDelta, dm);
@@ -397,15 +394,6 @@ void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action, i
   }
 }
 
-// ====================================================================================================
-void Scene::MouseCallback(GLFWwindow* window, int button, int action, int mods) {
-  if (button == GLFW_MOUSE_BUTTON_LEFT || button == GLFW_MOUSE_BUTTON_RIGHT) {
-    if (action == GLFW_PRESS)
-      holdMouse = true;
-    else if (action == GLFW_RELEASE)
-      holdMouse = false;
-  }
-}
 
 // ====================================================================================================
 void Scene::DeleteAllPointers() {

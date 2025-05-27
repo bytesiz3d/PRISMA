@@ -33,7 +33,6 @@ glm::vec3 movementN(0);
 glm::vec3 dm(0);
 glm::vec2 mouseDelta(0);
 
-bool holdMouse = false;
 bool swapped = false;
 
 // Camera:

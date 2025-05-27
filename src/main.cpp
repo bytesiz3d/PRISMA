@@ -247,9 +247,10 @@ bool InitWindow() {
     return false;
   }
 
+  glfwSetInputMode(Scene::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
   // Set the required callback functions
   glfwSetKeyCallback(Scene::window, Scene::KeyCallback);
-  glfwSetMouseButtonCallback(Scene::window, Scene::MouseCallback);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize OpenGL context" << std::endl;
