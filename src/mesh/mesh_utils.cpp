@@ -218,7 +218,15 @@ Mesh* Mesh_Utils::OBJMesh(const std::string& filePath) {
 Mesh* Mesh_Utils::FBXMesh(const std::string& filePath) {
   // Load scene
   Assimp::Importer importer;
-  const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate);
+  const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate
+    | aiProcess_JoinIdenticalVertices
+    | aiProcess_ValidateDataStructure
+    | aiProcess_FindInvalidData | aiProcess_GenSmoothNormals
+    | aiProcess_RemoveRedundantMaterials
+    | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph
+    | aiProcess_FixInfacingNormals
+    | aiProcess_GenUVCoords
+    );
 
   // Check for errors
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)  // if is Not Zero
