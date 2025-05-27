@@ -199,7 +199,7 @@ void Scene::UpdateData() {
 }
 
 // ====================================================================================================
-bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
+static auto getCollisionVectors(Scene_Node* objectA, Scene_Node* objectB) {
   // AABB:
   // Get the minimum (x, y, z) and the maximum (x, y, z) for both shapes.
   // If the ranges intersect in all three axes,
@@ -254,16 +254,34 @@ bool Scene::Collide(Scene_Node* objectA, Scene_Node* objectB) {
     B_max = glm::max(B_max, transformed);
   }
 
-  return (
-    A_min[0] <= B_max[0] && B_min[0] <= A_max[0] &&
-    A_min[1] <= B_max[1] && B_min[1] <= A_max[1] &&
-    A_min[2] <= B_max[2] && B_min[2] <= A_max[2]);
+  return std::make_tuple(A_min, A_max, B_min, B_max);
+}
+
+bool Scene::Collide(Scene_Node *objectA, Scene_Node *objectB) {
+  const auto& [A_min, A_max, B_min, B_max] = getCollisionVectors(objectA, objectB);
+  // Check if the ranges intersect in all three axes
+  return glm::all(glm::lessThanEqual(A_min, B_max)) && glm::all(glm::lessThanEqual(B_min, A_max));
+}
+
+bool Scene::DoorCollide(Scene_Node *objectA, Scene_Node *door) {
+  const auto& [A_min, A_max, B_min, B_max] = getCollisionVectors(objectA, door);
+  // Check if the ranges intersect in all three axes
+  bool ret = glm::all(glm::lessThanEqual(A_min, B_max)) && glm::all(glm::lessThanEqual(B_min, A_max));
+
+  // Make sure that object is fully inside the door to be able to pass through.
+  // We check if the min and max of A are within the min and max of B.
+  // This is a stricter condition than just checking for intersection.
+  // We don't check x-axis because it represents the thickness of the door, which is not relevant.
+  ret = ret &&
+      A_min.y >= B_min.y && A_max.y <= B_max.y &&
+      A_min.z >= B_min.z && A_max.z <= B_max.z;
+  return ret;
 }
 
 // ====================================================================================================
 void Scene::ProcessCollision() {
   for (const auto door: objects[OBJECT_DOOR]) {
-    if (Collide(player, door)) {
+    if (DoorCollide(player, door)) {
       if (glm::vec3(player->color) != glm::vec3(door->color)) {
         // Revert the move and put the player one frame back
         player->UpdatePlayer(mouseDelta, -dm);

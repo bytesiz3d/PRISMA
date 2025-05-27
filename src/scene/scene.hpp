@@ -65,6 +65,7 @@ void DrawScene(Scene_Node* scene, GLuint shaderId);
 void UploadLights(GLuint shaderID);
 
 bool Collide(Scene_Node* objectA, Scene_Node* objectB);
+bool DoorCollide(Scene_Node* objectA, Scene_Node* objectB);
 void ProcessCollision();
 
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
