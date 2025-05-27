@@ -13,6 +13,7 @@
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/DefaultLogger.hpp>
+#include <assimp/Exporter.hpp>
 
 // #define BLACK    000,000,000,255
 // #define RED      255,000,000,255
@@ -230,15 +231,20 @@ Mesh* Mesh_Utils::FBXMesh(const std::string& filePath) {
   importer.SetPropertyBool(AI_CONFIG_GLOB_MEASURE_TIME, true);
 #endif
 
-  const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate
-    | aiProcess_JoinIdenticalVertices
-    | aiProcess_ValidateDataStructure
-    | aiProcess_FindInvalidData | aiProcess_GenSmoothNormals
-    | aiProcess_RemoveRedundantMaterials
-    | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph
-    | aiProcess_FixInfacingNormals
-    | aiProcess_GenUVCoords
-    );
+#ifdef PRISMA_ASSIMP_EXPORT_OBJECTS
+  constexpr int importFlags =   aiProcess_Triangulate
+                              | aiProcess_JoinIdenticalVertices
+                              | aiProcess_ValidateDataStructure
+                              | aiProcess_FindInvalidData | aiProcess_GenSmoothNormals
+                              | aiProcess_RemoveRedundantMaterials
+                              | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph
+                              | aiProcess_FixInfacingNormals
+                              | aiProcess_GenUVCoords;
+#else
+  constexpr int importFlags = 0;
+#endif
+
+  const aiScene* scene = importer.ReadFile(filePath, importFlags);
 
   // Check for errors
   if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)  // if is Not Zero
@@ -246,6 +252,18 @@ Mesh* Mesh_Utils::FBXMesh(const std::string& filePath) {
     std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
     return nullptr;
   }
+
+#ifdef PRISMA_ASSIMP_EXPORT_OBJECTS
+  Assimp::Exporter exporter;
+
+  if (exporter.Export(scene, "assbin", filePath + "_output.assbin") == AI_SUCCESS) {
+    std::cout << "Successfully exported " << filePath << " to " << filePath + "_output.assbin" << std::endl;
+  } else {
+    std::cout << "ERROR::ASSIMP:: " << exporter.GetErrorString() << std::endl;
+  }
+  return nullptr;  // We don't need the mesh, just exporting it
+#endif
+
 
   // TODO: directory and texture loading?????????????
 
