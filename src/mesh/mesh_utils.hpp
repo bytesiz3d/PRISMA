@@ -1,12 +1,6 @@
 #pragma once
 #include <cmath>
 
-// ASSIMP
-#include <assimp/postprocess.h>
-#include <assimp/scene.h>
-
-#include <assimp/Importer.hpp>
-
 #include "../font/font.hpp"
 #include "mesh.hpp"
 

@@ -8,6 +8,12 @@
 
 #include <tiny_obj_loader/tiny_obj_loader.h>
 
+// ASSIMP
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/DefaultLogger.hpp>
+
 // #define BLACK    000,000,000,255
 // #define RED      255,000,000,255
 // #define GREEN    000,255,000,255
@@ -218,6 +224,12 @@ Mesh* Mesh_Utils::OBJMesh(const std::string& filePath) {
 Mesh* Mesh_Utils::FBXMesh(const std::string& filePath) {
   // Load scene
   Assimp::Importer importer;
+
+#ifdef DEBUG
+  Assimp::DefaultLogger::create(nullptr, Assimp::Logger::VERBOSE, aiDefaultLogStream_STDERR);
+  importer.SetPropertyBool(AI_CONFIG_GLOB_MEASURE_TIME, true);
+#endif
+
   const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate
     | aiProcess_JoinIdenticalVertices
     | aiProcess_ValidateDataStructure
