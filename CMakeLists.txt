@@ -199,9 +199,6 @@ target_link_libraries(${PROJECT_NAME} glm)
 ## STB_TRUETYPE:
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/nothings)
 
-## TINY_OBJ_LOADER:
-target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/syoyo)
-
 ## JSON:
 target_include_directories(${PROJECT_NAME} PRIVATE ${THIRDPARTY_DIR}/nlohmann)
 

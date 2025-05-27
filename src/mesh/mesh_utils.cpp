@@ -3,10 +3,7 @@
 #include <glm/common.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#define TINYOBJLOADER_IMPLEMENTATION
 #include "mesh_utils.hpp"
-
-#include <tiny_obj_loader/tiny_obj_loader.h>
 
 // ASSIMP
 #include <assimp/postprocess.h>
@@ -163,66 +160,7 @@ Mesh* Mesh_Utils::WhiteCube() {
   return mesh;
 }
 
-Mesh* Mesh_Utils::OBJMesh(const std::string& filePath) {
-  tinyobj::attrib_t attrib;
-  std::vector<tinyobj::shape_t> shapes;
-  std::vector<tinyobj::material_t> materials;
-  std::string err;
-
-  // basepath = nullptr
-  // triangluate = false
-  bool success = tinyobj::LoadObj(&attrib, &shapes, &materials, &err,
-                                  filePath.c_str(), nullptr, true);
-
-  if (!err.empty()) {
-    std::cerr << "ERR: " << err << std::endl;
-  }
-
-  if (!success) {
-    printf("Failed to load/parse .obj.\n");
-    return nullptr;
-  }
-
-  // attrib.vertices,
-  // attrib.normals,
-  // attrib.texcoords
-  // are std::vector<float> which contain our data
-  std::vector<GLuint> indices;
-
-  // TODO: Generalize for mesh types that aren't triangluar
-  // For each shape
-  for (size_t s = 0; s < shapes.size(); s++) {
-    // For each face
-    size_t index_offset = 0;
-    for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-      // For each vertex
-      int fv = shapes[s].mesh.num_face_vertices[f];
-      for (size_t v = 0; v < fv; v++) {
-        tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-        indices.push_back(idx.vertex_index);
-      }
-      index_offset += fv;
-    }
-  }
-
-  Mesh* mesh = new Mesh;
-  mesh->SetBufferData("positions", sizeof(GLfloat) * attrib.vertices.size(), attrib.vertices.data(), GL_STATIC_DRAW);
-  mesh->SetBufferData("normals", sizeof(GLfloat) * attrib.normals.size(), attrib.normals.data(), GL_STATIC_DRAW);
-  mesh->SetBufferData("texcoords", sizeof(GLfloat) * attrib.texcoords.size(), attrib.texcoords.data(), GL_STATIC_DRAW);
-  mesh->SetElementsData(sizeof(GLuint) * indices.size(), indices.data(), GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
-
-  // Setting the mesh's AABB:
-  auto vertices = attrib.vertices.data();
-  for (GLuint i = 0; i < attrib.vertices.size(); i += 3) {
-    auto pos = glm::vec3(vertices[i + 0], vertices[i + 1], vertices[i + 2]);
-
-    mesh->AABB_min = glm::min(mesh->AABB_min, pos);
-    mesh->AABB_max = glm::max(mesh->AABB_max, pos);
-  }
-  return mesh;
-}
-
-Mesh* Mesh_Utils::FBXMesh(const std::string& filePath) {
+Mesh* Mesh_Utils::LoadMesh(const std::string& filePath) {
   // Load scene
   Assimp::Importer importer;
 
