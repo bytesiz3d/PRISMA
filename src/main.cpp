@@ -148,8 +148,8 @@ void RunGame() {
   Mesh* cube = Mesh_Utils::WhiteCube();
   Mesh* sphere = Mesh_Utils::Sphere();
   // Mesh* player = Mesh_Utils::OBJMesh("../res/models/player");
-  Mesh* player = Mesh_Utils::FBXMesh("../res/models/player");
-  Mesh* lamp = Mesh_Utils::FBXMesh("../res/models/lamp");
+  Mesh* player = Mesh_Utils::FBXMesh("../res/models/player.assbin");
+  Mesh* lamp = Mesh_Utils::FBXMesh("../res/models/lamp.assbin");
   Scene::meshes[MESH_NULL] = nullptr;
   Scene::meshes[MESH_CUBE] = cube;
   Scene::meshes[MESH_SPHERE] = sphere;
