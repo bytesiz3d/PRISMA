@@ -82,7 +82,7 @@ void MainMenu() {
   Model1 = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 0.8, 0));
   level1text->absoluteScale = glm::vec3(0.08f);
   level1text->relativeModel = Model1;
-  level1text->color = glm::vec4(0, 0.f, 1.f, 1);
+  level1text->color = glm::vec4(1.f, 1.f, 1.f, 1);
   Scene::hud->AddChild(level1text);
 
   glm::mat4 Model2;
@@ -93,6 +93,8 @@ void MainMenu() {
   level2text->color = glm::vec4(1.f, 1.f, 1.f, 1);
   Scene::hud->AddChild(level2text);
 
+  std::array levels = {level1text, level2text};
+
   glUseProgram(shaderProgram);
 
   // Load the font, just like a texture
@@ -102,16 +104,25 @@ void MainMenu() {
 
   int count = 0;
   // Game loop
-  while (!glfwWindowShouldClose(Scene::window) && level == -1) {
+  while (!glfwWindowShouldClose(Scene::window)) {
     // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
     glfwPollEvents();
 
-    auto [exit, level] = InputManager::ProcessMainMenuInput();
+    auto [exit, startGame, level] = InputManager::ProcessMainMenuInput();
     if (exit) {
       glfwSetWindowShouldClose(Scene::window, true);
     }
 
-    ::level = level;
+    if (startGame) {
+      ::level = level;
+      break;  // Exit the main menu loop and start the game
+    }
+
+    for (auto & l : levels) {
+      l->color = glm::vec4(1.f, 1.f, 1.f, 1);
+    }
+
+    levels[level-1]->color = glm::vec4(0.2f, 0.5f, 0.7f, 1);
 
     // Render
     // Clear the color buffer

@@ -12,7 +12,8 @@ struct GameInputData {
 
 struct MainMenuInputData {
     bool exit = false;
-    int level = -1;
+    bool startGame = false;
+    int level = 1;
 };
 
 class UserInput {
