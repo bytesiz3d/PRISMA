@@ -66,8 +66,8 @@ void MainMenu() {
   Mesh* Level2 = Mesh_Utils::TextMesh("Level 2", &font);
 
   // HUD:
-  Scene::hud = new Scene_Node;
-  Scene::hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
+  Scene_Node* hud = new Scene_Node;
+  hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
 
   glm::mat4 Model;
   Scene_Node* prismatext = new Scene_Node(PRISMA);
@@ -75,7 +75,7 @@ void MainMenu() {
   prismatext->absoluteScale = glm::vec3(0.08f);
   prismatext->relativeModel = Model;
   prismatext->color = glm::vec4(0.1, 0.5f, 0.5f, 1);
-  Scene::hud->AddChild(prismatext);
+  hud->AddChild(prismatext);
 
   glm::mat4 Model1;
   Scene_Node* level1text = new Scene_Node(Level1);
@@ -83,7 +83,7 @@ void MainMenu() {
   level1text->absoluteScale = glm::vec3(0.08f);
   level1text->relativeModel = Model1;
   level1text->color = glm::vec4(1.f, 1.f, 1.f, 1);
-  Scene::hud->AddChild(level1text);
+  hud->AddChild(level1text);
 
   glm::mat4 Model2;
   Scene_Node* level2text = new Scene_Node(Level2);
@@ -91,26 +91,26 @@ void MainMenu() {
   level2text->absoluteScale = glm::vec3(0.08f);
   level2text->relativeModel = Model2;
   level2text->color = glm::vec4(1.f, 1.f, 1.f, 1);
-  Scene::hud->AddChild(level2text);
+  hud->AddChild(level2text);
 
   std::array levels = {level1text, level2text};
 
   glUseProgram(shaderProgram);
 
   // Load the font, just like a texture
-  Scene::texture_sampler_location = glGetUniformLocation(shaderProgram, "texture_sampler");
+  const GLint texture_sampler_location = glGetUniformLocation(shaderProgram, "texture_sampler");
   font.Bind(0);
-  glUniform1i(Scene::texture_sampler_location, 0);
+  glUniform1i(texture_sampler_location, 0);
 
   int count = 0;
   // Game loop
-  while (!glfwWindowShouldClose(Scene::window)) {
+  while (!glfwWindowShouldClose(Scene::getWindow())) {
     // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
     glfwPollEvents();
 
     auto [exit, startGame, level] = InputManager::ProcessMainMenuInput();
     if (exit) {
-      glfwSetWindowShouldClose(Scene::window, true);
+      glfwSetWindowShouldClose(Scene::getWindow(), true);
     }
 
     if (startGame) {
@@ -137,18 +137,16 @@ void MainMenu() {
       prismatext->color += glm::vec4(0.005f, 0.f, 0.003f, 0);
     }
     count++;
-    Scene::DrawScene(Scene::hud, shaderProgram);
+    Scene::DrawScene(hud, shaderProgram);
 
     // Swap the screen buffers
-    glfwSwapBuffers(Scene::window);
+    glfwSwapBuffers(Scene::getWindow());
   }
 
   glDeleteProgram(shaderProgram);
   delete PRISMA;
   delete Level1;
   delete Level2;
-
-  Scene::DeleteAllPointers();
 }
 
 // ====================================================================================================
@@ -159,20 +157,24 @@ void RunGame() {
   GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
 
   glUseProgram(cubeShaderProgram);
-  Scene::VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
-  Scene::texture_sampler_location = glGetUniformLocation(cubeShaderProgram, "texture_sampler");
-  Scene::cam_pos_location = glGetUniformLocation(cubeShaderProgram, "cam_position");
+  const GLint VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
+  const GLint texture_sampler_location = glGetUniformLocation(cubeShaderProgram, "texture_sampler");
+  const GLint cam_pos_location = glGetUniformLocation(cubeShaderProgram, "cam_position");
+
+  Scene scene;
 
   // Create meshes
   Mesh* cube = Mesh_Utils::WhiteCube();
   Mesh* sphere = Mesh_Utils::Sphere();
   Mesh* player = Mesh_Utils::LoadMesh("../res/models/player.assbin");
   Mesh* lamp = Mesh_Utils::LoadMesh("../res/models/lamp.assbin");
-  Scene::meshes[MESH_NULL] = nullptr;
-  Scene::meshes[MESH_CUBE] = cube;
-  Scene::meshes[MESH_SPHERE] = sphere;
-  Scene::meshes[MESH_MODEL0] = player;
-  Scene::meshes[MESH_MODEL4] = lamp;
+  scene.set_meshes({
+    {MESH_NULL, nullptr},
+    {MESH_CUBE, cube},
+    {MESH_SPHERE, sphere},
+    {MESH_MODEL0, player},
+    {MESH_MODEL4, lamp}
+  });
 
   // Create textures
   Texture grid("../res/textures/tiles-256.png", GL_RGB);
@@ -180,31 +182,30 @@ void RunGame() {
   Texture exit("../res/textures/exit.png", GL_RGB);
   Texture wall("../res/textures/wall.jpg", GL_RGB);
   Texture white;
-  Scene::textures[MESH_TEXTURE_NULL] = &white;
-  Scene::textures[MESH_TEXTURE0] = &wood;
-  Scene::textures[MESH_TEXTURE1] = &grid;
-  Scene::textures[MESH_TEXTURE2] = &exit;
-  Scene::textures[MESH_TEXTURE3] = &wall;
+  scene.set_textures({
+    {MESH_TEXTURE_NULL, &white},
+    {MESH_TEXTURE0, &wood},
+    {MESH_TEXTURE1, &grid},
+    {MESH_TEXTURE2, &exit},
+    {MESH_TEXTURE3, &wall}
+  });
 
   // Initialize scene
   if (level == 1)
-    Scene::InitScene("../res/scenes/level1.json");
+    scene.InitScene("../res/scenes/level1.json");
   else if (level == 2)
-    Scene::InitScene("../res/scenes/level2.json");
+    scene.InitScene("../res/scenes/level2.json");
 
-  Scene::UploadLights(cubeShaderProgram);
+  scene.UploadLights(cubeShaderProgram);
 
-  // Create the camera object
-  Scene::camera.aspectRatio = (float)WIDTH / HEIGHT;
-
-  glUniform1i(Scene::texture_sampler_location, 0);
+  glUniform1i(texture_sampler_location, 0);
   // Game loop
-  while (!glfwWindowShouldClose(Scene::window)) {
+  while (!glfwWindowShouldClose(Scene::getWindow())) {
     // Check if any events have been activated (key pressed, mouse moved etc.)
     // and call corresponding response functions
     glfwPollEvents();
 
-    Scene::UpdateData();
+    scene.UpdateData();
 
     // Render
     // Clear the color buffer
@@ -212,17 +213,17 @@ void RunGame() {
     glUseProgram(cubeShaderProgram);
 
     // Pass VP, camera position
-    glm::mat4 VP = Scene::camera.ViewProjectionMatrix();
-    glUniformMatrix4fv(Scene::VP_location, 1, false, glm::value_ptr(VP));
-    glUniform3f(Scene::cam_pos_location, Scene::camera.position.x, Scene::camera.position.y, Scene::camera.position.z);
+    glm::mat4 VP = Scene::get_camera().ViewProjectionMatrix();
+    glUniformMatrix4fv(VP_location, 1, false, glm::value_ptr(VP));
+    glUniform3f(cam_pos_location, Scene::get_camera().position.x, Scene::get_camera().position.y, Scene::get_camera().position.z);
 
-    Scene::DrawScene(Scene::root, cubeShaderProgram);
-    Scene::DrawScene(Scene::player, cubeShaderProgram);
-    Scene::DrawScene(Scene::lamp, cubeShaderProgram);
-    Scene::DrawScene(Scene::hud, hudShaderProgram);
+    Scene::DrawScene(scene.get_root(), cubeShaderProgram);
+    Scene::DrawScene(scene.get_player(), cubeShaderProgram);
+    Scene::DrawScene(scene.get_lamp(), cubeShaderProgram);
+    Scene::DrawScene(scene.get_hud(), hudShaderProgram);
 
     // Swap the screen buffers
-    glfwSwapBuffers(Scene::window);
+    glfwSwapBuffers(Scene::getWindow());
   }
 
   delete cube;
@@ -233,7 +234,6 @@ void RunGame() {
   glDeleteProgram(cubeShaderProgram);
   glDeleteProgram(hudShaderProgram);
 
-  Scene::DeleteAllPointers();
 }
 
 // ====================================================================================================
@@ -258,15 +258,17 @@ bool InitWindow() {
   glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, true);
 
   // Create a GLFWwindow object that we can use for GLFW's functions
-  Scene::window = glfwCreateWindow(WIDTH, HEIGHT, "GFX Playground", glfwGetPrimaryMonitor(), NULL);
-  glfwMakeContextCurrent(Scene::window);
-  if (Scene::window == NULL) {
+  GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "GFX Playground",nullptr, NULL);
+  glfwMakeContextCurrent(window);
+  if (window == NULL) {
     std::cout << "Failed to create GLFW window" << std::endl;
     glfwTerminate();
     return false;
   }
 
-  glfwSetInputMode(Scene::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+  Scene::setWindow(window);
+
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize OpenGL context" << std::endl;
@@ -299,5 +301,3 @@ bool InitWindow() {
   OpenglUtils::initOpenglDebugOutput();
   return true;
 }
-
-#include "scene/scene.cpp"

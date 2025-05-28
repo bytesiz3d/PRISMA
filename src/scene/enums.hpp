@@ -1,4 +1,9 @@
+#ifndef ENUMS_HPP
+#define ENUMS_HPP
+
 // Enumerating object type and mesh
+
+
 enum OBJECT_TYPE {
   OBJECT_DOOR,
   OBJECT_WALL,
@@ -54,3 +59,4 @@ enum MESH_TEXTURE {
   MESH_TEXTURE3,
   MESH_TEXTURE_NULL = -1
 };
+#endif // ENUMS_HPP

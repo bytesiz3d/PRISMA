@@ -25,8 +25,11 @@ class Camera {
 
   const float PI;
 
-  glm::mat4 ViewMatrix();
-  glm::mat4 ProjectionMatrix();
+  glm::mat4 ViewMatrix() const;
+
+  static float getAspectRatio();
+
+  glm::mat4 ProjectionMatrix() const;
 
  public:
   float aspectRatio;
@@ -38,7 +41,7 @@ class Camera {
   void UpdateCamera(glm::vec2 mouseDelta, glm::vec3 movement);
   void UpdateCamera2D(glm::vec2 mouseDelta, glm::vec3 movement);
 
-  glm::mat4 ViewProjectionMatrix();
+  glm::mat4 ViewProjectionMatrix() const;
 
   void SetTarget(glm::vec3 target);
 

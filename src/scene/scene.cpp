@@ -1,9 +1,14 @@
-#include <glad/glad.h>
-
+#include "scene.hpp"
 #include "../input/input_manager.hpp"
+#include <string>
+#include <fstream>
+#include "../orb/orb.hpp"
+
 #include "GLFW/glfw3.h"
 using json = nlohmann::json;
-#include <string>
+
+GLFWwindow* Scene::window = nullptr;
+Camera Scene::camera;
 
 // ====================================================================================================
 void Scene::ParseScene(Scene_Node* parent, const json& data, bool isRoot) {
@@ -76,6 +81,10 @@ glm::vec3 Scene::getLampPosition(glm::vec3 playerPos) {
 
   nearestRoom.y = 130;
   return nearestRoom;
+}
+
+Scene::Scene(const std::string& scenePath) {
+  InitScene(scenePath);
 }
 
 // ====================================================================================================
@@ -160,6 +169,24 @@ void Scene::UploadLights(GLuint shaderID) {
     glUniform1f(att, lights[i].attenuation);
   }
 }
+
+GLFWwindow * Scene::getWindow() {
+  if (window == nullptr) {
+    window = glfwGetCurrentContext();
+  }
+  return window;
+}
+
+void Scene::setWindow(GLFWwindow *newWindow) {
+  window = newWindow;
+  if (window) {
+    glfwSetWindowSizeCallback(window, Scene::updateWindowSizeCallback);
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+    camera.aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+  }
+}
+
 // ====================================================================================================
 void Scene::UpdateData() {
   auto [exit, swapColors, cameraMovement, playerMovement] = InputManager::ProcessGameInput();
@@ -336,7 +363,7 @@ void Scene::DrawScene(Scene_Node* scene, GLuint shaderId) {
 }
 
 // ====================================================================================================
-void Scene::DeleteAllPointers() {
+Scene::~Scene() {
   if (root)
     delete root;
 

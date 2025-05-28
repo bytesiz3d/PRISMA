@@ -60,16 +60,16 @@ void Camera::UpdateCamera2D(glm::vec2 mouseDelta, glm::vec3 movement) {
   position += glm::vec3(0, 1, 0) * movement[1];
 }
 
-glm::mat4 Camera::ViewMatrix() {
+glm::mat4 Camera::ViewMatrix() const {
   glm::vec3 center = position + direction;
   return glm::lookAt(position, center, up);
 }
 
-glm::mat4 Camera::ProjectionMatrix() {
+glm::mat4 Camera::ProjectionMatrix() const {
   return glm::perspective(perspectiveFoVy, aspectRatio, near, far);
 }
 
-glm::mat4 Camera::ViewProjectionMatrix() {
+glm::mat4 Camera::ViewProjectionMatrix() const {
   return ProjectionMatrix() * ViewMatrix();
 }
 

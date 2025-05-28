@@ -59,6 +59,9 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   src/font/font.hpp
   src/font/font.cpp
 
+  src/scene/scene.hpp
+  src/scene/scene.cpp
+
   src/scene_node/scene_node.hpp
   src/scene_node/scene_node.cpp
 
