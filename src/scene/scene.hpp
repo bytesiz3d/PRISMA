@@ -23,18 +23,6 @@ std::map<MESH_TYPE, Mesh*> meshes;
 std::map<MESH_TEXTURE, Texture*> textures;
 std::vector<Light> lights;
 
-// Controls:
-double p_mX, p_mY,
-  mX, mY;
-
-glm::vec3 movementP(0);
-glm::vec3 movementN(0);
-
-glm::vec3 dm(0);
-glm::vec2 mouseDelta(0);
-
-bool swapped = false;
-
 // Camera:
 Camera camera;
 float cameraAngle = 0.f;
@@ -66,10 +54,7 @@ void UploadLights(GLuint shaderID);
 
 bool Collide(Scene_Node* objectA, Scene_Node* objectB);
 bool DoorCollide(Scene_Node* objectA, Scene_Node* objectB);
-void ProcessCollision();
-
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode);
-void MouseCallback(GLFWwindow* window, int button, int action, int mods);
+void ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& playerMovement);
 
 void DeleteAllPointers();
 

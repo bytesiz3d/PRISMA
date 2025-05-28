@@ -1,4 +1,6 @@
 #include <glad/glad.h>
+
+#include "../input/input_manager.hpp"
 #include "GLFW/glfw3.h"
 using json = nlohmann::json;
 #include <string>
@@ -160,31 +162,25 @@ void Scene::UploadLights(GLuint shaderID) {
 }
 // ====================================================================================================
 void Scene::UpdateData() {
-  glfwGetCursorPos(window, &mX, &mY);
-  mouseDelta = glm::vec2(mX - p_mX, mY - p_mY);
-  p_mX = mX, p_mY = mY;
+  auto [exit, swapColors, cameraMovement, playerMovement] = InputManager::ProcessGameInput();
 
-  // Move player:
-  dm = movementP - movementN;
-  player->UpdatePlayer(mouseDelta, dm);
+  if (exit) {
+    glfwSetWindowShouldClose(Scene::window, true);
+  }
+
+  player->UpdatePlayer(cameraMovement, playerMovement);
   lamp->UpdateLamp(getLampPosition(player->position));
   // Swap colors
-  if (movementP[1] > 0) {
-    if ((bool)movementP[1] != swapped) {
-      // Swap colors
-      glm::vec4 newPlayerColor = hud->children[1]->color;
-      hud->children[1]->color = player->color;
-      player->color = newPlayerColor;
+  if (swapColors) {
+    // Swap colors
+    glm::vec4 newPlayerColor = hud->children[1]->color;
+    hud->children[1]->color = player->color;
+    player->color = newPlayerColor;
 
-      // Update HUD
-      hud->children[0]->color = newPlayerColor;
-      swapped = true;
-    }
+    // Update HUD
+    hud->children[0]->color = newPlayerColor;
   }
-  else
-    swapped = false;
-
-  ProcessCollision();
+  ProcessCollision(cameraMovement, playerMovement);
 
   // Manually updating the camera
   glm::vec4 newCameraPosition(0, 0, 0, 1);
@@ -279,13 +275,13 @@ bool Scene::DoorCollide(Scene_Node *objectA, Scene_Node *door) {
 }
 
 // ====================================================================================================
-void Scene::ProcessCollision() {
+void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& playerMovement) {
   for (const auto door: objects[OBJECT_DOOR]) {
     if (DoorCollide(player, door)) {
       if (glm::vec3(player->color) != glm::vec3(door->color)) {
         // Revert the move and put the player one frame back
-        player->UpdatePlayer(mouseDelta, -dm);
-        player->UpdatePlayer(mouseDelta, -dm);
+        player->UpdatePlayer(cameraMovement, -playerMovement);
+        player->UpdatePlayer(cameraMovement, -playerMovement);
       }
       return;
     }
@@ -296,8 +292,8 @@ void Scene::ProcessCollision() {
       // std::cout << "debug: hit wall\n";
 
       // Revert the move and put the player one frame back
-      player->UpdatePlayer(-mouseDelta, -dm);
-      player->UpdatePlayer(-mouseDelta, -dm);
+      player->UpdatePlayer(-cameraMovement, -playerMovement);
+      player->UpdatePlayer(-cameraMovement, -playerMovement);
 
       return;
     }
@@ -332,86 +328,6 @@ void Scene::DrawScene(Scene_Node* scene, GLuint shaderId) {
       DrawScene(child, shaderId);
   }
 }
-
-// ====================================================================================================
-// Is called whenever a key is pressed/released via GLFW
-void Scene::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mode) {
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, GL_TRUE);
-
-  if (action == GLFW_PRESS) {
-    switch (key) {
-    case GLFW_KEY_W:
-    case GLFW_KEY_UP:
-      movementP[2] = 1;
-      break;
-    case GLFW_KEY_S:
-    case GLFW_KEY_DOWN:
-      movementN[2] = 1;
-      break;
-
-    case GLFW_KEY_D:
-    case GLFW_KEY_RIGHT:
-      movementP[0] = 1;
-      break;
-    case GLFW_KEY_A:
-    case GLFW_KEY_LEFT:
-      movementN[0] = 1;
-      break;
-
-    case GLFW_KEY_Q:
-      movementP[1] = 1;
-      break;
-    case GLFW_KEY_E:
-      movementN[1] = 1;
-      break;
-
-    case GLFW_KEY_1:
-      level = 1;
-      break;
-
-    case GLFW_KEY_2:
-      level = 2;
-      break;
-
-    default:
-      break;
-    }
-  }
-
-  if (action == GLFW_RELEASE) {
-    switch (key) {
-    case GLFW_KEY_W:
-    case GLFW_KEY_UP:
-      movementP[2] = 0;
-      break;
-    case GLFW_KEY_S:
-    case GLFW_KEY_DOWN:
-      movementN[2] = 0;
-      break;
-
-    case GLFW_KEY_D:
-    case GLFW_KEY_RIGHT:
-      movementP[0] = 0;
-      break;
-    case GLFW_KEY_A:
-    case GLFW_KEY_LEFT:
-      movementN[0] = 0;
-      break;
-
-    case GLFW_KEY_Q:
-      movementP[1] = 0;
-      break;
-    case GLFW_KEY_E:
-      movementN[1] = 0;
-      break;
-
-    default:
-      break;
-    }
-  }
-}
-
 
 // ====================================================================================================
 void Scene::DeleteAllPointers() {

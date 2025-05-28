@@ -28,6 +28,7 @@
 // TODO: Add shaderIDs to the JSON file
 #include "scene/scene.hpp"
 #include "utils/opengl_utils.h"
+#include "input/input_manager.hpp"
 
 // Window dimensions
 GLuint WIDTH = 1280, HEIGHT = 720;
@@ -104,6 +105,13 @@ void MainMenu() {
   while (!glfwWindowShouldClose(Scene::window) && level == -1) {
     // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
     glfwPollEvents();
+
+    auto [exit, level] = InputManager::ProcessMainMenuInput();
+    if (exit) {
+      glfwSetWindowShouldClose(Scene::window, true);
+    }
+
+    ::level = level;
 
     // Render
     // Clear the color buffer
@@ -248,9 +256,6 @@ bool InitWindow() {
   }
 
   glfwSetInputMode(Scene::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-  // Set the required callback functions
-  glfwSetKeyCallback(Scene::window, Scene::KeyCallback);
 
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize OpenGL context" << std::endl;

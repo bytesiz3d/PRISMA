@@ -35,7 +35,7 @@ Player::Player(Mesh* _mesh,
   movementSens = calculateSensitivity();
 }
 
-void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement) {
+void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec2 movement) {
   auto now = system_clock::now();
   auto duration = duration_cast<milliseconds>(now - lastUpdate);
 
@@ -48,8 +48,8 @@ void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec3 movement) {
 
   movement *= movementSens;
 
-  position += direction * movement[2];
-  position += normal * movement[0];
+  position += direction * movement.y;
+  position += normal * movement.x;
   // TODO: Add jumping
 
   // Translate to new position and adjust orientation

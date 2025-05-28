@@ -83,6 +83,12 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
   ${TEXTURES}
 
   ${SCENES}
+
+  src/input/keyboard_mouse_input.hpp
+  src/input/keyboard_mouse_input.cpp
+  src/input/input_manager.hpp
+  src/input/input_manager.cpp
+  src/input/user_input.hpp
 )
 
 ## Source groups represent folders in the Visual Studio Solution Explorer
