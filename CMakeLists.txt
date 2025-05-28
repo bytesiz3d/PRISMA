@@ -84,6 +84,8 @@ add_executable(${PROJECT_NAME} # Creates an executable file with a name that mat
 
   ${SCENES}
 
+  src/input/gamepad_controller_input.hpp
+  src/input/gamepad_controller_input.cpp
   src/input/keyboard_mouse_input.hpp
   src/input/keyboard_mouse_input.cpp
   src/input/input_manager.hpp
