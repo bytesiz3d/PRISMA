@@ -267,10 +267,16 @@ bool Scene::DoorCollide(Scene_Node *objectA, Scene_Node *door) {
   // Make sure that object is fully inside the door to be able to pass through.
   // We check if the min and max of A are within the min and max of B.
   // This is a stricter condition than just checking for intersection.
-  // We don't check x-axis because it represents the thickness of the door, which is not relevant.
+  // We need to know which axis is the door's area to use, and which is the door depth (thickness) to ignore.
+
+  auto door_length = B_max - B_min;
+  std::array<int, door_length.length()> door_axis = {0, 1, 2};
+  // Sort the axes by length, so that we can ignore the smallest one (the door thickness).
+  std::sort(door_axis.begin(), door_axis.end(), [&door_length](int a, int b) { return door_length[a] > door_length[b]; });
+
   ret = ret &&
-      A_min.y >= B_min.y && A_max.y <= B_max.y &&
-      A_min.z >= B_min.z && A_max.z <= B_max.z;
+      A_min[door_axis[0]] >= B_min[door_axis[0]] && A_max[door_axis[0]] <= B_max[door_axis[0]] &&
+      A_min[door_axis[1]] >= B_min[door_axis[1]] && A_max[door_axis[1]] <= B_max[door_axis[1]];
   return ret;
 }
 
