@@ -38,6 +38,8 @@ class Font {
     GLuint firstChar;
     GLuint charCount;
 
+    static int estimateAtlasSize(int fontSize, int glyphCount, int oversampleX, int oversampleY);
+
 public:
     Font(const std::string& path, GLuint _size = 32);
     ~Font();

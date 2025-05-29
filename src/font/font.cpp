@@ -4,8 +4,18 @@
 //#include <stb/stb_truetype.h>
 #include "font.hpp"
 
+int Font::estimateAtlasSize(int fontSize, int glyphCount, int oversampleX, int oversampleY) {
+  // Estimate the size of the texture atlas based on font size and glyph count
+  int atlas_size = std::sqrt( fontSize * fontSize * glyphCount * oversampleX * oversampleY);
+
+  // Ensure the atlas size is a power of two (for best GPU compatibility)
+  atlas_size = std::pow(2, std::ceil(std::log2(atlas_size)));
+  return atlas_size;
+}
+
+
 Font::Font(const std::string& path, GLuint _size)
-  : size(_size), atlasWidth(1024), atlasHeight(1024), oversampleX(2), oversampleY(2), firstChar(' '), charCount('~' - ' '), textureID(0), filePath(path) {
+  : size(_size), oversampleX(2), oversampleY(2), firstChar(' '), charCount('~' - ' '), textureID(0), filePath(path) {
   // Open the file
   std::ifstream file(filePath, std::ios::binary | std::ios::ate);
   if (!file.is_open()) {
@@ -19,6 +29,8 @@ Font::Font(const std::string& path, GLuint _size)
   auto fontData = std::vector<GLubyte>(f_size);
   file.read(reinterpret_cast<char*>(&fontData[0]), f_size);
   file.close();
+
+  atlasWidth = atlasHeight = estimateAtlasSize(size, charCount, oversampleX, oversampleY);
 
   // Allocate memory
   auto atlasData = std::make_unique<GLubyte[]>(atlasWidth * atlasHeight);
