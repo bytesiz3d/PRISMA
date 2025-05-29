@@ -248,7 +248,7 @@ Mesh* Mesh_Utils::LoadMesh(const std::string& filePath) {
   return mesh;
 }
 
-Mesh* Mesh_Utils::TextMesh(const std::string& text, Font* font) {
+Mesh* Mesh_Utils::TextMesh(const std::string& text, const Font& font) {
   Mesh* mesh = new Mesh;
 
   // Initialize the containers for our data
@@ -259,7 +259,7 @@ Mesh* Mesh_Utils::TextMesh(const std::string& text, Font* font) {
   GLuint lastIndex = 0;
   float offsetX = 0, offsetY = 0;
   for (char c: text) {
-    const auto glyphInfo = font->GetGlyphInfo(c, offsetX, offsetY);
+    const auto glyphInfo = font.GetGlyphInfo(c, offsetX, offsetY);
     offsetX = glyphInfo.offsetX;
     offsetY = glyphInfo.offsetY;
 

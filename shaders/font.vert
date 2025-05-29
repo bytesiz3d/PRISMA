@@ -9,8 +9,7 @@ uniform mat4 M;
 // uniform mat4 VP;
 
 void main(){
-    vec2 v_position = position.xy / vec2(16.f, 9.f);
-    gl_Position = M * vec4(v_position, 0.0f, 1.0f);
+    gl_Position = M * vec4(position.xy, 0.0f, 1.0f);
     v_color = vec4(1.f, 1.f, 1.f, 1.f);
     v_texcoord = texcoord; // pass the texture coordinates as is to the fragment shader
 }

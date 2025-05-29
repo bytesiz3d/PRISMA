@@ -12,6 +12,7 @@
 #include "../lamp/Lamp.h"
 #include  "../player/player.hpp"
 #include "../camera/camera.hpp"
+#include "../font/font.hpp"
 
 struct Light {
   glm::vec3 ambient;
@@ -101,6 +102,13 @@ public:
   void UpdateData();
 
   static void DrawScene(Scene_Node *scene, GLuint shaderId);
+
+  static Scene_Node* Text(const char* string,
+                        const Font& font,
+                        glm::vec2 position = glm::vec3(0.f),
+                        glm::vec4 color = glm::vec4(1.f),
+                        float scale = 1,
+                        bool center_x = true);
 
   void UploadLights(GLuint shaderID);
 

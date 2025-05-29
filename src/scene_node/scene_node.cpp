@@ -48,10 +48,13 @@ void Scene_Node::AddChild(Scene_Node* child) {
   child->parent = this;
 }
 
-glm::mat4 Scene_Node::ScaleWorldModel() {
-  worldModel = parent ? parent->worldModel : glm::mat4(1.f);
-  worldModel *= relativeModel;
-  return glm::scale(worldModel, absoluteScale);
+glm::mat4 Scene_Node::ScaleWorldModel() const {
+  auto model = worldModel;
+  if (parent) {
+    model *= parent->ScaleWorldModel();
+  }
+  model *= relativeModel;
+  return glm::scale(model, absoluteScale);
 }
 
 void Scene_Node::Draw(GLuint shaderId) {

@@ -3,6 +3,7 @@
 #include <string>
 #include <fstream>
 #include "../orb/orb.hpp"
+#include "../mesh/mesh_utils.hpp"
 
 #include "GLFW/glfw3.h"
 using json = nlohmann::json;
@@ -361,6 +362,37 @@ void Scene::DrawScene(Scene_Node* scene, GLuint shaderId) {
       DrawScene(child, shaderId);
   }
 }
+
+
+Scene_Node* Scene::Text(const char* string,
+                        const Font& font,
+                        const glm::vec2 position,
+                        const glm::vec4 color,
+                        const float scale,
+                        const bool center_x) {
+  // Create the mesh
+  Mesh* textMesh = Mesh_Utils::TextMesh(string, font);
+  auto pos = glm::vec3(position.x, position.y, 0.f);
+
+  // Center the text if required
+  if (center_x) {
+    int WIDTH, HEIGHT;
+    glfwGetWindowSize(getWindow(), &WIDTH, &HEIGHT);
+
+    const auto x_center = WIDTH / 2.f;
+    const float offset = scale * (textMesh->AABB_max.x -textMesh->AABB_min.x) / 2.f;
+    pos.x = x_center - offset;
+  }
+
+  // Create the scene node
+  Scene_Node* textNode = new Scene_Node(textMesh);
+  textNode->absoluteScale = glm::vec3(scale);
+  textNode->relativeModel = glm::translate(glm::mat4(1), pos);
+  textNode->color = color;
+
+  return textNode;
+}
+
 
 // ====================================================================================================
 Scene::~Scene() {

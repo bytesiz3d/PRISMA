@@ -12,7 +12,7 @@ Mesh* WhiteCube();
 // Mesh* Orbit();
 Mesh* Sphere(GLuint hRes = 32, GLuint vRes = 32);
 
-Mesh* TextMesh(const std::string& text, Font* font);
+Mesh* TextMesh(const std::string &text, const Font &font);
 
 Mesh* LoadMesh(const std::string& filePath);
 

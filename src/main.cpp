@@ -58,39 +58,17 @@ void MainMenu() {
   GLuint shaderProgram = Shader::LoadShader("../shaders/font.vert", "../shaders/font.frag");
 
   // Create the font
-  Font font("../fonts/airstrikebold.ttf");
-
-  // Create the mesh
-  Mesh* PRISMA = Mesh_Utils::TextMesh("PRISMA", &font);
-  Mesh* Level1 = Mesh_Utils::TextMesh("Level 1", &font);
-  Mesh* Level2 = Mesh_Utils::TextMesh("Level 2", &font);
+  Font font("../fonts/airstrikebold.ttf", HEIGHT/10);
 
   // HUD:
   Scene_Node* hud = new Scene_Node;
-  hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
+  hud->worldModel = glm::ortho<float>(0, WIDTH, 0, HEIGHT);
 
-  glm::mat4 Model;
-  Scene_Node* prismatext = new Scene_Node(PRISMA);
-  Model = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 1.4f, 0));
-  prismatext->absoluteScale = glm::vec3(0.08f);
-  prismatext->relativeModel = Model;
-  prismatext->color = glm::vec4(0.1, 0.5f, 0.5f, 1);
+  auto prismatext = Scene::Text("PRISMA", font, glm::vec3(HEIGHT * 0.8), glm::vec4(1), 2);
   hud->AddChild(prismatext);
-
-  glm::mat4 Model1;
-  Scene_Node* level1text = new Scene_Node(Level1);
-  Model1 = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 0.8, 0));
-  level1text->absoluteScale = glm::vec3(0.08f);
-  level1text->relativeModel = Model1;
-  level1text->color = glm::vec4(1.f, 1.f, 1.f, 1);
+  auto level1text = Scene::Text("Level 1", font, glm::vec3(HEIGHT * 0.5), glm::vec4(1));
   hud->AddChild(level1text);
-
-  glm::mat4 Model2;
-  Scene_Node* level2text = new Scene_Node(Level2);
-  Model2 = glm::translate(glm::mat4(1), glm::vec3(-0.4f, 0.4, 0));
-  level2text->absoluteScale = glm::vec3(0.08f);
-  level2text->relativeModel = Model2;
-  level2text->color = glm::vec4(1.f, 1.f, 1.f, 1);
+  auto level2text = Scene::Text("Level 2", font, glm::vec3(HEIGHT * 0.3), glm::vec4(1));
   hud->AddChild(level2text);
 
   std::array levels = {level1text, level2text};
@@ -144,9 +122,6 @@ void MainMenu() {
   }
 
   glDeleteProgram(shaderProgram);
-  delete PRISMA;
-  delete Level1;
-  delete Level2;
 }
 
 // ====================================================================================================

@@ -42,7 +42,7 @@ class Scene_Node {
              glm::vec4 _color = glm::vec4(1.f));
   ~Scene_Node();
 
-  glm::mat4 ScaleWorldModel();
+  glm::mat4 ScaleWorldModel() const;
   void AddChild(Scene_Node* child);
   void Draw(GLuint shaderId);
 };

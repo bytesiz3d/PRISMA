@@ -42,7 +42,7 @@ public:
     Font(const std::string& path, GLuint _size = 32);
     ~Font();
     
-    GlyphInfo GetGlyphInfo(GLubyte c, float offsetX, float offsetY);
+    GlyphInfo GetGlyphInfo(GLubyte c, float offsetX, float offsetY) const;
 
     void Bind(GLuint slot = 0) const;
     void Unbind() const;

@@ -58,7 +58,7 @@ Font::Font(const std::string& path, GLuint _size)
   glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-GlyphInfo Font::GetGlyphInfo(GLubyte c, float offsetX, float offsetY) {
+GlyphInfo Font::GetGlyphInfo(GLubyte c, float offsetX, float offsetY) const {
   stbtt_aligned_quad quad;
 
   stbtt_GetPackedQuad(charInfo.get(), atlasWidth, atlasHeight,
