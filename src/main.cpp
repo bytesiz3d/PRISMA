@@ -52,7 +52,6 @@ int main() {
 
 // ====================================================================================================
 void MainMenu() {
-  glDisable(GL_CULL_FACE);
 
   // Compile and link the shader program
   GLuint shaderProgram = Shader::LoadShader("../shaders/font.vert", "../shaders/font.frag");

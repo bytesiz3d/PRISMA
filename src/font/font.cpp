@@ -84,14 +84,14 @@ GlyphInfo Font::GetGlyphInfo(GLubyte c, float offsetX, float offsetY) const {
   GlyphInfo info{};
   info.offsetX = std::fmax(offsetX, xmax);
   info.offsetY = offsetY;
-  info.positions[0] = {xmin, ymin, 0};
-  info.positions[1] = {xmin, ymax, 0};
-  info.positions[2] = {xmax, ymax, 0};
-  info.positions[3] = {xmax, ymin, 0};
+  info.positions[0] = {xmin, ymin, 0};  // bottom-left
+  info.positions[1] = {xmax, ymin, 0};  // bottom-right
+  info.positions[2] = {xmax, ymax, 0};  // top-right
+  info.positions[3] = {xmin, ymax, 0};  // top-left
   info.uvs[0] = {quad.s0, quad.t1};
-  info.uvs[1] = {quad.s0, quad.t0};
+  info.uvs[1] = {quad.s1, quad.t1};
   info.uvs[2] = {quad.s1, quad.t0};
-  info.uvs[3] = {quad.s1, quad.t1};
+  info.uvs[3] = {quad.s0, quad.t0};
 
   return info;
 }
