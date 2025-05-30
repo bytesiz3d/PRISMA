@@ -1,3 +1,5 @@
+#include <chrono>
+
 #include "keyboard_mouse_input.hpp"
 
 #include "input_manager.hpp"
@@ -58,17 +60,27 @@ GameInputData KeyboardMouseInput::ProcessGameInput() const {
 }
 
 MainMenuInputData KeyboardMouseInput::ProcessMainMenuInput(int levelsCount) const {
+    using namespace std::chrono_literals;
+
     static int level = 1;
+    static auto lastInputTime = std::chrono::steady_clock::now();
+    auto cooldown = 200ms;
 
     GLFWwindow* window = glfwGetCurrentContext();
 
     bool exit = glfwGetKey(window, GLFW_KEY_ESCAPE);
     bool startGame = glfwGetKey(window, GLFW_KEY_ENTER);
 
-    if (glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP)) {
-        level = std::max(1, level - 1);
-    } else if (glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN)) {
-        level = std::min(levelsCount, level + 1);
+    auto now = std::chrono::steady_clock::now();
+
+    if (now - lastInputTime > cooldown) {
+        if (glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP)) {
+            level = std::max(1, level - 1);
+            lastInputTime = now;
+        } else if (glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN)) {
+            level = std::min(levelsCount, level + 1);
+            lastInputTime = now;
+        }
     }
 
     return {exit, startGame, level};
