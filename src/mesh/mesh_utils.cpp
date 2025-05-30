@@ -163,10 +163,10 @@ Mesh* Mesh_Utils::WhiteCube() {
 Mesh* Mesh_Utils::ColoredBackground(const std::array<glm::vec4, 4> &colors) {
   Mesh* mesh = new Mesh;
   constexpr std::array<glm::vec3, 4> positions = {
-    glm::vec3(-1, -1, 1),
-    glm::vec3(1, -1, 1),
-    glm::vec3(1, 1, 1),
-    glm::vec3(-1, 1, 1)
+    glm::vec3(-1.5, -1.5, 1),
+    glm::vec3(1.5, -1.5, 1),
+    glm::vec3(1.5, 1.5, 1),
+    glm::vec3(-1.5, 1.5, 1)
   };
 
   constexpr std::array<GLuint, 6> indices = { 0, 1, 2,

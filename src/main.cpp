@@ -56,9 +56,9 @@ void MainMenu() {
   GLuint backgroundShader = Shader::LoadShader("../shaders/background.vert", "../shaders/background.frag");
   auto backgroundMesh = Mesh_Utils::ColoredBackground({
     glm::vec4(1, 0, 0, 1), // Red
+    glm::vec4(1, 1, 0, 1), // Yellow
     glm::vec4(0, 1, 0, 1), // Green
     glm::vec4(0, 0, 1, 1), // Blue
-    glm::vec4(1, 1, 0, 1) // Yellow
   });
   Scene_Node background(backgroundMesh);
 
@@ -89,6 +89,7 @@ void MainMenu() {
   glUniform1i(texture_sampler_location, 0);
 
   int count = 0;
+  float backgroundAngle = 0.0f;
   // Game loop
   while (!glfwWindowShouldClose(Scene::getWindow())) {
     // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
@@ -123,6 +124,10 @@ void MainMenu() {
       prismatext->color += glm::vec4(0.005f, 0.f, 0.003f, 0);
     }
     count++;
+
+    backgroundAngle += 0.005f;
+    background.relativeModel = glm::rotate(glm::mat4(1.0f), backgroundAngle, glm::vec3(0, 0, 1));
+
     Scene::DrawScene(&background, backgroundShader);
     Scene::DrawScene(hud, shaderProgram);
 
