@@ -18,9 +18,11 @@ GamepadControllerInput::GamepadControllerInput(): UserInput(Priority::VERY_HIGH)
         if (glfwJoystickIsGamepad(i)) {
             id = i; // Set the first connected gamepad as the current one
             std::cout << "Gamepad already connected: " << getName() << " (ID: " << id << ")\n";
-            InputManager::add(this); // Register this input handler with the InputManager
-            break;
         }
+    }
+
+    if (id >= GLFW_JOYSTICK_1) {
+        InputManager::add(this); // Register this input handler with the InputManager
     }
 
     glfwSetJoystickCallback(ConnectionCallback);
