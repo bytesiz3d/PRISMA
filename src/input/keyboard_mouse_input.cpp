@@ -57,7 +57,7 @@ GameInputData KeyboardMouseInput::ProcessGameInput() const {
     return {exit, swapColors, cameraDelta, playerMovement};
 }
 
-MainMenuInputData KeyboardMouseInput::ProcessMainMenuInput() const {
+MainMenuInputData KeyboardMouseInput::ProcessMainMenuInput(int levelsCount) const {
     static int level = 1;
 
     GLFWwindow* window = glfwGetCurrentContext();
@@ -68,7 +68,7 @@ MainMenuInputData KeyboardMouseInput::ProcessMainMenuInput() const {
     if (glfwGetKey(window, GLFW_KEY_W) || glfwGetKey(window, GLFW_KEY_UP)) {
         level = std::max(1, level - 1);
     } else if (glfwGetKey(window, GLFW_KEY_S) || glfwGetKey(window, GLFW_KEY_DOWN)) {
-        level = std::min(2, level + 1);
+        level = std::min(levelsCount, level + 1);
     }
 
     return {exit, startGame, level};

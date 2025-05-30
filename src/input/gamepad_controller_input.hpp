@@ -33,7 +33,7 @@ public:
 
     [[nodiscard]] GameInputData ProcessGameInput() const override;
 
-    [[nodiscard]] MainMenuInputData ProcessMainMenuInput() const override {
+    [[nodiscard]] MainMenuInputData ProcessMainMenuInput(int levelsCount) const override {
         return {};
     }
 };

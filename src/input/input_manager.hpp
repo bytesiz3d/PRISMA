@@ -14,7 +14,7 @@ public:
 
     [[nodiscard]] static GameInputData ProcessGameInput();
 
-    [[nodiscard]] static MainMenuInputData ProcessMainMenuInput();
+    [[nodiscard]] static MainMenuInputData ProcessMainMenuInput(int levelsCount);
 };
 
 #endif //INPUT_HPP

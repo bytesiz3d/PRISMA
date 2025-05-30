@@ -30,7 +30,7 @@ protected:
 
 public:
     [[nodiscard]] virtual GameInputData ProcessGameInput() const = 0;
-    [[nodiscard]] virtual MainMenuInputData ProcessMainMenuInput() const = 0;
+    [[nodiscard]] virtual MainMenuInputData ProcessMainMenuInput(int levelsCount) const = 0;
 
     explicit UserInput(const Priority priority): inputPriority(priority) {}
     virtual ~UserInput() = default;

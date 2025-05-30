@@ -32,26 +32,25 @@
 
 // Window dimensions
 GLuint WIDTH = 1280, HEIGHT = 720;
-int level = -1;
 
 // Start our window
 bool InitWindow();
 
-void MainMenu();
-void RunGame();
+int MainMenu();
+void RunGame(int level);
 
 // ====================================================================================================
 int main() {
   if (!InitWindow())
     return -1;
-  MainMenu();
-  RunGame();
+  const int level = MainMenu();
+  RunGame(level);
   glfwTerminate();
   return 0;
 }
 
 // ====================================================================================================
-void MainMenu() {
+int MainMenu() {
 
   GLuint backgroundShader = Shader::LoadShader("../shaders/background.vert", "../shaders/background.frag");
   auto backgroundMesh = Mesh_Utils::ColoredBackground({
@@ -68,18 +67,7 @@ void MainMenu() {
   // Create the font
   Font font("../fonts/airstrikebold.ttf", HEIGHT/10);
 
-  // HUD:
-  Scene_Node* hud = new Scene_Node;
-  hud->worldModel = glm::ortho<float>(0, WIDTH, 0, HEIGHT);
-
-  auto prismatext = Scene::Text("PRISMA", font, glm::vec3(HEIGHT * 0.8), glm::vec4(1), 2);
-  hud->AddChild(prismatext);
-  auto level1text = Scene::Text("Level 1", font, glm::vec3(HEIGHT * 0.5), glm::vec4(1));
-  hud->AddChild(level1text);
-  auto level2text = Scene::Text("Level 2", font, glm::vec3(HEIGHT * 0.3), glm::vec4(1));
-  hud->AddChild(level2text);
-
-  std::array levels = {level1text, level2text};
+  auto [menu, levels] = Scene::InitMainMenu("../res/scenes/levels.json", font);
 
   glUseProgram(shaderProgram);
 
@@ -88,25 +76,25 @@ void MainMenu() {
   font.Bind(0);
   glUniform1i(texture_sampler_location, 0);
 
-  int count = 0;
+  int selectedLevel = 0;
   float backgroundAngle = 0.0f;
   // Game loop
   while (!glfwWindowShouldClose(Scene::getWindow())) {
     // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
     glfwPollEvents();
 
-    auto [exit, startGame, level] = InputManager::ProcessMainMenuInput();
+    auto [exit, startGame, level] = InputManager::ProcessMainMenuInput(levels.size());
     if (exit) {
       glfwSetWindowShouldClose(Scene::getWindow(), true);
     }
 
     if (startGame) {
-      ::level = level;
+      selectedLevel = level;
       break;  // Exit the main menu loop and start the game
     }
 
-    for (auto & l : levels) {
-      l->color = glm::vec4(1.f, 1.f, 1.f, 1);
+    for (auto & lvl : levels) {
+      lvl->color = glm::vec4(1); // Reset all levels to white
     }
 
     levels[level-1]->color = glm::vec4(0.2f, 0.5f, 0.7f, 1);
@@ -116,30 +104,22 @@ void MainMenu() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shaderProgram);
 
-    if (count == 250) {
-      prismatext->color = glm::vec4(0.2f, 0.5, 0.7f, 1);
-      count = 0;
-    }
-    else {
-      prismatext->color += glm::vec4(0.005f, 0.f, 0.003f, 0);
-    }
-    count++;
-
     backgroundAngle += 0.005f;
     background.relativeModel = glm::rotate(glm::mat4(1.0f), backgroundAngle, glm::vec3(0, 0, 1));
 
     Scene::DrawScene(&background, backgroundShader);
-    Scene::DrawScene(hud, shaderProgram);
+    Scene::DrawScene(menu, shaderProgram);
 
     // Swap the screen buffers
     glfwSwapBuffers(Scene::getWindow());
   }
 
   glDeleteProgram(shaderProgram);
+  return selectedLevel;
 }
 
 // ====================================================================================================
-void RunGame() {
+void RunGame(const int level) {
   // Compile and link the shader program
   // GLuint cubeShaderProgram = Shader::LoadShader("../shaders/texture.vert", "../shaders/texture.frag");
   GLuint cubeShaderProgram = Shader::LoadShader("../shaders/light.vert", "../shaders/light.frag");
@@ -180,10 +160,7 @@ void RunGame() {
   });
 
   // Initialize scene
-  if (level == 1)
-    scene.InitScene("../res/scenes/level1.json");
-  else if (level == 2)
-    scene.InitScene("../res/scenes/level2.json");
+  scene.InitScene("../res/scenes/level"+ std::to_string(level) + ".json");
 
   scene.UploadLights(cubeShaderProgram);
 

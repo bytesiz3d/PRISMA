@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.0)
 
 # Setting build options and C++ language standard:
 set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build, options are: Debug Release RelWithDebInfo MinSizeRel.")
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 # add_compile_options(-w)
 
 project(${PROJECT_NAME} CXX) # Specifies the target project

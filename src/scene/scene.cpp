@@ -138,6 +138,47 @@ void Scene::InitScene(const std::string& scenePath) {
 }
 
 // ====================================================================================================
+std::tuple<Scene_Node*, std::span<Scene_Node*>> Scene::InitMainMenu(const std::string &levelsPath, const Font &font) {
+
+  int WIDTH, HEIGHT;
+  glfwGetWindowSize(Scene::getWindow(), &WIDTH, &HEIGHT);
+
+  Scene_Node* menu = new Scene_Node;
+  menu->worldModel = glm::ortho<float>(0, WIDTH, 0, HEIGHT);
+
+  glm::vec3 titlePosition(HEIGHT * 0.8);
+
+  auto title = Scene::Text("PRISMA", font, titlePosition, glm::vec4(1, 1, 0, 0.5), 2);
+  menu->AddChild(title);
+
+  // Load the JSON file and parse it
+  std::ifstream levelsFile(levelsPath);
+  json levels;
+  levelsFile >> levels;
+
+  float availableLevelsSpace = titlePosition.y;
+  float spacing = availableLevelsSpace / (levels.size() + 2);  // 2 for space above and below the levels
+
+  glm::vec3 levelPosition(availableLevelsSpace - (2 * spacing)); // multiply by 2 to leave space between title and first level
+
+  std::unordered_map<int, std::pair<std::string, Scene_Node*>> levelsMap;
+
+
+  for (const auto& level: levels) {
+    const std::string& name = level["name"];
+
+    auto scene = Scene::Text(name.c_str() , font, levelPosition, glm::vec4(1));
+    menu->AddChild(scene);
+
+    levelPosition.y -= spacing;
+  }
+
+  auto level_scenes = std::span(menu->children.begin() + 1, menu->children.end());
+
+  return {menu, level_scenes};
+}
+
+// ====================================================================================================
 // Upload light information to shader
 void Scene::UploadLights(GLuint shaderID) {
   int size = glGetUniformLocation(shaderID, "LightsNum");

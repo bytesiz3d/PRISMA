@@ -22,10 +22,10 @@ GameInputData InputManager::ProcessGameInput() {
     return highestPriorityInput->ProcessGameInput();
 }
 
-MainMenuInputData InputManager::ProcessMainMenuInput() {
+MainMenuInputData InputManager::ProcessMainMenuInput(int levelsCount) {
     if (set.empty()) {
         return {};
     }
     const auto& highestPriorityInput = *set.rbegin();
-    return highestPriorityInput->ProcessMainMenuInput();
+    return highestPriorityInput->ProcessMainMenuInput(levelsCount);
 }
