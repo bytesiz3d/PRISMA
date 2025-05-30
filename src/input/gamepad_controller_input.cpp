@@ -1,6 +1,7 @@
 #include "gamepad_controller_input.hpp"
 #include "input_manager.hpp"
 
+#include <chrono>
 #include <iostream>
 
 GamepadControllerInput GamepadControllerInput::instance;
@@ -101,4 +102,35 @@ GameInputData GamepadControllerInput::ProcessGameInput() const {
     }
 
     return ProcessGamepadInput(state);
+}
+
+MainMenuInputData GamepadControllerInput::ProcessMainMenuInput(int levelsCount) const {
+    using namespace std::chrono_literals;
+
+    static int level = 1;
+    static auto lastInputTime = std::chrono::steady_clock::now();
+    auto cooldown = 200ms;
+
+    GLFWgamepadstate state;
+
+    if (!isControllerConnected() || !glfwGetGamepadState(id, &state)) {
+        return{};
+    }
+
+    bool exit = state.buttons[GLFW_GAMEPAD_BUTTON_BACK] || state.buttons[GLFW_GAMEPAD_BUTTON_START];
+    bool startGame = state.buttons[GLFW_GAMEPAD_BUTTON_A];
+
+    auto now = std::chrono::steady_clock::now();
+
+    if (now - lastInputTime > cooldown) {
+        if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_UP] || state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y] < -0.5f) {
+            level = std::max(1, level - 1);
+            lastInputTime = now;
+        } else if (state.buttons[GLFW_GAMEPAD_BUTTON_DPAD_DOWN] || state.axes[GLFW_GAMEPAD_AXIS_LEFT_Y] > 0.5f) {
+            level = std::min(levelsCount, level + 1);
+            lastInputTime = now;
+        }
+    }
+
+    return {exit, startGame, level};
 }

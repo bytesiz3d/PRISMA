@@ -33,9 +33,7 @@ public:
 
     [[nodiscard]] GameInputData ProcessGameInput() const override;
 
-    [[nodiscard]] MainMenuInputData ProcessMainMenuInput(int levelsCount) const override {
-        return {};
-    }
+    [[nodiscard]] MainMenuInputData ProcessMainMenuInput(int levelsCount) const override;
 };
 
 #endif //GAMEPAD_CONTROLLER_HPP
