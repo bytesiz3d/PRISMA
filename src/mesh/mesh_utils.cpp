@@ -160,6 +160,28 @@ Mesh* Mesh_Utils::WhiteCube() {
   return mesh;
 }
 
+Mesh* Mesh_Utils::ColoredBackground(const std::array<glm::vec4, 4> &colors) {
+  Mesh* mesh = new Mesh;
+  constexpr std::array<glm::vec3, 4> positions = {
+    glm::vec3(-1, -1, 1),
+    glm::vec3(1, -1, 1),
+    glm::vec3(1, 1, 1),
+    glm::vec3(-1, 1, 1)
+  };
+
+  constexpr std::array<GLuint, 6> indices = { 0, 1, 2,
+                                              0, 2, 3 };
+
+  mesh->SetBufferData("positions", sizeof(GLfloat) * positions.size() * positions[0].length(), glm::value_ptr(positions.front()), GL_STATIC_DRAW);
+  mesh->SetBufferData("colors", sizeof(GLfloat) * colors.size() * colors[0].length(), glm::value_ptr(colors.front()), GL_STATIC_DRAW);
+  mesh->SetElementsData(sizeof(GLuint) * indices.size() , indices.data(), GL_STATIC_DRAW, indices.size(), GL_UNSIGNED_INT);
+
+  mesh->AABB_min = glm::vec3(-1, -1, 0);
+  mesh->AABB_max = glm::vec3(1, 1, 0);
+  return mesh;
+}
+
+
 Mesh* Mesh_Utils::LoadMesh(const std::string& filePath) {
   // Load scene
   Assimp::Importer importer;

@@ -53,6 +53,15 @@ int main() {
 // ====================================================================================================
 void MainMenu() {
 
+  GLuint backgroundShader = Shader::LoadShader("../shaders/background.vert", "../shaders/background.frag");
+  auto backgroundMesh = Mesh_Utils::ColoredBackground({
+    glm::vec4(1, 0, 0, 1), // Red
+    glm::vec4(0, 1, 0, 1), // Green
+    glm::vec4(0, 0, 1, 1), // Blue
+    glm::vec4(1, 1, 0, 1) // Yellow
+  });
+  Scene_Node background(backgroundMesh);
+
   // Compile and link the shader program
   GLuint shaderProgram = Shader::LoadShader("../shaders/font.vert", "../shaders/font.frag");
 
@@ -114,6 +123,7 @@ void MainMenu() {
       prismatext->color += glm::vec4(0.005f, 0.f, 0.003f, 0);
     }
     count++;
+    Scene::DrawScene(&background, backgroundShader);
     Scene::DrawScene(hud, shaderProgram);
 
     // Swap the screen buffers

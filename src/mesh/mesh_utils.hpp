@@ -16,6 +16,8 @@ Mesh* TextMesh(const std::string &text, const Font &font);
 
 Mesh* LoadMesh(const std::string& filePath);
 
+Mesh* ColoredBackground(const std::array<glm::vec4, 4> &colors);
+
 // Mesh* ColoredSphere(GLuint hRes = 32, GLuint vRes = 32);
 // Mesh* ColoredCube();
 }  // namespace Mesh_Utils

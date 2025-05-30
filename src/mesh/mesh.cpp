@@ -1,7 +1,7 @@
 #include "mesh.hpp"
 
 // positions, colors, texture coordinates
-VertexDescriptor vd_pct[3] = {
+VertexDescriptor vd_pct[] = {
   {0,
    "positions",
    3,
@@ -23,6 +23,13 @@ VertexDescriptor vd_pct[3] = {
    false,
    0,
    0},
+  {3,
+    "colors",
+    4,
+    GL_FLOAT,
+    true,
+    0,
+    0},
 };
 
 Mesh::Mesh(VertexDescriptor* inDescriptors, int n)
