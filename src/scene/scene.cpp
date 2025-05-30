@@ -386,7 +386,7 @@ Scene_Node* Scene::Text(const char* string,
 
   // Create the scene node
   Scene_Node* textNode = new Scene_Node(textMesh);
-  textNode->absoluteScale = glm::vec3(scale);
+  textNode->absoluteScale = glm::vec3(scale, scale, 1.f);
   textNode->relativeModel = glm::translate(glm::mat4(1), pos);
   textNode->color = color;
 
