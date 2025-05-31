@@ -18,13 +18,13 @@ void Scene::ParseScene(Scene_Node* parent, const json& data, bool isRoot) {
 
   const MESH_TYPE meshKey = data.value("mesh", MESH_CUBE);
 
-  Scene_Node* element = new Scene_Node(meshes[meshKey]);
+  auto element = std::make_unique<Scene_Node>(meshes[meshKey]);
 
   const MESH_TEXTURE textureKey = data.value("texture", MESH_TEXTURE_NULL);
   element->texture = textures[textureKey];
 
   const OBJECT_TYPE objectKey = data.value("type", OBJECT_NULL);
-  objects[objectKey].push_back(element);
+  objects[objectKey].push_back(element.get());
 
   // Read available data
   const auto translate = data.value("translate", std::array{0.f, 0.f, 0.f});
@@ -60,11 +60,11 @@ void Scene::ParseScene(Scene_Node* parent, const json& data, bool isRoot) {
     levelRooms.push_back(translate_vec);
   }
 
-  parent->AddChild(element);
-
   for (auto child: data.value("children", json::array())) {
-    ParseScene(element, child);
+    ParseScene(element.get(), child);
   }
+
+  parent->AddChild(std::move(element));
 }
 
 // We only have one lamp, and we move it to the nearest room (where the player is)
@@ -93,7 +93,7 @@ void Scene::InitScene(const std::string& scenePath) {
   glm::mat4 Model;
 
   // Player
-  player = new Player(meshes[MESH_MODEL0]);
+  player = std::make_unique<Player>(meshes[MESH_MODEL0]);
   player->position = glm::vec3(-86, 8, 0);
   player->absoluteScale = glm::vec3(16);
   //player->color = glm::vec4(0, 1, 0, 1);
@@ -102,7 +102,7 @@ void Scene::InitScene(const std::string& scenePath) {
   player->texture = textures[MESH_TEXTURE_NULL];
 
   // Lamp
-  lamp = new Lamp(meshes[MESH_MODEL4]);
+  lamp = std::make_unique<Lamp>(meshes[MESH_MODEL4]);
   lamp->position = glm::vec3(0, 130, 0);
   lamp->absoluteScale = glm::vec3(5);
   lamp->color = glm::vec4(1, 1, 1, 1);
@@ -111,45 +111,43 @@ void Scene::InitScene(const std::string& scenePath) {
   lamp->texture = textures[MESH_TEXTURE_NULL];
 
   // HUD:
-  hud = new Scene_Node;
+  hud = std::make_unique<Scene_Node>();
   hud->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0, -0.9f, 0));
 
-  Scene_Node* primaryColor = new Scene_Node(meshes[MESH_CUBE]);
-  Model = glm::translate(glm::mat4(1), glm::vec3(0.75f, 0, 0));
-  primaryColor->relativeModel = Model;
+  auto primaryColor = std::make_unique<Scene_Node>(meshes[MESH_CUBE]);
+  primaryColor->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0.75f, 0, 0));;
   primaryColor->color = player->color;
-  hud->AddChild(primaryColor);
+  hud->AddChild(std::move(primaryColor));
 
-  Scene_Node* secondaryColor = new Scene_Node(meshes[MESH_CUBE]);
-  Model = glm::translate(glm::mat4(1), glm::vec3(0.85f, 0, 0));
-  secondaryColor->relativeModel = Model;
-  hud->AddChild(secondaryColor);
+  auto secondaryColor = std::make_unique<Scene_Node>(meshes[MESH_CUBE]);
+  secondaryColor->relativeModel = glm::translate(glm::mat4(1), glm::vec3(0.85f, 0, 0));;
+  hud->AddChild(std::move(secondaryColor));
 
   // Load the JSON file and parse it to root
   std::ifstream sceneFile(scenePath);
   json sceneData;
   sceneFile >> sceneData;
 
-  root = new Scene_Node;
+  root = std::make_unique<Scene_Node>();
   levelRooms.resize(sceneData.size());
   for (auto room: sceneData) {
-    ParseScene(root, room, true);
+    ParseScene(root.get(), room, true);
   }
 }
 
 // ====================================================================================================
-std::tuple<Scene_Node*, std::span<Scene_Node*>> Scene::InitMainMenu(const std::string &levelsPath, const Font &font) {
+std::tuple<std::unique_ptr<Scene_Node>, std::span<std::unique_ptr<Scene_Node>>> Scene::InitMainMenu(const std::string &levelsPath, const Font &font) {
 
   int WIDTH, HEIGHT;
   glfwGetWindowSize(Scene::getWindow(), &WIDTH, &HEIGHT);
 
-  Scene_Node* menu = new Scene_Node;
+  auto menu = std::make_unique<Scene_Node>();
   menu->worldModel = glm::ortho<float>(0, WIDTH, 0, HEIGHT);
 
   glm::vec3 titlePosition(HEIGHT * 0.8);
 
   auto title = Scene::Text("PRISMA", font, titlePosition, glm::vec4(1, 1, 0, 0.5), 2);
-  menu->AddChild(title);
+  menu->AddChild(std::move(title));
 
   // Load the JSON file and parse it
   std::ifstream levelsFile(levelsPath);
@@ -168,14 +166,14 @@ std::tuple<Scene_Node*, std::span<Scene_Node*>> Scene::InitMainMenu(const std::s
     const std::string& name = level["name"];
 
     auto scene = Scene::Text(name.c_str() , font, levelPosition, glm::vec4(1));
-    menu->AddChild(scene);
+    menu->AddChild(std::move(scene));
 
     levelPosition.y -= spacing;
   }
 
   auto level_scenes = std::span(menu->children.begin() + 1, menu->children.end());
 
-  return {menu, level_scenes};
+  return {std::move(menu), level_scenes};
 }
 
 // ====================================================================================================
@@ -352,7 +350,7 @@ bool Scene::DoorCollide(Scene_Node *objectA, Scene_Node *door) {
 // ====================================================================================================
 void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& playerMovement, float deltaTime) {
   for (const auto door: objects[OBJECT_DOOR]) {
-    if (DoorCollide(player, door)) {
+    if (DoorCollide(player.get(), door)) {
       if (glm::vec3(player->color) != glm::vec3(door->color)) {
         // Revert the move and put the player one frame back
         player->UpdatePlayer(cameraMovement, -playerMovement, deltaTime);
@@ -363,7 +361,7 @@ void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& p
   }
 
   for (const auto wall: objects[OBJECT_WALL]) {
-    if (Collide(player, wall)) {
+    if (Collide(player.get(), wall)) {
       // std::cout << "debug: hit wall\n";
 
       // Revert the move and put the player one frame back
@@ -379,7 +377,7 @@ void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& p
     if (!orb)
       continue;
 
-    orb->currentState = Collide(player, orb);
+    orb->currentState = Collide(player.get(), orb);
 
     if (orb->currentState && (orb->currentState != orb->lastState)) {
       // Swap secondary color
@@ -396,16 +394,14 @@ void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& p
 }
 
 // ====================================================================================================
-void Scene::DrawScene(Scene_Node* scene, GLuint shaderId) {
-  if (scene) {
-    scene->Draw(shaderId);
-    for (auto& child: scene->children)
-      DrawScene(child, shaderId);
-  }
+void Scene::DrawScene(const Scene_Node& scene, GLuint shaderId) {
+  scene.Draw(shaderId);
+  for (const auto& child: scene.children)
+    DrawScene(*child, shaderId);
 }
 
 
-Scene_Node* Scene::Text(const char* string,
+std::unique_ptr<Scene_Node> Scene::Text(const char* string,
                         const Font& font,
                         const glm::vec2 position,
                         const glm::vec4 color,
@@ -426,7 +422,7 @@ Scene_Node* Scene::Text(const char* string,
   }
 
   // Create the scene node
-  Scene_Node* textNode = new Scene_Node(textMesh);
+  auto textNode = std::make_unique<Scene_Node>(textMesh);
   textNode->absoluteScale = glm::vec3(scale, scale, 1.f);
   textNode->relativeModel = glm::translate(glm::mat4(1), pos);
   textNode->color = color;
@@ -434,12 +430,3 @@ Scene_Node* Scene::Text(const char* string,
   return textNode;
 }
 
-
-// ====================================================================================================
-Scene::~Scene() {
-  if (root)
-    delete root;
-
-  if (player)
-    delete player;
-}

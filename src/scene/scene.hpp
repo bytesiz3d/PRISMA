@@ -36,15 +36,15 @@ class Scene {
 
   // TODO: Optimize collision checking
   // Main scene:
-  Scene_Node *root;
+  std::unique_ptr<Scene_Node> root;
   std::unordered_map<OBJECT_TYPE, std::vector<Scene_Node *> > objects;
 
   std::vector<glm::vec3> levelRooms;
 
   // Player and HUD:
-  Player *player;
-  Scene_Node *hud;
-  Lamp *lamp;
+  std::unique_ptr<Player> player;
+  std::unique_ptr<Scene_Node> hud;
+  std::unique_ptr<Lamp> lamp;
 
   glm::vec3 getLampPosition(glm::vec3 playerPos);
 
@@ -62,7 +62,7 @@ public:
 
   void InitScene(const std::string &scenePath);
 
-  static std::tuple<Scene_Node*, std::span<Scene_Node*>> InitMainMenu(const std::string &levelsPath, const Font &font);
+  static std::tuple<std::unique_ptr<Scene_Node>, std::span<std::unique_ptr<Scene_Node>>> InitMainMenu(const std::string &levelsPath, const Font &font);
 
   void set_meshes(const std::unordered_map<MESH_TYPE, std::shared_ptr<Mesh>> &meshes) {
     this->meshes = meshes;
@@ -76,24 +76,19 @@ public:
     return camera;
   }
 
-  [[nodiscard]] Scene_Node * get_root() const {
+  [[nodiscard]] const std::unique_ptr<Scene_Node>& get_root() const {
     return root;
   }
 
-
-  [[nodiscard]] Player * get_player() const {
+  [[nodiscard]] const std::unique_ptr<Player>& get_player() const {
     return player;
   }
 
-  [[nodiscard]] Scene_Node * get_hud() const {
+  [[nodiscard]] const std::unique_ptr<Scene_Node>& get_hud() const {
     return hud;
   }
 
-  void set_hud(Scene_Node * const hud) {
-    this->hud = hud;
-  }
-
-  [[nodiscard]] Lamp * get_lamp() const {
+  [[nodiscard]] const std::unique_ptr<Lamp>& get_lamp() const {
     return lamp;
   }
 
@@ -104,9 +99,9 @@ public:
 
   void UpdateData(float deltaTime);
 
-  static void DrawScene(Scene_Node *scene, GLuint shaderId);
+  static void DrawScene(const Scene_Node& scene, GLuint shaderId);
 
-  static Scene_Node* Text(const char* string,
+  static std::unique_ptr<Scene_Node> Text(const char* string,
                         const Font& font,
                         glm::vec2 position = glm::vec3(0.f),
                         glm::vec4 color = glm::vec4(1.f),
@@ -119,7 +114,6 @@ public:
 
   static void setWindow(GLFWwindow *newWindow);
 
-  ~Scene();
 }; // namespace Scene
 
 #endif // SCENE_HPP

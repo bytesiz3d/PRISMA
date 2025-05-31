@@ -116,8 +116,8 @@ int MainMenu() {
     backgroundAngle += glm::radians(90.f) * deltaTime; // Rotate the background
     background.relativeModel = glm::rotate(glm::mat4(1.0f), backgroundAngle, glm::vec3(0, 0, 1));
 
-    Scene::DrawScene(&background, backgroundShader);
-    Scene::DrawScene(menu, shaderProgram);
+    Scene::DrawScene(background, backgroundShader);
+    Scene::DrawScene(*menu, shaderProgram);
 
     // Swap the screen buffers
     glfwSwapBuffers(Scene::getWindow());
@@ -197,18 +197,14 @@ void RunGame(const int level) {
     glUniformMatrix4fv(VP_location, 1, false, glm::value_ptr(VP));
     glUniform3f(cam_pos_location, Scene::get_camera().position.x, Scene::get_camera().position.y, Scene::get_camera().position.z);
 
-    Scene::DrawScene(scene.get_root(), cubeShaderProgram);
-    Scene::DrawScene(scene.get_player(), cubeShaderProgram);
-    Scene::DrawScene(scene.get_lamp(), cubeShaderProgram);
-    Scene::DrawScene(scene.get_hud(), hudShaderProgram);
+    Scene::DrawScene(*scene.get_root(), cubeShaderProgram);
+    Scene::DrawScene(*scene.get_player(), cubeShaderProgram);
+    Scene::DrawScene(*scene.get_lamp(), cubeShaderProgram);
+    Scene::DrawScene(*scene.get_hud(), hudShaderProgram);
 
     // Swap the screen buffers
     glfwSwapBuffers(Scene::getWindow());
   }
-
-  delete player;
-  delete sphere;
-  delete lamp;
 
   glDeleteProgram(cubeShaderProgram);
   glDeleteProgram(hudShaderProgram);

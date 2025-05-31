@@ -25,7 +25,7 @@ class Scene_Node {
   Material material;
 
   Scene_Node* parent;
-  std::vector<Scene_Node*> children;
+  std::vector<std::unique_ptr<Scene_Node>> children;
 
   glm::mat4 relativeModel;
   glm::mat4 worldModel;
@@ -41,9 +41,8 @@ class Scene_Node {
              glm::mat4 _relativeModel = glm::mat4(1.f),
              glm::vec3 _absoluteScale = glm::vec3(1.f),
              glm::vec4 _color = glm::vec4(1.f));
-  ~Scene_Node();
 
   glm::mat4 ScaleWorldModel() const;
-  void AddChild(Scene_Node* child);
-  void Draw(GLuint shaderId);
+  void AddChild(std::unique_ptr<Scene_Node>&& child);
+  void Draw(GLuint shaderId) const;
 };

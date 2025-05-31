@@ -4,7 +4,6 @@
 
 Scene_Node::Scene_Node()
   : mesh(nullptr), texture(nullptr), parent(nullptr), worldModel(glm::mat4(1.f)), drawMode(GL_TRIANGLES) {
-  children = std::vector<Scene_Node*>(0);
 
   relativeModel = glm::mat4(1.f);
   absoluteScale = glm::vec3(1.f);
@@ -26,7 +25,6 @@ Scene_Node::Scene_Node(const std::shared_ptr<Mesh> _mesh,
   mesh = _mesh;
 
   parent = _parent;
-  children = std::vector<Scene_Node*>(0);
 
   relativeModel = _relativeModel;
   absoluteScale = _absoluteScale;
@@ -39,15 +37,9 @@ Scene_Node::Scene_Node(const std::shared_ptr<Mesh> _mesh,
   material.shininess = 20;
 }
 
-Scene_Node::~Scene_Node() {
-  for (auto& child: children)
-    if (child)
-      delete child;
-}
-
-void Scene_Node::AddChild(Scene_Node* child) {
-  children.push_back(child);
+void Scene_Node::AddChild(std::unique_ptr<Scene_Node>&& child) {
   child->parent = this;
+  children.push_back(std::move(child));
 }
 
 glm::mat4 Scene_Node::ScaleWorldModel() const {
@@ -59,7 +51,7 @@ glm::mat4 Scene_Node::ScaleWorldModel() const {
   return glm::scale(model, absoluteScale);
 }
 
-void Scene_Node::Draw(GLuint shaderId) {
+void Scene_Node::Draw(GLuint shaderId) const {
   glUseProgram(shaderId);
 
   // Send M and M_it
