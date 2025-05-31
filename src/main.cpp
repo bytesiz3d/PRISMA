@@ -29,6 +29,7 @@
 #include "scene/scene.hpp"
 #include "utils/opengl_utils.h"
 #include "input/input_manager.hpp"
+#include <chrono>
 
 // Window dimensions
 GLuint WIDTH = 1280, HEIGHT = 720;
@@ -78,8 +79,16 @@ int MainMenu() {
 
   int selectedLevel = 0;
   float backgroundAngle = 0.0f;
+
+  auto lastTime = std::chrono::high_resolution_clock::now();
+
   // Game loop
   while (!glfwWindowShouldClose(Scene::getWindow())) {
+    auto now = std::chrono::high_resolution_clock::now();
+    float deltaTime = std::chrono::duration<float>(now - lastTime).count();
+    lastTime = now;
+
+
     // Check if any events have been activated (key pressed, mouse moved etc.) and call corresponding response functions
     glfwPollEvents();
 
@@ -104,7 +113,7 @@ int MainMenu() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glUseProgram(shaderProgram);
 
-    backgroundAngle += 0.005f;
+    backgroundAngle += glm::radians(90.f) * deltaTime; // Rotate the background
     background.relativeModel = glm::rotate(glm::mat4(1.0f), backgroundAngle, glm::vec3(0, 0, 1));
 
     Scene::DrawScene(&background, backgroundShader);
