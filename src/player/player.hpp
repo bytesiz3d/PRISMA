@@ -2,12 +2,8 @@
 
 #include "../scene_node/scene_node.hpp"
 
-class Player
-  : public Scene_Node {
- private:
-  float yawSens;
-  float pitchSens;
-  float movementSens;
+class Player : public Scene_Node {
+  void init();
 
  public:
   float yaw;
@@ -20,7 +16,7 @@ class Player
   glm::vec3 orientation;
 
   Player();
-  Player(Mesh* _mesh,
+  explicit Player(Mesh* _mesh,
          Scene_Node* _parent = nullptr,
          glm::mat4 _relativeModel = glm::mat4(1.f),
          glm::vec3 _absoluteScale = glm::vec3(1.f),
@@ -28,6 +24,4 @@ class Player
 
   void UpdatePlayer(glm::vec2 mouseDelta, glm::vec2 movement, float deltaTime);
 
- private:
-  float calculateSensitivity();
 };

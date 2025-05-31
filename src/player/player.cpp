@@ -2,19 +2,14 @@
 #include <GLFW/glfw3.h>
 
 #include "player.hpp"
-
-Player::Player()
-  : Scene_Node() {
+void Player::init() {
   orientation = glm::vec3(0.f);
   yaw = 0;
-  yawSens = 500.f;
-  pitch = -0.523598776f;  // PI/6
-  pitchSens = 500.f;
+  pitch = glm::radians(-30.f);
+}
 
-  direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
-  normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
-
-  movementSens = calculateSensitivity();
+Player::Player() {
+  init();
 }
 
 Player::Player(Mesh* _mesh,
@@ -23,28 +18,22 @@ Player::Player(Mesh* _mesh,
                glm::vec3 _absoluteScale,
                glm::vec4 _color)
   : Scene_Node(_mesh, _parent, _relativeModel, _absoluteScale, _color) {
-  orientation = glm::vec3(0.f);
-  yaw = 0;
-  yawSens = 500.f;
-  pitch = -0.523598776f;
-  pitchSens = 500.f;
-
-  direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
-  normal = glm::vec3(std::sin(yaw), 0, std::cos(yaw));
-
-  movementSens = calculateSensitivity();
+  init();
 }
 
 void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec2 movement, float deltaTime) {
+  constexpr float YAW_SENSITIVITY = 500;  // Sensitivity for yaw rotation
+  constexpr float PITCH_SENSITIVITY = 500;  // Sensitivity for pitch rotation
+  constexpr float MOVEMENT_SENSITIVITY = 50;  // Sensitivity for movement
 
-  yaw += mouseDelta[0] * yawSens * deltaTime;
-  pitch += -mouseDelta[1] * pitchSens * deltaTime;
-  pitch = glm::min(0.f, glm::max(pitch, -1.57079633f));
+  yaw += mouseDelta.x * YAW_SENSITIVITY * deltaTime;
+  pitch += -mouseDelta.y * PITCH_SENSITIVITY * deltaTime;
+  pitch = glm::clamp(pitch, glm::radians(-89.9f), glm::radians(10.0f));
 
   direction = glm::vec3(std::cos(yaw), 0, std::sin(yaw));
   normal = glm::vec3(-std::sin(yaw), 0, std::cos(yaw));
 
-  movement *= movementSens * deltaTime;
+  movement *= MOVEMENT_SENSITIVITY * deltaTime;
 
   position += direction * movement.y;
   position += normal * movement.x;
@@ -60,6 +49,3 @@ void Player::UpdatePlayer(glm::vec2 mouseDelta, glm::vec2 movement, float deltaT
   relativeModel = glm::rotate(relativeModel, orientation[0], glm::vec3(1, 0, 0));
 }
 
-float Player::calculateSensitivity() {
-  return 50;
-}
