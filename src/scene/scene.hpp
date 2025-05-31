@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include <span>
 #include <unordered_map>
 #include <json/json.hpp>
 
@@ -53,7 +54,7 @@ class Scene {
 
   bool DoorCollide(Scene_Node *objectA, Scene_Node *objectB);
 
-  void ProcessCollision(const glm::vec2 &cameraMovement, const glm::vec2 &playerMovement);
+  void ProcessCollision(const glm::vec2 &cameraMovement, const glm::vec2 &playerMovement, float deltaTime);
 
 public:
   Scene(const std::string &scenePath);
@@ -101,7 +102,7 @@ public:
     camera.aspectRatio = static_cast<float>(width) / static_cast<float>(height);
   }
 
-  void UpdateData();
+  void UpdateData(float deltaTime);
 
   static void DrawScene(Scene_Node *scene, GLuint shaderId);
 

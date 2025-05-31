@@ -174,13 +174,20 @@ void RunGame(const int level) {
   scene.UploadLights(cubeShaderProgram);
 
   glUniform1i(texture_sampler_location, 0);
+
+  auto lastTime = std::chrono::high_resolution_clock::now();
+
   // Game loop
   while (!glfwWindowShouldClose(Scene::getWindow())) {
+    auto now = std::chrono::high_resolution_clock::now();
+    float deltaTime = std::chrono::duration<float>(now - lastTime).count();
+    lastTime = now;
+
     // Check if any events have been activated (key pressed, mouse moved etc.)
     // and call corresponding response functions
     glfwPollEvents();
 
-    scene.UpdateData();
+    scene.UpdateData(deltaTime);
 
     // Render
     // Clear the color buffer

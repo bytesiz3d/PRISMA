@@ -230,14 +230,14 @@ void Scene::setWindow(GLFWwindow *newWindow) {
 }
 
 // ====================================================================================================
-void Scene::UpdateData() {
+void Scene::UpdateData(float deltaTime) {
   auto [exit, swapColors, cameraMovement, playerMovement] = InputManager::ProcessGameInput();
 
   if (exit) {
     glfwSetWindowShouldClose(Scene::window, true);
   }
 
-  player->UpdatePlayer(cameraMovement, playerMovement);
+  player->UpdatePlayer(cameraMovement, playerMovement, deltaTime);
   lamp->UpdateLamp(getLampPosition(player->position));
   // Swap colors
   if (swapColors) {
@@ -249,7 +249,7 @@ void Scene::UpdateData() {
     // Update HUD
     hud->children[0]->color = newPlayerColor;
   }
-  ProcessCollision(cameraMovement, playerMovement);
+  ProcessCollision(cameraMovement, playerMovement, deltaTime);
 
   // Manually updating the camera
   glm::vec4 newCameraPosition(0, 0, 0, 1);
@@ -350,13 +350,13 @@ bool Scene::DoorCollide(Scene_Node *objectA, Scene_Node *door) {
 }
 
 // ====================================================================================================
-void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& playerMovement) {
+void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& playerMovement, float deltaTime) {
   for (const auto door: objects[OBJECT_DOOR]) {
     if (DoorCollide(player, door)) {
       if (glm::vec3(player->color) != glm::vec3(door->color)) {
         // Revert the move and put the player one frame back
-        player->UpdatePlayer(cameraMovement, -playerMovement);
-        player->UpdatePlayer(cameraMovement, -playerMovement);
+        player->UpdatePlayer(cameraMovement, -playerMovement, deltaTime);
+        player->UpdatePlayer(cameraMovement, -playerMovement, deltaTime);
       }
       return;
     }
@@ -367,8 +367,8 @@ void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& p
       // std::cout << "debug: hit wall\n";
 
       // Revert the move and put the player one frame back
-      player->UpdatePlayer(-cameraMovement, -playerMovement);
-      player->UpdatePlayer(-cameraMovement, -playerMovement);
+      player->UpdatePlayer(-cameraMovement, -playerMovement, deltaTime);
+      player->UpdatePlayer(-cameraMovement, -playerMovement, deltaTime);
 
       return;
     }

@@ -1,6 +1,4 @@
 #pragma once
-#include <chrono>
-using namespace std::chrono;
 
 #include "../scene_node/scene_node.hpp"
 
@@ -18,8 +16,6 @@ class Player
   glm::vec3 position;
   glm::vec3 normal;
 
-  time_point<system_clock> lastUpdate;
-
   // Rotation angles around the 3 axes:
   glm::vec3 orientation;
 
@@ -30,7 +26,7 @@ class Player
          glm::vec3 _absoluteScale = glm::vec3(1.f),
          glm::vec4 _color = glm::vec4(1.f));
 
-  void UpdatePlayer(glm::vec2 mouseDelta, glm::vec2 movement);
+  void UpdatePlayer(glm::vec2 mouseDelta, glm::vec2 movement, float deltaTime);
 
  private:
   float calculateSensitivity();
