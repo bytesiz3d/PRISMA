@@ -142,14 +142,12 @@ void RunGame(const int level) {
   Scene scene;
 
   // Create meshes
-  Mesh* cube = Mesh_Utils::WhiteCube();
-  Mesh* sphere = Mesh_Utils::Sphere();
-  Mesh* player = Mesh_Utils::LoadMesh("../res/models/player.assbin");
-  Mesh* lamp = Mesh_Utils::LoadMesh("../res/models/lamp.assbin");
+  auto player = Mesh_Utils::LoadMesh("../res/models/player.assbin");
+  auto lamp = Mesh_Utils::LoadMesh("../res/models/lamp.assbin");
   scene.set_meshes({
     {MESH_NULL, nullptr},
-    {MESH_CUBE, cube},
-    {MESH_SPHERE, sphere},
+    {MESH_CUBE, Mesh_Utils::WhiteCube()},
+    {MESH_SPHERE, Mesh_Utils::Sphere()},
     {MESH_MODEL0, player},
     {MESH_MODEL4, lamp}
   });
@@ -208,7 +206,6 @@ void RunGame(const int level) {
     glfwSwapBuffers(Scene::getWindow());
   }
 
-  delete cube;
   delete player;
   delete sphere;
   delete lamp;

@@ -1,5 +1,7 @@
 #include "scene_node.hpp"
 
+#include <memory>
+
 Scene_Node::Scene_Node()
   : mesh(nullptr), texture(nullptr), parent(nullptr), worldModel(glm::mat4(1.f)), drawMode(GL_TRIANGLES) {
   children = std::vector<Scene_Node*>(0);
@@ -15,7 +17,7 @@ Scene_Node::Scene_Node()
   material.shininess = 20;
 }
 
-Scene_Node::Scene_Node(Mesh* _mesh,
+Scene_Node::Scene_Node(const std::shared_ptr<Mesh> _mesh,
                        Scene_Node* _parent,
                        glm::mat4 _relativeModel,
                        glm::vec3 _absoluteScale,

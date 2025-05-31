@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
@@ -19,7 +20,7 @@ struct Material {
 class Scene_Node {
  private:
  public:
-  Mesh* mesh;
+  std::shared_ptr<Mesh> mesh;
   Texture* texture;
   Material material;
 
@@ -35,7 +36,7 @@ class Scene_Node {
   GLenum drawMode;
 
   Scene_Node();
-  Scene_Node(Mesh* _mesh,
+  Scene_Node(std::shared_ptr<Mesh> _mesh,
              Scene_Node* _parent = nullptr,
              glm::mat4 _relativeModel = glm::mat4(1.f),
              glm::vec3 _absoluteScale = glm::vec3(1.f),

@@ -12,7 +12,7 @@ Player::Player() {
   init();
 }
 
-Player::Player(Mesh* _mesh,
+Player::Player(std::shared_ptr<Mesh> _mesh,
                Scene_Node* _parent,
                glm::mat4 _relativeModel,
                glm::vec3 _absoluteScale,

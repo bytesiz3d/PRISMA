@@ -26,7 +26,7 @@ struct Light {
 
 class Scene {
   static GLFWwindow *window;
-  std::map<MESH_TYPE, Mesh *> meshes;
+  std::unordered_map<MESH_TYPE, std::shared_ptr<Mesh>> meshes;
   std::map<MESH_TEXTURE, Texture *> textures;
   std::vector<Light> lights;
 
@@ -64,7 +64,7 @@ public:
 
   static std::tuple<Scene_Node*, std::span<Scene_Node*>> InitMainMenu(const std::string &levelsPath, const Font &font);
 
-  void set_meshes(const std::map<MESH_TYPE, Mesh *> &meshes) {
+  void set_meshes(const std::unordered_map<MESH_TYPE, std::shared_ptr<Mesh>> &meshes) {
     this->meshes = meshes;
   }
 

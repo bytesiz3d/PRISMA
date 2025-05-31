@@ -412,7 +412,7 @@ Scene_Node* Scene::Text(const char* string,
                         const float scale,
                         const bool center_x) {
   // Create the mesh
-  Mesh* textMesh = Mesh_Utils::TextMesh(string, font);
+  auto textMesh = Mesh_Utils::TextMesh(string, font);
   auto pos = glm::vec3(position.x, position.y, 0.f);
 
   // Center the text if required

@@ -15,7 +15,7 @@ Lamp::Lamp()
   movementSens = 0.3f;
 }
 
-Lamp::Lamp(Mesh* _mesh,
+Lamp::Lamp(std::shared_ptr<Mesh> _mesh,
            Scene_Node* _parent,
            glm::mat4 _relativeModel,
            glm::vec3 _absoluteScale,

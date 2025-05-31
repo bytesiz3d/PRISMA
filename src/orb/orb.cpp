@@ -6,7 +6,7 @@ Orb::Orb()
 Orb::~Orb() {
 }
 
-Orb::Orb(Mesh* _mesh,
+Orb::Orb(std::shared_ptr<Mesh> _mesh,
          Scene_Node* _parent,
          glm::mat4 _relativeModel,
          glm::vec3 _absoluteScale,

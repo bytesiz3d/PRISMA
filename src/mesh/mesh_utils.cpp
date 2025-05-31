@@ -23,12 +23,13 @@
 
 // TODO: Modify each function to contain texture coordinates
 
-Mesh* Mesh_Utils::WhiteCube() {
-  Mesh* mesh = new Mesh;
-  const int CUBE_SIDES = 6;
-  const int CUBE_VERTICES = 4;
+std::shared_ptr<Mesh>  Mesh_Utils::WhiteCube() {
+  auto mesh = std::make_shared<Mesh>();
+  
+  constexpr int CUBE_SIDES = 6;
+  constexpr int CUBE_VERTICES = 4;
 
-  const std::array<glm::vec3, CUBE_SIDES * CUBE_VERTICES> positions = {
+  constexpr std::array<glm::vec3, CUBE_SIDES * CUBE_VERTICES> positions = {
     //Upper Face
     glm::vec3(-0.5, 1.0, -0.5),
     glm::vec3(-0.5, 1.0, 0.5),
@@ -61,7 +62,7 @@ Mesh* Mesh_Utils::WhiteCube() {
     glm::vec3(0.5, 0.0, -0.5)
   };
 
-  const std::array<glm::vec2, CUBE_SIDES * CUBE_VERTICES> texcoords = {
+  constexpr std::array<glm::vec2, CUBE_SIDES * CUBE_VERTICES> texcoords = {
     // Upper Face
     glm::vec2(0.f, 1.f),
     glm::vec2(0.f, 0.f),
@@ -99,7 +100,7 @@ Mesh* Mesh_Utils::WhiteCube() {
     glm::vec2(0.f, 0.f),
   };
 
-  const std::array<glm::vec3, CUBE_SIDES * CUBE_VERTICES> normals = {
+  constexpr std::array<glm::vec3, CUBE_SIDES * CUBE_VERTICES> normals = {
     //Upper Face
     glm::vec3(0, 1, 0),
     glm::vec3(0, 1, 0),
@@ -136,7 +137,7 @@ Mesh* Mesh_Utils::WhiteCube() {
   mesh->SetBufferData("texcoords", sizeof(GLfloat) * texcoords.size() * texcoords[0].length(), glm::value_ptr(texcoords.front()), GL_STATIC_DRAW);
   mesh->SetBufferData("normals", sizeof(GLfloat) * normals.size() * normals[0].length(), glm::value_ptr(normals.front()), GL_STATIC_DRAW);
 
-  GLuint elements[36] = {
+  const GLuint elements[36] = {
     //Upper Face
     0, 1, 2, 2, 3, 0,
     //Lower Face
@@ -160,8 +161,9 @@ Mesh* Mesh_Utils::WhiteCube() {
   return mesh;
 }
 
-Mesh* Mesh_Utils::ColoredBackground(const std::array<glm::vec4, 4> &colors) {
-  Mesh* mesh = new Mesh;
+std::shared_ptr<Mesh>  Mesh_Utils::ColoredBackground(const std::array<glm::vec4, 4> &colors) {
+  auto mesh = std::make_shared<Mesh>();
+
   constexpr std::array<glm::vec3, 4> positions = {
     glm::vec3(-1.5, -1.5, 1),
     glm::vec3(1.5, -1.5, 1),
@@ -182,7 +184,7 @@ Mesh* Mesh_Utils::ColoredBackground(const std::array<glm::vec4, 4> &colors) {
 }
 
 
-Mesh* Mesh_Utils::LoadMesh(const std::string& filePath) {
+std::shared_ptr<Mesh>  Mesh_Utils::LoadMesh(const std::string& filePath) {
   // Load scene
   Assimp::Importer importer;
 
@@ -228,13 +230,14 @@ Mesh* Mesh_Utils::LoadMesh(const std::string& filePath) {
   // TODO: directory and texture loading?????????????
 
   // Allocate space for meshes
-  Mesh* mesh = new Mesh;
+  auto mesh = std::make_shared<Mesh>();
+
   std::vector<glm::vec3> positions, normals;
   std::vector<glm::vec2> texcoords;
   std::vector<GLuint> indices;
 
   for (GLuint m = 0; m < scene->mNumMeshes; m++) {
-    aiMesh* meshData = scene->mMeshes[m];
+    const aiMesh* meshData = scene->mMeshes[m];
     for (GLuint i = 0; i < meshData->mNumVertices; i++) {
       positions.emplace_back(meshData->mVertices[i].x, meshData->mVertices[i].y, meshData->mVertices[i].z);
 
@@ -246,7 +249,7 @@ Mesh* Mesh_Utils::LoadMesh(const std::string& filePath) {
     }
 
     for (GLuint i = 0; i < meshData->mNumFaces; i++) {
-      aiFace face = meshData->mFaces[i];
+      const aiFace face = meshData->mFaces[i];
       for (GLuint j = 0; j < face.mNumIndices; j++)
         indices.push_back(face.mIndices[j]);
     }
@@ -270,8 +273,8 @@ Mesh* Mesh_Utils::LoadMesh(const std::string& filePath) {
   return mesh;
 }
 
-Mesh* Mesh_Utils::TextMesh(const std::string& text, const Font& font) {
-  Mesh* mesh = new Mesh;
+std::shared_ptr<Mesh>  Mesh_Utils::TextMesh(const std::string& text, const Font& font) {
+  auto mesh = std::make_shared<Mesh>();
 
   // Initialize the containers for our data
   std::vector<glm::vec3> positions;
@@ -312,8 +315,9 @@ Mesh* Mesh_Utils::TextMesh(const std::string& text, const Font& font) {
   return mesh;
 }
 
-Mesh* Mesh_Utils::Sphere(GLuint hRes, GLuint vRes) {
-  Mesh* mesh = new Mesh;
+std::shared_ptr<Mesh>  Mesh_Utils::Sphere(GLuint hRes, GLuint vRes) {
+  auto mesh = std::make_shared<Mesh>();
+
   const double sph_PI = std::acos(-1);
 
   std::vector<glm::vec3> positions, normals;
