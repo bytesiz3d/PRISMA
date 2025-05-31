@@ -51,16 +51,8 @@ glm::mat4 Scene_Node::ScaleWorldModel() const {
   return glm::scale(model, absoluteScale);
 }
 
-void Scene_Node::Draw(GLuint shaderId) const {
-  glUseProgram(shaderId);
-
-  // Send M and M_it
-  int M = glGetUniformLocation(shaderId, "M");
-  int M_it = glGetUniformLocation(shaderId, "M_it");
-  int tint = glGetUniformLocation(shaderId, "tint");
-
+void Scene_Node::Draw(const Shader &shader) const {
   glm::mat4 mod = ScaleWorldModel();
-  glUniformMatrix4fv(M, 1, false, glm::value_ptr(mod));
 
   if (glm::determinant(mod) == 0) {
     // handle error
@@ -68,22 +60,17 @@ void Scene_Node::Draw(GLuint shaderId) const {
     return;
   }
 
+  shader.setUniform("M", mod);
   mod = glm::inverse(mod);
-  glUniformMatrix4fv(M_it, 1, true, glm::value_ptr(mod));
+  shader.setUniform("M_it", mod);
 
-  // Send material properties
-  int mtl_amb = glGetUniformLocation(shaderId, "material.ambient");
-  int mtl_diff = glGetUniformLocation(shaderId, "material.diffuse");
-  int mtl_spec = glGetUniformLocation(shaderId, "material.specular");
-  int mtl_shine = glGetUniformLocation(shaderId, "material.shininess");
-
-  glUniform3f(mtl_amb, material.ambient.r, material.ambient.g, material.ambient.b);
-  glUniform3f(mtl_diff, material.diffuse.r, material.diffuse.g, material.diffuse.b);
-  glUniform3f(mtl_spec, material.specular.r, material.specular.g, material.specular.b);
-  glUniform1f(mtl_shine, material.shininess);
+  shader.setUniform("material.ambient", material.ambient);
+  shader.setUniform("material.diffuse", material.diffuse);
+  shader.setUniform("material.specular", material.specular);
+  shader.setUniform("material.shininess", material.shininess);
 
   // Send color
-  glUniform4f(tint, color.r, color.g, color.b, color.a);
+  shader.setUniform("tint", color);
 
   if (mesh) {
     if (texture)

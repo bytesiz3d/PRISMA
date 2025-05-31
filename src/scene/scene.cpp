@@ -178,35 +178,27 @@ std::tuple<std::unique_ptr<Scene_Node>, std::span<std::unique_ptr<Scene_Node>>> 
 
 // ====================================================================================================
 // Upload light information to shader
-void Scene::UploadLights(GLuint shaderID) {
-  int size = glGetUniformLocation(shaderID, "LightsNum");
-  glUniform1i(size, lights.size());
+void Scene::UploadLights(const Shader &shader) const {
+  shader.setUniform("LightsNum", (int)lights.size());
   char location[64];
   for (GLuint i = 0; i < lights.size(); i++) {
     std::sprintf(location, "lights[%d].ambient", i);
-    int amb = glGetUniformLocation(shaderID, location);
+    shader.setUniform(location, lights[i].ambient);
 
     std::sprintf(location, "lights[%d].diffuse", i);
-    int dif = glGetUniformLocation(shaderID, location);
+    shader.setUniform(location, lights[i].diffuse);
 
     std::sprintf(location, "lights[%d].specular", i);
-    int spc = glGetUniformLocation(shaderID, location);
+    shader.setUniform(location, lights[i].specular);
 
     std::sprintf(location, "lights[%d].direction", i);
-    int dir = glGetUniformLocation(shaderID, location);
+    shader.setUniform(location, lights[i].direction);
 
     std::sprintf(location, "lights[%d].position", i);
-    int pos = glGetUniformLocation(shaderID, location);
+    shader.setUniform(location, lights[i].position);
 
     std::sprintf(location, "lights[%d].attenuation", i);
-    int att = glGetUniformLocation(shaderID, location);
-
-    glUniform3f(amb, lights[i].ambient.r, lights[i].ambient.g, lights[i].ambient.b);
-    glUniform3f(dif, lights[i].diffuse.r, lights[i].diffuse.g, lights[i].diffuse.b);
-    glUniform3f(spc, lights[i].specular.r, lights[i].specular.g, lights[i].specular.b);
-    glUniform3f(dir, lights[i].direction.x, lights[i].direction.y, lights[i].direction.z);
-    glUniform3f(pos, lights[i].position.x, lights[i].position.y, lights[i].position.z);
-    glUniform1f(att, lights[i].attenuation);
+    shader.setUniform(location, lights[i].attenuation);
   }
 }
 
@@ -394,10 +386,10 @@ void Scene::ProcessCollision(const glm::vec2& cameraMovement, const glm::vec2& p
 }
 
 // ====================================================================================================
-void Scene::DrawScene(const Scene_Node& scene, GLuint shaderId) {
-  scene.Draw(shaderId);
+void Scene::DrawScene(const Scene_Node& scene, const Shader &shader) {
+  scene.Draw(shader);
   for (const auto& child: scene.children)
-    DrawScene(*child, shaderId);
+    DrawScene(*child, shader);
 }
 
 

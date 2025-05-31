@@ -53,8 +53,8 @@ int main() {
 // ====================================================================================================
 int MainMenu() {
 
-  GLuint backgroundShader = Shader::LoadShader("../shaders/background.vert", "../shaders/background.frag");
-  auto backgroundMesh = Mesh_Utils::ColoredBackground({
+  auto backgroundShader = Shader("../shaders/background.vert", "../shaders/background.frag");
+  const auto backgroundMesh = Mesh_Utils::ColoredBackground({
     glm::vec4(1, 0, 0, 1), // Red
     glm::vec4(1, 1, 0, 1), // Yellow
     glm::vec4(0, 1, 0, 1), // Green
@@ -63,19 +63,16 @@ int MainMenu() {
   Scene_Node background(backgroundMesh);
 
   // Compile and link the shader program
-  GLuint shaderProgram = Shader::LoadShader("../shaders/font.vert", "../shaders/font.frag");
+  auto shaderProgram = Shader("../shaders/font.vert", "../shaders/font.frag");
 
   // Create the font
   Font font("../fonts/airstrikebold.ttf", HEIGHT/10);
 
   auto [menu, levels] = Scene::InitMainMenu("../res/scenes/levels.json", font);
 
-  glUseProgram(shaderProgram);
-
   // Load the font, just like a texture
-  const GLint texture_sampler_location = glGetUniformLocation(shaderProgram, "texture_sampler");
   font.Bind(0);
-  glUniform1i(texture_sampler_location, 0);
+  shaderProgram.setUniform("texture_sampler", 0);
 
   int selectedLevel = 0;
   float backgroundAngle = 0.0f;
@@ -111,7 +108,6 @@ int MainMenu() {
     // Render
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glUseProgram(shaderProgram);
 
     backgroundAngle += glm::radians(90.f) * deltaTime; // Rotate the background
     background.relativeModel = glm::rotate(glm::mat4(1.0f), backgroundAngle, glm::vec3(0, 0, 1));
@@ -123,21 +119,15 @@ int MainMenu() {
     glfwSwapBuffers(Scene::getWindow());
   }
 
-  glDeleteProgram(shaderProgram);
   return selectedLevel;
 }
 
 // ====================================================================================================
 void RunGame(const int level) {
   // Compile and link the shader program
-  // GLuint cubeShaderProgram = Shader::LoadShader("../shaders/texture.vert", "../shaders/texture.frag");
-  GLuint cubeShaderProgram = Shader::LoadShader("../shaders/light.vert", "../shaders/light.frag");
-  GLuint hudShaderProgram = Shader::LoadShader("../shaders/hud.vert", "../shaders/color.frag");
-
-  glUseProgram(cubeShaderProgram);
-  const GLint VP_location = glGetUniformLocation(cubeShaderProgram, "VP");
-  const GLint texture_sampler_location = glGetUniformLocation(cubeShaderProgram, "texture_sampler");
-  const GLint cam_pos_location = glGetUniformLocation(cubeShaderProgram, "cam_position");
+  // auto cubeShaderProgram = Shader("../shaders/texture.vert", "../shaders/texture.frag");
+  auto cubeShaderProgram = Shader("../shaders/light.vert", "../shaders/light.frag");
+  auto hudShaderProgram = Shader("../shaders/hud.vert", "../shaders/color.frag");
 
   Scene scene;
 
@@ -190,12 +180,10 @@ void RunGame(const int level) {
     // Render
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glUseProgram(cubeShaderProgram);
 
     // Pass VP, camera position
-    glm::mat4 VP = Scene::get_camera().ViewProjectionMatrix();
-    glUniformMatrix4fv(VP_location, 1, false, glm::value_ptr(VP));
-    glUniform3f(cam_pos_location, Scene::get_camera().position.x, Scene::get_camera().position.y, Scene::get_camera().position.z);
+    cubeShaderProgram.setUniform("VP", Scene::get_camera().ViewProjectionMatrix());
+    cubeShaderProgram.setUniform("cam_position", Scene::get_camera().position);
 
     Scene::DrawScene(*scene.get_root(), cubeShaderProgram);
     Scene::DrawScene(*scene.get_player(), cubeShaderProgram);
@@ -205,9 +193,6 @@ void RunGame(const int level) {
     // Swap the screen buffers
     glfwSwapBuffers(Scene::getWindow());
   }
-
-  glDeleteProgram(cubeShaderProgram);
-  glDeleteProgram(hudShaderProgram);
 
 }
 

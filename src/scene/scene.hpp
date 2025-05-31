@@ -14,6 +14,7 @@
 #include  "../player/player.hpp"
 #include "../camera/camera.hpp"
 #include "../font/font.hpp"
+#include "../shader/shader.hpp"
 
 struct Light {
   glm::vec3 ambient;
@@ -99,7 +100,8 @@ public:
 
   void UpdateData(float deltaTime);
 
-  static void DrawScene(const Scene_Node& scene, GLuint shaderId);
+
+  static void DrawScene(const Scene_Node& scene, const Shader &shader);
 
   static std::unique_ptr<Scene_Node> Text(const char* string,
                         const Font& font,
@@ -108,7 +110,7 @@ public:
                         float scale = 1,
                         bool center_x = true);
 
-  void UploadLights(GLuint shaderID);
+  void UploadLights(const Shader &shader) const;
 
   static GLFWwindow *getWindow();
 

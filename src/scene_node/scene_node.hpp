@@ -9,6 +9,7 @@
 
 #include "../mesh/mesh.hpp"
 #include "../texture/texture.hpp"
+#include "../shader/shader.hpp"
 
 struct Material {
   glm::vec3 ambient;
@@ -44,5 +45,5 @@ class Scene_Node {
 
   glm::mat4 ScaleWorldModel() const;
   void AddChild(std::unique_ptr<Scene_Node>&& child);
-  void Draw(GLuint shaderId) const;
+  void Draw(const Shader &shader) const;
 };
