@@ -51,12 +51,9 @@ glm::vec2 GamepadControllerInput::getWindowResolution() {
 }
 
 glm::vec2 GamepadControllerInput::getCameraDelta(const GLFWgamepadstate &state) {
-    const auto resolution = getWindowResolution();
-    float xscale = resolution.x / 30.0f;
-    float yscale = resolution.y / 30.0f;
     return {
-        state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X] * xscale,
-        state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y] * yscale
+        state.axes[GLFW_GAMEPAD_AXIS_RIGHT_X] / 100,
+        state.axes[GLFW_GAMEPAD_AXIS_RIGHT_Y] / 100
     };
 }
 
