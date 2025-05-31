@@ -13,8 +13,11 @@ KeyboardMouseInput::KeyboardMouseInput() : UserInput(Priority::NORMAL) {
 
 glm::vec2 KeyboardMouseInput::getCameraPosition(GLFWwindow* window) {
     double x, y;
+    int WIDTH, HEIGHT;
+    glfwGetWindowSize(window, &WIDTH, &HEIGHT);
+
     glfwGetCursorPos(window, &x, &y);
-    return {x, y};
+    return {x / WIDTH, y / HEIGHT};  // Normalize to [0, 1] range
 }
 
 glm::vec2 KeyboardMouseInput::getPlayerMovement(GLFWwindow* window) {
